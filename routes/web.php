@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\FoodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,6 +38,16 @@ Route::get('category/editForm/{id}',[CategoryController::class, 'editForm'])->na
 Route::post('category/editForm',[CategoryController::class, 'update'])->name('category.update');
 //Delete
 Route::get('category/delete/{id}', [CategoryController::class, 'delete'])->name('delete.category');
+
+//Food
+//Add
+Route::get('food/addForm', [FoodController::class, 'addForm']);
+Route::post('food/addForm', [FoodController::class, 'add'])->name('food.add');
+//Edit
+Route::get('food/editForm/{id}',[FoodController::class, 'editForm'])->name('food.edit');
+Route::post('food/editForm',[FoodController::class, 'update'])->name('food.update');
+//Delete
+Route::get('food/delete/{id}',[FoodController::class, 'delete'])->name('delete.food');
 
 Auth::routes();
 
