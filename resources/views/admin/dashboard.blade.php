@@ -242,6 +242,7 @@
                     <col class="food" />
                     <col class="food" />
                     <col class="food" />
+            
                     <col class="action" span="3" />
                 </colgroup>
                     <tr>
