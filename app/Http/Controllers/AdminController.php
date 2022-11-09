@@ -55,4 +55,8 @@ class AdminController extends Controller
         $foods = DB::table('food')->leftjoin('categories','categories.id','=','food.categoryID')->select('food.*','categories.name as categoryName')->get();
         return view('admin/dashboard')->with(["categories" => $categories])->with(["foods" => $foods]);
     }
+    //Profile
+    public function profile(){
+        return view('pages.profile');
+    }
 }

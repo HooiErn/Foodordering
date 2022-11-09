@@ -145,32 +145,23 @@
             }
 
         </style>
-        <link type="text/css" rel="stylesheet" href="{{ mix('css/app.css') }}">
     </head>
 
     <body>
       <!--TopNav first--> 
     <nav class="navbar navbar-expand-lg navbar-laravel" style=" background-image:linear-gradient(to right,#ff914d,#ff9b4f);">
         <div class="container">
-        @if(Auth::check())
-        <span style="font-size:20px;cursor:pointer;margin-right:5px;margin-bottom:2px;color:white;" onclick="openNav()">&#9776;</span>
-            <div id="mySideNav" class="sidenav">
-            <ul style="padding-left:10px;">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>     
-           
-            </ul>
-            </div>
-            @endif
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button> 
+       
                 <a class="navbar-brand" href="#" style="color:white;display:inline;"> Restaurant App</a>
             <!--Login & Logout-->
             <div style="float:right;margin-right:25px;"> 
                 @guest
                    <a class="nav-link" href="{{ route('admin.login') }}" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
                 @else
-                <i class="fas fa-sign-out"></i>
+                   <!--Sample profile-->
+                   @if(Auth::check())
+                                <a class="nav-link" href="{{route('profile')}}" style="color:white;"> Profile </a>
+                        @endif
                 @endguest
                 </div>
         </nav> 
@@ -187,18 +178,9 @@
     
                     
  
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav ml-auto" > 
-                          
-                        <!--Sample profile-->
-                        @if(Auth::check())
-                        <li class="nav-item">
-                                <a class="nav-link" href="#" style="color:white;"> Profile </a>
-                        </li>
-                        @endif
-                    </ul>
-        
-                </div>
+
+                     
+
             </div>
         </nav>
         </div>

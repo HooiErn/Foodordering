@@ -54,6 +54,9 @@ Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
 //Rating
 Route::post('/add-rating', [RatingController::class, 'rating']);
 
+// Customer
+Route::get('profile',[AdminController::class, 'profile'])->name('profile');
+
 Auth::routes();
 
 Route::get('/home', [HomeController::class, 'index'])->name('home');
