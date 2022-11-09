@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Category;
+use App\Models\Rating;
 use App\Models\Food;
 use Session;
 use DB;
@@ -105,4 +106,20 @@ class FoodController extends Controller
             return redirect('admin/dashboard'); 
         }
     }
+
+    //View Food
+    public function view($id){
+        $viewFoods = Food::all()->where('id',$id);
+        $ratings = Rating::where('food_id', $id)->get();
+        $ratings_sum = Rating::where('food_id', $id)->sum('stars_rated');
+        // Check if there is no rating
+        if($ratings -> count() > 0){
+            $rating_value = $ratings_sum / $ratings->count();
+        }
+        else{
+            $rating_value = 0;
+        }
+        return view('/view', compact('viewFoods', 'ratings','rating_value'));
+    }
+
 }

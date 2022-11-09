@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Food;
+use DB;
 
 class HomeController extends Controller
 {
@@ -23,6 +25,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        //occur error
+        //$foods = DB::table('food')->leftjoin('ratings','food.id','=','ratings.food_id')->select('food.*');
+        $foods = Food::all();
+        return view('home')->with('foods',$foods);
     }
 }

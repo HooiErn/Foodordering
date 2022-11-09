@@ -48,6 +48,11 @@ Route::get('food/editForm/{id}',[FoodController::class, 'editForm'])->name('food
 Route::post('food/editForm',[FoodController::class, 'update'])->name('food.update');
 //Delete
 Route::get('food/delete/{id}',[FoodController::class, 'delete'])->name('delete.food');
+//View
+Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
+
+//Rating
+Route::post('/add-rating', [RatingController::class, 'rating']);
 
 Auth::routes();
 
