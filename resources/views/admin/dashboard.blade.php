@@ -209,7 +209,7 @@
                 </div>
                 <div class="form-group">
                     <label for="foodImage">Food Image</label>
-                    <input type="file" class="form-control" id="foodImage" name="foodImage">
+                    <input type="file" class="form-control" id="image" name="image">
                 </div>
                 <div class="form-group">
                     <label for="categoryID">Food Category</label>
@@ -250,7 +250,7 @@
                 </colgroup>
                     <tr>
                         <th style="width:5%;">No. </th>
-                        <th> Food Name </th>
+                        <th>Food Name </th>
                         <th>Food Description</th>
                         <th>Price</th>
                         <th>Available</th>

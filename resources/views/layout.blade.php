@@ -11,12 +11,15 @@
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
            <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
         <!-- Styles -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
+        <script src="https://kit.fontawesome.com/0ea31885d1.js" crossorigin="anonymous"></script>
         <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/refresh.css') }}" rel="stylesheet">
         @if(!Session::has('adminData'))
             <script type="text/javascript">
                 window.location.href="{{url('admin/login')}}"
@@ -165,8 +168,9 @@
             <!--Login & Logout-->
             <div style="float:right;margin-right:25px;"> 
                 @guest
-                   <a class="nav-link" href="{{ route('admin.login') }}" style="color:white;"><i class="fa fa-sign-in"></i></a>
+                   <a class="nav-link" href="{{ route('admin.login') }}" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
                 @else
+                <i class="fas fa-sign-out"></i>
                 @endguest
                 </div>
         </nav> 
