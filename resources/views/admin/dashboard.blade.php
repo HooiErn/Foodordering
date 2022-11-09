@@ -18,6 +18,9 @@
     .action{
         background-color: #fff4e3;  
     }
+    .food{
+        background-color: #ffebcd;
+    }
 </style>                .
 
         <div class="content">
@@ -247,7 +250,7 @@
                 </colgroup>
                     <tr>
                         <th style="width:5%;">No. </th>
-                        <th>Food Name </th>
+                        <th> Food Name </th>
                         <th>Food Description</th>
                         <th>Price</th>
                         <th>Available</th>
@@ -260,12 +263,12 @@
                         <td>{{$loop->iteration}}</td>
                         <td>{{$food -> name}}</td>
                         <td>{{$food -> description}}</td>
-                        <td>{{$food -> price}}</td>
+                        <td>RM {{$food -> price}}</td>
                         <td>{{$food -> available}}</td>
-                        <td>{{$food -> foodImage}}</td>
+                       <td><img src="{{ asset('images') }}/{{ $food -> image }}" alt="previous image" width="100px" height="100px"></td>
                         <td>{{$food-> categoryID}}</td>
                         <td style="white-space: nowrap;">
-            <!-- Button trigger modal -->
+                          <!-- Button trigger modal --> 
 <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal4">
   Edit
 </button>
@@ -324,11 +327,11 @@
                 </div>
                 <div class="form-group">
                     <label for="categoryID">Food Category</label>
-                    @foreach($categories as $category)
                     <select name="categoryID" id="categoryID" name="categoryID">
+                    @foreach($categories as $category)
                         <option value="{{$category -> id}}">{{$category-> name}}</option>
-                    </select>
                     @endforeach
+                    </select>
                 </div>
               
                 <button class="btn btn-primary" type="submit">Submit</button>

@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-        <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
         <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         @if(!Session::has('adminData'))
@@ -107,7 +107,7 @@
                 text-decoration: none;
                 margin:5px;
             }
-            @media(max-width: 991px){
+            @media only screen and (max-width: 991px){
                 .navbar-brand{
                     margin-right:100px !important;
                 }
@@ -129,7 +129,7 @@
                     margin-left:10px !important;
                 }
             }
-            @media (max-width: 360px){
+            @media only screen and (max-width: 360px){
                 .navbar-brand{
                     margin-right:160px !important;
                 }
@@ -148,7 +148,7 @@
     <body>
       <!--TopNav first--> 
     <nav class="navbar navbar-expand-lg navbar-laravel" style=" background-image:linear-gradient(to right,#ff914d,#ff9b4f);">
-        <div class="container" style="overflow-x:scroll;">
+        <div class="container">
         @if(Auth::check())
         <span style="font-size:20px;cursor:pointer;margin-right:5px;margin-bottom:2px;color:white;" onclick="openNav()">&#9776;</span>
             <div id="mySideNav" class="sidenav">
@@ -171,7 +171,7 @@
                 </div>
         </nav> 
     <!--TopNav second--> 
-        <nav class="navbar navbar-expand-lg navbar-laravel" style="max-width : 10000px; background-image:linear-gradient(to right,#ff914d,#ff9b4f);">
+        <nav class="navbar navbar-expand-lg navbar-laravel" style="max-width : 10000px; background-image:linear-gradient(to right,#ff914d,#ff9b4f);overflow-x:scroll;">
                 <div class="topnav-link">
                 <a  href="{{ route('dashboard')}}"
                  style="color: white;">Admin Dashboard</a>
