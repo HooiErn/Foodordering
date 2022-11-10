@@ -5,16 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Admin extends Model
+class Transaction extends Model
 {
     use HasFactory;
 
     protected $fillable =[
-        'id',
-        'name',
-        'password',
+        'type',
+        'received_from',
+        'payee',
+        'note',
+        'wallet_id',
     ];
-
-    public $timestamps = false;
-    
 }

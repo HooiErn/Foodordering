@@ -59,4 +59,8 @@ class AdminController extends Controller
     public function profile(){
         return view('pages.profile');
     }
+    //Profile
+    public function transactionHistory(){
+        return view('pages.transactionHistory');
+    }
 }

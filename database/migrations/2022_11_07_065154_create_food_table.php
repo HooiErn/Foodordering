@@ -20,7 +20,7 @@ class CreateFoodTable extends Migration
             $table->string('image');
             $table->integer('available')->unsigned();
             $table->double('price',8,2);
-            $table->double('rating',8,2);
+            $table->double('rating',8,2)->nullable();
             $table->integer('categoryID')->unsigned();
             $table->timestamps();
         });

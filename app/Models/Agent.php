@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Admin extends Model
+class Agent extends Model
 {
     use HasFactory;
 
@@ -13,8 +13,6 @@ class Admin extends Model
         'id',
         'name',
         'password',
+        'email',
     ];
-
-    public $timestamps = false;
-    
 }
