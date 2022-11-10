@@ -16,10 +16,10 @@
         <div class="profile">
             <div class="top-icon">
                 <div>
-                    <i class="fas fa-arrow-left"></i>
+                   <a href="#"><i class="fas fa-arrow-left" style="color:white;"></i></a> 
                 </div>
                 <div>
-                    <i class="fas fa-ellipsis-v"></i>
+                    <a href="#"><i class="fas fa-ellipsis-v"  style="color:white;"></i></a>
                 </div>
             </div>
             
@@ -57,7 +57,7 @@
             <tbody>
                <tr>
                 <td class="column" style="height:72px;padding-top:25px;">
-                    <a href="#">Transactions</a> 
+                    <a href="{{route('view.transactionHistory')}}">Transactions</a> 
                 </td>
                 <td class="column" style="height:72px;padding-top:25px;">
                     <a href="#">Help</a> 
