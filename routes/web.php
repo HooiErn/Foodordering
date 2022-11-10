@@ -59,7 +59,14 @@ Route::get('profile',[AdminController::class, 'profile'])->name('profile');
 Route::get('transactionHistory',[AdminController::class, 'transactionHistory'])->name('view.transactionHistory');
 
 //Cart
+//Add
 Route::post('/add-to-cart',[CartController::class, 'addCart']);
+//View
+Route::get('/viewCart', [CartController::class, 'view']);
+
+
+//Payment
+Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');
 
 Auth::routes();
 
