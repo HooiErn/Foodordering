@@ -58,6 +58,8 @@ Route::post('/add-rating', [RatingController::class, 'rating']);
 Route::get('profile',[AdminController::class, 'profile'])->name('profile');
 Route::get('transactionHistory',[AdminController::class, 'transactionHistory'])->name('view.transactionHistory');
 
+//Cart
+Route::post('/add-to-cart',[CartController::class, 'addCart']);
 
 Auth::routes();
 
