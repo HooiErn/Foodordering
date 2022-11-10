@@ -152,37 +152,18 @@
     <nav class="navbar navbar-expand-lg navbar-laravel" style=" background-image:linear-gradient(to right,#ff914d,#ff9b4f);">
         <div class="container">
        
-                <a class="navbar-brand" href="{{ route('dashboard')}}" style="color:white;display:inline;"> Restaurant App</a>
+                <a class="navbar-brand" href="{{route('dashboard')}}" style="color:white;display:inline;"> Restaurant App</a>
             <!--Login & Logout-->
             <div style="float:right;margin-right:25px;"> 
                 @guest
                    <a class="nav-link" href="{{ route('admin.login') }}" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
                 @else
-                   <!--Sample profile-->
-                   @if(Auth::check())
-                                <a class="nav-link" href="{{route('profile')}}" style="color:white;"> Profile </a>
-                        @endif
+                  
                 @endguest
                 </div>
         </nav> 
-    <!-- TopNav second 
-        <nav class="navbar navbar-expand-lg navbar-laravel" style="max-width : 10000px; background-image:linear-gradient(to right,#ff914d,#ff9b4f);overflow-x:scroll;">
-                <div class="topnav-link">
-                <a  href="{{ route('dashboard')}}"
-                 style="color: white;">Admin Dashboard</a>
-                 <a  href="#"
-                 style="color: white;">Food Menu</a>
-                 <a  href="#"
-                 style="color: white;">Order History</a>
-       </div>   -->
-    
-                    
- 
-
-                     
-
-            </div>
-        </nav>
+    <!--TopNav second--> 
+     
         </div>
         </nav>
         @yield('content')

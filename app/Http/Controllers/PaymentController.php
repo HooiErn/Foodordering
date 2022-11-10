@@ -38,7 +38,10 @@ class PaymentController extends Controller
             $carts->orderID=$orderID->id; //binding the orderID with cart item record
             $carts->save();
         }
-        
+
+        $deleteCart = Cart::where('userID',Auth::id())->where('orderID','!=','');
+        $deleteCart -> delete();
+
         Session::flash('success','Order succeessully!');   
         return back();
     }

@@ -16,7 +16,7 @@
         <div class="profile">
             <div class="top-icon">
                 <div>
-                   <a href="#"><i class="fas fa-arrow-left" style="color:white;"></i></a> 
+                   <a href="{{route('home')}}"><i class="fas fa-arrow-left" style="color:white;"></i></a> 
                 </div>
                 <div>
                     <a href="#"><i class="fas fa-ellipsis-v"  style="color:white;"></i></a>

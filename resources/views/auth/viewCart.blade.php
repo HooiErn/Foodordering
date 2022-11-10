@@ -39,20 +39,27 @@
     <div class="col-sm-2"></div>
 </div>
 
+<div class="paymentMethod">
+        Card<input type="radio" name="card" id="card" value="card">
+        Wallet<input type="radio" name="wallet" id="wallet" value="wallet">
+</div>
+
 <div class="row">
     <div class="col-sm-1"></div>
     <div class="col-sm-1"></div>
     <div class="col-sm-10"> 
-        <div class="row">        
+        <div class="row" id="wallet-payment" style="display: none;">
+            <h3>Wallet Payment</h3>
+        </div>
+        <div class="row" id="card-payment" style="display: none;">        
             <div class="col-md-6 col-md-offset-3">
                 <div class="panel panel-default credit-card-box">
                 <div class="panel-heading" >
                     <div class="row">
-                    &nbsp; &nbsp;<h3>Card Payment</h3>                    
+                        <h3>Card Payment</h3>                    
                     </div>
                 </div>
-                <div class="panel-body">                
-                    <br>                
+                <div class="panel-body">                              
                         <div class='form-row row'>
                             <div class='col-xs-12 col-md-6 form-group required'>
                             <label class='control-label'>Name on Card</label> 
@@ -111,8 +118,31 @@
             }
         }
         document.getElementById('sub').value=subtotal.toFixed(2);
-       
     }
+</script>
+<script>
+    $("input[type='radio']").change(function(){
+   
+   if($(this).val()=="card")
+   {
+       $("#card-payment").show();
+       $("#wallet-payment").hide();
+       document.getElementById('wallet').checked = false;
+   }
+   else if($(this).val()=="wallet")
+   {
+        $("#card-payment").hide();
+       $("#wallet-payment").show();
+       document.getElementById('card').checked = false;
+   }
+   else{
+        $("#card-payment").hide();
+       $("#wallet-payment").hide();
+       document.getElementById('wallet').checked = false;
+       document.getElementById('card').checked = false;
+   }
+       
+   });
 </script>
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <script type="text/javascript">
