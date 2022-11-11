@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,7 +8,7 @@
      <!-- Styles -->
      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link href="{{ asset('css/Txhistory.css') }}" rel="stylesheet">
-    <title>Profile</title>
+    <title>Transaction History</title>
 </head>
 <body>
     <div class="container">
@@ -17,7 +16,7 @@
         <div class="Txhistory">
 
             <div class="top-icon">
-               <a href="{{route('profile')}}"><i class="fas fa-arrow-left" style="float:left;margin-top:5px;color:white;"></i> </a> 
+               <a href="{{route('home')}}"><i class="fas fa-arrow-left" style="float:left;margin-top:5px;color:white;"></i> </a> 
             <p style="margin-top:5px;font-weight:bold;font-size:18px;">History</p>
         </div>
 </div>

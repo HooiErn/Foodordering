@@ -1,6 +1,6 @@
 @extends('layout')
-
 @section('content')
+
 <style>
     .content{
         margin:15px;
@@ -201,15 +201,15 @@
                 </div>
                 <div class="form-group">
                     <label for="price">Food Price</label>
-                    <input type="number" class="form-control" id="price" name="price">
+                    <input type="number" class="form-control" id="price" name="price" step="0.01" min="0.00">
                 </div>
                 <div class="form-group">
                     <label for="available">Food Available</label>
-                    <input type="number" class="form-control" id="available" name="available">
+                    <input type="number" class="form-control" id="available" name="available" step="any" min="0">
                 </div>
                 <div class="form-group">
                     <label for="foodImage">Food Image</label>
-                    <input type="file" class="form-control" id="image" name="image">
+                    <input type="file" class="form-control" id="foodImage" name="foodImage">
                 </div>
                 <div class="form-group">
                     <label for="categoryID">Food Category</label>
@@ -235,7 +235,7 @@
     </div>
   </div>
 </div>
-<div style="overflow-x:auto; width:345px;">
+<div style="overflow-x:auto; width:600px;">
            <table class="table-bordered" style="margin-top:20px;"> 
                 <colgroup>
                     <col class="number" />
@@ -250,9 +250,9 @@
                 </colgroup>
                     <tr>
                         <th style="width:5%;">No. </th>
-                        <th>Food Name </th>
+                        <th> Food Name </th>
                         <th>Food Description</th>
-                        <th>Price</th>
+                        <th style="width:12%">Price</th>
                         <th>Available</th>
                         <th>Image</th>
                         <th>Category</th>
@@ -263,7 +263,7 @@
                         <td>{{$loop->iteration}}</td>
                         <td>{{$food -> name}}</td>
                         <td>{{$food -> description}}</td>
-                        <td>RM {{$food -> price}}</td>
+                        <td>RM {{number_format((float)$food -> price, 2, '.', '')}}</td>
                         <td>{{$food -> available}}</td>
                        <td><img src="{{ asset('images') }}/{{ $food -> image }}" alt="previous image" width="100px" height="100px"></td>
                         <td>{{$food-> categoryID}}</td>
@@ -311,11 +311,11 @@
                 </div>
                 <div class="form-group">
                     <label for="price">Food Price</label>
-                    <input type="number" class="form-control" id="price" name="price" value="{{$food->price}}">
+                    <input type="number" class="form-control" id="price" name="price" value="{{$food->price}}" min="0">
                 </div>
                 <div class="form-group">
                     <label for="available">Food Available</label>
-                    <input type="number" class="form-control" id="available" name="available" value="{{$food->available}}">
+                    <input type="number" class="form-control" id="available" name="available" value="{{$food->available}}" min="0">
                 </div>
                 <div>
                     <label for="oldImage">Previous Image</label>

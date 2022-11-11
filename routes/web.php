@@ -67,6 +67,8 @@ Route::post('/add-to-cart',[CartController::class, 'addCart']);
 //View
 Route::get('/viewCart', [CartController::class, 'view']);
 
+//Menu
+Route::get('menu',[AdminController::class, 'menu'])->name('menu');
 
 //Payment
 Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');

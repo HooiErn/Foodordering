@@ -63,4 +63,9 @@ class AdminController extends Controller
     public function transactionHistory(){
         return view('pages.transactionHistory');
     }
+    //Menu
+    public function menu(){
+        $foods= Food::all();
+        return view('pages.menu')->with('foods',$foods);;
+    }
 }
