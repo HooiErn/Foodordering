@@ -71,6 +71,7 @@ class AdminController extends Controller
     public function transfer(){
         return view('pages.Transfer');
     }
+    //QRScan
     public function QrScan(){
         return view('pages.QrScan');
     }
