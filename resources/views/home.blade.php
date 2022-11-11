@@ -15,6 +15,8 @@
     }
 </style>
 <br><br>
+
+
 <section class="product-catagories-wrapper py-3">
       <div class="container">
         <div class="product-catagory-wrap">
@@ -23,7 +25,7 @@
             <div class="col-4">
               <div class="card catagory-card">
                 <div class="card-body">
-                  <a href="{{route('QrScan')}}">
+                  <a href="{{ url('/scan') }}">
                     <div class="icon">
                     <img src="https://cdn-icons-png.flaticon.com/512/3082/3082394.png" style="width:50px;height:50px;">
                     </div>
@@ -51,7 +53,7 @@
                 <div class="card-body">
                   <a href="{{ route('view.transactionHistory')}}">
                     <div class="icon">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2997/2997300.png" style="width:50px;height:50px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3307/3307961.png" style="width:50px;height:50px;">
                     </div>
                   </a>
                   <h6>History</h6>
@@ -72,12 +74,12 @@
             <div class="col-4">
               <div class="card catagory-card">
                 <div class="card-body">
-                  <a href="#">
+                  <a href="{{ route('profile')}}">
                     <div class="icon">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3163/3163809.png" style="width:50px;height:50px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:50px;height:50px;">
                     </div>
                   </a>
-                  <h6>Rating</h6>
+                  <h6>MY Profile</h6>
                 </div>
                </div>
             </div>
@@ -85,12 +87,12 @@
             <div class="col-4">
               <div class="card catagory-card">
                 <div class="card-body">
-                  <a href="{{ route('profile')}}">
+                  <a href="#">
                     <div class="icon">
-                    <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" style="width:50px;height:50px;">
+                    <img src="https://as2.ftcdn.net/v2/jpg/05/38/38/17/1000_F_538381771_krbbFtOQMv4ZdsqWWipI6Q77D6gLGZp6.jpg" style="width:50px;height:50px;">
                   </div>
                   </a>
-                  <h6>Profile</h6>
+                  <h6>Coming Soon</h6>
                 </div>
               </div>
             </div>
@@ -98,12 +100,12 @@
             <div class="col-4">
               <div class="card catagory-card">
                 <div class="card-body">
-                  <a href="{{ route('menu')}}">
+                  <a href="#">
                     <div class="icon">
-                    <img src="https://cdn-icons-png.flaticon.com/512/1046/1046747.png" style="width:50px;height:50px;">
+                    <img src="https://as2.ftcdn.net/v2/jpg/05/38/38/17/1000_F_538381771_krbbFtOQMv4ZdsqWWipI6Q77D6gLGZp6.jpg" style="width:50px;height:50px;">
                     </div>
                   </a>
-                  <h6>Menu</h6>
+                  <h6>Coming Soon</h6>
                 </div>
               </div>
             </div>

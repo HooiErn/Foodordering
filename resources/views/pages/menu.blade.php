@@ -14,8 +14,8 @@
 
 <style>
     h3 {
-        color: orange;
-  text-shadow: 3px 3px 3px white, 0 0 20px white, 0 0 10px orange;
+        color: white;
+  text-shadow: 3px 3px 3px black, 0 0 20px black, 0 0 10px black;
   }
 </style>
 
@@ -46,12 +46,10 @@
             <div class="col-sm-2">
             <div class="card" style="width: 18rem; height: 300">
                 <img class="card-img-top img-fluid" src="{{asset('images/'.$food->image )}}" alt="Image" style='height: 220px; width: 35rem;'>
+                <h3  style="position: absolute; float: right;margin-left:3px;">{{$food->name}}</h3>
+                <h5  style=" position: absolute; margin-top:32px; margin-left:3px;float: right; color: red;">RM{{number_format((float)$food -> price, 2, '.', '')}}</h5>
                 <div class="card-body">
-                    <h3 class="card-title" style="text-align: center;">{{$food->name}}</h3>
-                    <br>
-                    <h5 class="card-text" style="text-align: center; color: black;">{{$food->description}}</h5>
-                    <br>
-                    <h5 class="card-text" style="text-align: center; color: black;">RM{{number_format((float)$food -> price, 2, '.', '')}}</h5>
+                    <h5 class="card-text" style="text-align: center; color: black;">{{$food->description}}</h5> 
                     <br>
                     <h5 class="card-text" style="text-align: center; color: black;">Available: {{$food->available}}</h5>
                     <br>
