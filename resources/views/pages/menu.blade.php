@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -10,6 +11,14 @@
     <link href="{{ asset('css/profile.css') }}" rel="stylesheet">
     <title>Menu</title>
 </head>
+
+<style>
+    h3 {
+        color: orange;
+  text-shadow: 3px 3px 3px white, 0 0 20px white, 0 0 10px orange;
+  }
+</style>
+
 <body>
     <div class="container">
         <div class="profile">
@@ -18,22 +27,12 @@
                    <a href="home"><i class="fas fa-arrow-left" style="color:white;"></i></a> 
                 </div>
                 <div>
-                    <h3>Menu</h3>
+                      <p style="margin-top:5px;font-weight:bold;font-size:18px;">Menu</p>
                 </div>
                 <div>
                     <a href="#"><i class="fas fa-ellipsis-v"  style="color:white;"></i></a>
                 </div>
             </div>
-            
-            <div class="container">
-        <nav>
-        <div class="Menu">
-            <div class="top-icon">
-               <a href="{{route('home')}}"><i class="fas fa-arrow-left" style="float:left;margin-top:5px;color:white;"></i> </a> 
-            <p style="margin-top:5px;font-weight:bold;font-size:18px;">Menu</p>
-        </div>
-</div>
-</nav>
 
 <div class="center">
     <div class="col-sm-2"></div>
@@ -45,11 +44,11 @@
             <div class="card" style="width: 18rem; height: 300">
                 <img class="card-img-top img-fluid" src="{{asset('images/'.$food->image )}}" alt="Image" style='height: 220px; width: 35rem;'>
                 <div class="card-body">
-                    <h3 class="card-title" style="text-align: center; color: black;">{{$food->name}}</h3>
+                    <h3 class="card-title" style="text-align: center;">{{$food->name}}</h3>
                     <br>
                     <h5 class="card-text" style="text-align: center; color: black;">{{$food->description}}</h5>
                     <br>
-                    <h5 class="card-text" style="text-align: center; color: black;">RM{{$food->price}}</h5>
+                    <h5 class="card-text" style="text-align: center; color: black;">RM{{number_format((float)$food -> price, 2, '.', '')}}</h5>
                     <br>
                     <h5 class="card-text" style="text-align: center; color: black;">Available: {{$food->available}}</h5>
                     <br>

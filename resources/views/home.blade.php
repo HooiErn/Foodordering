@@ -49,7 +49,7 @@
             <div class="col-4">
               <div class="card catagory-card">
                 <div class="card-body">
-                  <a href="#">
+                  <a href="{{route('view.transactionHistory')}}">
                     <div class="icon">
                     <img src="https://cdn-icons-png.flaticon.com/512/2997/2997300.png" style="width:50px;height:50px;">
                     </div>
