@@ -1,6 +1,6 @@
 @extends('auth.layout')
-
 @section('content')
+
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -23,7 +23,7 @@
             <div class="col-4">
               <div class="card catagory-card">
                 <div class="card-body">
-                  <a href="#">
+                  <a href="{{route('QrScan')}}">
                     <div class="icon">
                     <img src="https://cdn-icons-png.flaticon.com/512/3082/3082394.png" style="width:50px;height:50px;">
                     </div>
@@ -49,7 +49,7 @@
             <div class="col-4">
               <div class="card catagory-card">
                 <div class="card-body">
-                  <a href="{{route('view.transactionHistory')}}">
+                  <a href="{{ route('view.transactionHistory')}}">
                     <div class="icon">
                     <img src="https://cdn-icons-png.flaticon.com/512/2997/2997300.png" style="width:50px;height:50px;">
                     </div>
@@ -98,7 +98,7 @@
             <div class="col-4">
               <div class="card catagory-card">
                 <div class="card-body">
-                  <a href="{{route('menu')}}">
+                  <a href="{{ route('menu')}}">
                     <div class="icon">
                     <img src="https://cdn-icons-png.flaticon.com/512/1046/1046747.png" style="width:50px;height:50px;">
                     </div>
@@ -108,8 +108,10 @@
               </div>
             </div>
            
+           </div>
             </div>
-            </div>
-            </div>
+          </div>
 </section>
+<br><br><br><br><br><br><br>
+@include('auth.money')
 @endsection

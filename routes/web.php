@@ -60,6 +60,9 @@ Route::post('/add-rating', [RatingController::class, 'rating']);
 // Customer
 Route::get('profile',[AdminController::class, 'profile'])->name('profile');
 Route::get('transactionHistory',[AdminController::class, 'transactionHistory'])->name('view.transactionHistory');
+Route::get('Transfer',[AdminController::class, 'transfer'])->name('transfer');
+Route::get('QrScan',[AdminController::class, 'QrScan'])->name('QrScan');
+
 
 //Cart
 //Add

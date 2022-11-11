@@ -66,6 +66,12 @@ class AdminController extends Controller
     //Menu
     public function menu(){
         $foods= Food::all();
-        return view('pages.menu')->with('foods',$foods);;
+        return view('pages.menu')->with('foods',$foods);
+    }
+    public function transfer(){
+        return view('pages.Transfer');
+    }
+    public function QrScan(){
+        return view('pages.QrScan');
     }
 }

@@ -27,12 +27,15 @@
                    <a href="home"><i class="fas fa-arrow-left" style="color:white;"></i></a> 
                 </div>
                 <div>
-                      <p style="margin-top:5px;font-weight:bold;font-size:18px;">Menu</p>
+                    <h4>Menu</h4>
                 </div>
                 <div>
                     <a href="#"><i class="fas fa-ellipsis-v"  style="color:white;"></i></a>
                 </div>
             </div>
+            
+           
+        
 
 <div class="center">
     <div class="col-sm-2"></div>

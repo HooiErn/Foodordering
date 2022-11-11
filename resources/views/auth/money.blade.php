@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Admin Dashboard</title>
+        <title>MY Balance</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <!-- Scripts -->
@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.7/css/all.css">
        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/refresh.css') }}" rel="stylesheet">
         @if(!Session::has('adminData'))
             <script type="text/javascript">
@@ -148,40 +149,14 @@
 
     <body>
       <!--TopNav first--> 
-    <nav class="navbar navbar-expand-lg navbar-laravel" style=" background-image:linear-gradient(to right,#ff914d,#ff9b4f);">
+    <nav class="navbar navbar-expand-lg navbar-laravel" style=" background-image:linear-gradient(to right,#4d71ff,#4d71ff); position: fixed; bottom: 0; width: 100%;">
         <div class="container">
        
-                <a class="navbar-brand" href="{{ route('dashboard')}}" style="color:white;display:inline;"> Restaurant App</a>
-            <!--Login & Logout-->
-            <div style="float:right;margin-right:25px;"> 
-                @guest
-                   <a class="nav-link" href="{{ route('admin.login') }}" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
-                @else
-                   <!--Sample profile-->
-                   @if(Auth::check())
-                                <a class="nav-link" href="{{route('profile')}}" style="color:white;"> Profile </a>
-                        @endif
-                @endguest
-                </div>
+        <a class="navbar-brand" href="#" style="color:white;display:inline;"> MY Balance: RM2000</a> 
+
         </nav> 
-    <!-- TopNav second 
-        <nav class="navbar navbar-expand-lg navbar-laravel" style="max-width : 10000px; background-image:linear-gradient(to right,#ff914d,#ff9b4f);overflow-x:scroll;">
-                <div class="topnav-link">
-                <a  href="{{ route('dashboard')}}"
-                 style="color: white;">Admin Dashboard</a>
-                 <a  href="#"
-                 style="color: white;">Food Menu</a>
-                 <a  href="#"
-                 style="color: white;">Order History</a>
-       </div>   -->
-    
-                    
- 
-
-                     
-
-            </div>
-        </nav>
+    <!--TopNav second--> 
+     
         </div>
         </nav>
         @yield('content')
