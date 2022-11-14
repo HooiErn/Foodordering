@@ -77,4 +77,15 @@ class AdminController extends Controller
     public function QrScan(){
         return view('pages.QrScan');
     }
+    //Create Members
+    public function MemberRegistration(){
+
+        return view('admin.users.CreateMembers');
+
+    }
+  //Create Branch
+  //Create Agents
+
+
+
 }

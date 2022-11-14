@@ -62,7 +62,7 @@ Route::get('profile',[AdminController::class, 'profile'])->name('profile');
 Route::get('transactionHistory',[AdminController::class, 'transactionHistory'])->name('view.transactionHistory');
 Route::get('Transfer',[AdminController::class, 'transfer'])->name('transfer');
 Route::get('QrScan',[AdminController::class, 'QrScan'])->name('QrScan');
-
+Route::get('MemberRegistration',[AdminController::class, 'MemberRegistration'])->name('member.register');
 
 //Cart
 //Add
