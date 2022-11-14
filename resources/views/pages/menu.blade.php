@@ -53,7 +53,7 @@
                     <br>
                     <h5 class="card-text" style="text-align: center; color: black;">Available: {{$food->available}}</h5>
                     <br>
-                    <h5 class="card-text" style="text-align: center; color: black;">{{$food->categoryID}} </h5>
+                    <h5 class="card-text" style="text-align: center; color: black;">{{$food->cName}} </h5>
                      <br>
                  <a href="#" class="btn btn-primary" style="text-align: center;">Order</a> 
                 </div>

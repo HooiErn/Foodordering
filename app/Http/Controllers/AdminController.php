@@ -49,12 +49,12 @@ class AdminController extends Controller
         return redirect('admin/login');
     }
 
-    //Dashboard
-    public function index(){
-        $categories = DB::table('categories')->select('categories.*')->get();
-        $foods = DB::table('food')->leftjoin('categories','categories.id','=','food.categoryID')->select('food.*','categories.name as categoryName')->get();
-        return view('admin/dashboard')->with(["categories" => $categories])->with(["foods" => $foods]);
-    }
+  //Dashboard
+  public function index(){
+    $categories = DB::table('categories')->select('categories.*')->get();
+    $foods = DB::table('food')->leftjoin('categories','categories.id','=','food.categoryID')->select('food.*','categories.name as categoryName')->get();
+    return view('admin/dashboard')->with(["categories" => $categories])->with(["foods" => $foods]);
+}
     //Profile
     public function profile(){
         return view('pages.profile');
@@ -64,10 +64,12 @@ class AdminController extends Controller
         return view('pages.transactionHistory');
     }
     //Menu
-    public function menu(){
-        $foods= Food::all();
-        return view('pages.menu')->with('foods',$foods);
-    }
+   //Menu
+   public function menu(){
+    // $foods= Food::all();
+    $foods = DB::table('food')->leftjoin('categories','food.categoryID','=','categories.id')->select('food.*','categories.name as cName')->get();
+    return view('pages.menu')->with('foods',$foods);
+}
     public function transfer(){
         return view('pages.Transfer');
     }
