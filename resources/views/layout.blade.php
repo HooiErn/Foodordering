@@ -155,12 +155,10 @@
             <!--Login & Logout-->
             <div style="float:right;margin-right:25px;"> 
                 @guest
-                   <a class="nav-link" href="{{ route('admin.login') }}" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
-                @else
-                   <!--Sample profile-->
-                   @if(Auth::check())
-                                <a class="nav-link" href="{{route('profile')}}" style="color:white;"> Profile </a>
-                        @endif
+                   <a class="nav-link" href="{{ route('login') }}" style="color:white;"><i class="fas fa-sign-in-alt"></i></a>
+                @elseif(Auth::check())
+                <a class="nav-link" href="{{ route('logout') }}" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
+                   
                 @endguest
                 </div>
         </nav> 

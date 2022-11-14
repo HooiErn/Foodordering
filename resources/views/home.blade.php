@@ -16,7 +16,7 @@
 </style>
 <br><br>
 
-
+<title>Home</title>
 <section class="product-catagories-wrapper py-3">
       <div class="container">
         <div class="product-catagory-wrap">

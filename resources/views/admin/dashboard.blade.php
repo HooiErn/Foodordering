@@ -21,8 +21,12 @@
     .food{
         background-color: #ffebcd;
     }
-</style>                .
-
+</style>                
+<div style="margin-left:20px;">
+        <a href="#">Create Branch</a>
+        <a href="#">Create Agents</a>
+        <a href="{{route('member.register')}}">Create Members</a>
+    </div>
         <div class="content">
             
             <h3 style="margin-top:5px;display:inline;">Category</h3>         

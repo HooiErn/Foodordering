@@ -34,7 +34,7 @@
        +65
     </option>
 </select>
-            <input type="search" id="search" name="search" placeholder="Enter phone number or name.." style="float:left;">
+            <input type="search" id="search" name="search" placeholder="Enter phone number.." style="float:left;">
          </div>        
 </div>  
 

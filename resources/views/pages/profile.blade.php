@@ -21,7 +21,7 @@
                     <h3>Profile</h3>
                 </div>
                 <div>
-                    <a href="#"><i class="fas fa-ellipsis-v"  style="color:white;"></i></a>
+                <a href="{{route('logout')}}" onclick="return confirm('Are you sure you want to logout?')"><i class="fa fa-solid fa fa-right-to-bracket"  style="color:white;"></i></a>
                 </div>
             </div>
             
