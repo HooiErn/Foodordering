@@ -63,6 +63,8 @@ Route::get('transactionHistory',[AdminController::class, 'transactionHistory'])-
 Route::get('Transfer',[AdminController::class, 'transfer'])->name('transfer');
 Route::get('QrScan',[AdminController::class, 'QrScan'])->name('QrScan');
 Route::get('MemberRegistration',[AdminController::class, 'MemberRegistration'])->name('member.register');
+Route::get('BranchRegistration',[AdminController::class, 'BranchRegistration'])->name('branch.register');
+Route::get('AgentsRegistration',[AdminController::class, 'AgentsRegistration'])->name('agent.register');
 
 //Cart
 //Add
