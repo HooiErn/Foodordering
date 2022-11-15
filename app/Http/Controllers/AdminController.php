@@ -55,37 +55,13 @@ class AdminController extends Controller
     $foods = DB::table('food')->leftjoin('categories','categories.id','=','food.categoryID')->select('food.*','categories.name as categoryName')->get();
     return view('admin/dashboard')->with(["categories" => $categories])->with(["foods" => $foods]);
 }
-    //Profile
-    public function profile(){
-        return view('pages.profile');
-    }
-    //Profile
-    public function transactionHistory(){
-        return view('pages.transactionHistory');
-    }
-    //Menu
+    
    //Menu
    public function menu(){
     // $foods= Food::all();
     $foods = DB::table('food')->leftjoin('categories','food.categoryID','=','categories.id')->select('food.*','categories.name as cName')->get();
     return view('pages.menu')->with('foods',$foods);
 }
-    public function transfer(){
-        return view('pages.Transfer');
-    }
-    //QRScan
-    public function QrScan(){
-        return view('pages.QrScan');
-    }
-    //Create Members
-    public function MemberRegistration(){
-
-        return view('admin.users.CreateMembers');
-
-    }
-  //Create Branch
-  //Create Agents
-
-
+  
 
 }
