@@ -16,7 +16,7 @@
 </style>
 <br><br>
 
-<title>Home</title>
+
 <section class="product-catagories-wrapper py-3">
       <div class="container">
         <div class="product-catagory-wrap">
@@ -110,10 +110,60 @@
               </div>
             </div>
            
+            
            </div>
             </div>
           </div>
 </section>
-<br><br><br><br><br><br><br>
+
+<section class="product-catagories-wrapper py-3">
+      <div class="container">
+        <div class="product-catagory-wrap">
+          <div class="row g-20">
+
+            <div class="col-4">
+              <div class="card catagory-card">
+                <div class="card-body">
+                  <a href="{{ url('/menu') }}">
+                    <div class="icon">
+                    <img src="https://cdn-icons-png.flaticon.com/512/948/948036.png" style="width:50px;height:50px;">
+                    </div>
+                  </a>
+                  <h6>Cafe</h6>
+                </div>
+               </div>
+            </div>
+            
+            <div class="col-4">
+              <div class="card catagory-card">
+                <div class="card-body">
+                  <a href="">
+                    <div class="icon">
+                    <img src="https://as2.ftcdn.net/v2/jpg/05/38/38/17/1000_F_538381771_krbbFtOQMv4ZdsqWWipI6Q77D6gLGZp6.jpg" style="width:50px;height:50px;">
+                  </div>
+                  </a>
+                  <h6>Incoming </h6>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-4">
+              <div class="card catagory-card">
+                <div class="card-body">
+                  <a href="#">
+                    <div class="icon">
+                    <img src="https://as2.ftcdn.net/v2/jpg/05/38/38/17/1000_F_538381771_krbbFtOQMv4ZdsqWWipI6Q77D6gLGZp6.jpg" style="width:50px;height:50px;">
+                    </div>
+                  </a>
+                  <h6>Incoming</h6>
+                </div>
+              </div>
+            </div>
+           
+            </div>
+            </div>
+            </div>
+</section>
+
 @include('auth.money')
 @endsection

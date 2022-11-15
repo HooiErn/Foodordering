@@ -1,8 +1,14 @@
-
 @extends('layout')
 @section('content')
-<script>
+<?php 
 
+$month = date('m');
+$day = date('d');
+$year = date('Y');
+
+$today = $year . '-' . $month . '-' . $day;
+?>
+<script>
 </script>
 <main class="register-form">
   <div class="cotainer" style="overflow-x:hidden">
@@ -28,7 +34,7 @@
 
                     <div class="form-group">
                         <label for="join_date">Join Date:</label>
-                        <input type="date" class="form-control" id="join_date" name="join_date"  value="{{ date('Y-m-d H:i:s') }}" "
+                        <input type="date" class="form-control" id="join_date" name="join_date"  value="<?php echo $today; ?>" readonly="readonly"
                          required>
                     </div> 
 
@@ -105,7 +111,7 @@
                                   @endif
                     </div>
                     <div class="form-group">
-                                <label for="password-confirm">Confirm Password:</label>
+                                <label for="password-confirm">*Confirm Password:</label>
                                     <input type="password" id="password-confirm" class="form-control" name="password_confirmation" required autofocus>
                                         @if($errors->has('password_confirmation'))
                                         <span class="text-danger">{{ $errors->first('password_confirmation') }}</span>
