@@ -8,6 +8,7 @@ use App\Http\Controllers\FoodController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\RatingController;
+use App\Http\Controllers\Auth\LoginController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,11 +24,14 @@ use App\Http\Controllers\RatingController;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('login', [LoginController::class, 'index'])->name('login');
+Route::post('login', [LoginController::class, 'postLogin'])->name('login.post');
+Route::get('logout', [LoginController::class, 'logout'])->name('user.logout');
 
 //Admin Login & Logout
 Route::get('admin/login', [AdminController::class, 'login'])->name('admin.login');
 Route::post('admin/login', [AdminController::class, 'check_login']);
-Route::get('admin/logout', [AdminController::class, 'logout']);
+Route::get('admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
 //Admin DashBoard
 Route::get('admin/dashboard', [AdminController::class, 'index'])->name('dashboard');
@@ -71,6 +75,7 @@ Route::get('/drink',[App\Http\Controllers\FoodController::class, 'viewDrink'] ) 
 Route::get('/fastFood',[App\Http\Controllers\FoodController::class, 'viewFastFood'] ) ->name('fastFood.food');
 Route::get('/dessert',[App\Http\Controllers\FoodController::class, 'viewDessert'] ) ->name('dessert.food');
 Route::get('/mainDishes',[App\Http\Controllers\FoodController::class, 'viewMainDishes'] ) ->name('mainDishes.food');
+Route::get('/foodDetail/{id}',[FoodController::class,'foodDetail'])->name('food.detail');
 //Cart
 //Add
 Route::post('/add-to-cart',[CartController::class, 'addCart']);
@@ -85,4 +90,4 @@ Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payme
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/home', [LoginController::class, 'home'])->name('home');

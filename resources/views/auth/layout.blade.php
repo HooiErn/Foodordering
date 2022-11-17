@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Admin Dashboard</title>
+        <title>Dashboard</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <!-- Scripts -->
@@ -20,11 +20,7 @@
         <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/refresh.css') }}" rel="stylesheet">
-        @if(!Session::has('adminData'))
-            <script type="text/javascript">
-                window.location.href="{{url('admin/login')}}"
-            </script>
-        @endif   
+
         <style type="text/css">
            @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
   
@@ -156,9 +152,9 @@
             <!--Login & Logout-->
             <div style="float:right;margin-right:25px;"> 
                 @guest
-                   <a class="nav-link" href="{{ route('admin.login') }}" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
+                   <a class="nav-link" href="{{ route('login') }}" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
                 @else
-                <a href="{{route('logout')}}" onclick="return confirm('Are you sure you want to logout?')"><i class="fa fa-solid fa fa-right-to-bracket"  style="color:white;"></i></a>
+                <a href="{{route('user.logout')}}" onclick="return confirm('Are you sure you want to logout?')"><i class="fa fa-solid fa fa-right-to-bracket"  style="color:white;"></i></a>
                 @endguest
                 </div>
         </nav> 

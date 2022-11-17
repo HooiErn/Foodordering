@@ -155,9 +155,9 @@
             <!--Login & Logout-->
             <div style="float:right;margin-right:25px;"> 
                 @guest
-                   <a class="nav-link" href="{{ route('login') }}" style="color:white;"><i class="fas fa-sign-in-alt"></i></a>
+                   <a class="nav-link" href="{{ route('admin.login') }}" style="color:white;"><i class="fas fa-sign-in-alt"></i></a>
                 @elseif(Auth::check())
-                <a class="nav-link" href="{{ route('logout') }}" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
+                <a class="nav-link" href="{{ route('admin.logout') }}" onclick="return confirm('Are you sure you want to logout?')" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
                    
                 @endguest
                 </div>
