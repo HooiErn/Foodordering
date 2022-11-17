@@ -17,12 +17,7 @@
 </head>
 
 <style>
-    img{
-        display:flex;
-        width: 150px;
-        max-width: 100%;
-        height: 150px;
-    }
+    
 
     .top-left{
         position: absolute;
@@ -32,7 +27,7 @@
 
     .bottom-right{
         position: absolute;
-        bottom: 8px;
+        bottom: 13px;
         right: 16px;
     }
 
@@ -40,7 +35,7 @@
      
         img{
             display:flex;
-            width:180px;
+            width: 200px;
             max-width: 100%;
             height: 150px;
             font-size: 8px;
@@ -51,26 +46,89 @@
         
         img{
             display:flex;
-            width:180px;
+            width: 200px;
             max-width: 100%;
             height: 150px;
             font-size: 8px;
         }
     }
     
+    @media only screen and (min-width: 200px){
+     
+     img{
+         display:flex;
+         width: 200px;
+         max-width: 100%;
+         height: 100px;
+         font-size: 8px;
+        }
+ }
+
 
     //Min x - x++
     //Max x-- - x
-    @media only screen and (max-width: 300px){
+    @media only screen and (max-width: 1000px){
         
         img{
             display:flex;
-            width: 1000px;
+            width: 200px;
             max-width: 100%;
-            height: 1500px;
+            height: 150px;
             font-size: 8px;
         }
     }
+
+    .search-bar{
+    width:100%;
+    max-width: 100%;
+    background: rgba(92, 48, 115, 0.2);
+    align-items: center;
+    border-radius: 60px;
+    padding: 10px 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.search-bar .input{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search-bar .input input{
+    background: transparent;
+    flex: 1;
+    border: 0;
+    outline: none;
+    color: #aeaaf8;
+}
+
+
+.search-bar .input button{
+    border: 0;
+    border-radius: 50%;
+    
+}
+
+.search .input{
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.my-button{
+    border-radius: 5px;
+    border: 1px solid #000;
+    padding: 2px 5px;
+    background: white;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+.search{
+    border-radius: 5px;
+    background: black;
+}
 </style>
 
 <body>
@@ -84,12 +142,22 @@
                     <h4>Menu</h4>
                 </div>
                 <div>
-                    <a href="{{route('logout')}}" onclick="return confirm('Are you sure you want to logout?')"><i class="fa fa-solid fa fa-right-to-bracket"  style="color:white;"></i></a>
+                    <a href="#"><i class="fas fa-ellipsis-v"  style="color:white;"></i></a>
                 </div>
             </div>
             
-           
-        
+            <form class="search-bar" action="{{route('search.food')}}" method="POST" style="margin:auto;width:360px;">
+                 @csrf
+                 <div class="input">
+            <input type="search" placeholder="Search..." name="keyword" style="width:190px; color:black;">
+            <button type="submit"><i class="fa fa-search"></i></button>
+                 </div>
+                </form>
+            <br>
+            <a href="/drink"><button class="my-button">Drink</button></a>
+            <a href="/fastFood"><button class="my-button">Fast Food</button></a>
+            <a href="/dessert"><button class="my-button">Dessert</button></a>
+            <a href="/mainDishes"><button class="my-button">Main Dishes</button></a>
 
 <div class="row">
     <div class="col-sm-1"></div>
@@ -97,9 +165,10 @@
         <br><br>
         <div class="row">
         @foreach($foods as $food)
-            <div class="col-5">
+        
+            <div class="col-6">
                 <div class="box">
-                <img src="{{asset('images/'.$food->image )}}" alt="Image" >
+                <a href="{{ route('food.detail', ['id' => $food->id]) }}"><img src="{{asset('images/'.$food->image )}}" alt="Image" ></a>
                 <div class="top-left">
                     <h6 style="color:white; text-shadow: 3px 3px 3px black, 0 0 20px black, 0 0 10px black;">{{$food -> name}}</h6>
                 </div>
