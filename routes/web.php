@@ -65,7 +65,12 @@ Route::get('QrScan',[AdminController::class, 'QrScan'])->name('QrScan');
 Route::get('MemberRegistration',[AdminController::class, 'MemberRegistration'])->name('member.register');
 Route::get('BranchRegistration',[AdminController::class, 'BranchRegistration'])->name('branch.register');
 Route::get('AgentsRegistration',[AdminController::class, 'AgentsRegistration'])->name('agent.register');
+Route::post('/menu',[App\Http\Controllers\FoodController::class, 'searchFood'] ) ->name('search.food');
 
+Route::get('/drink',[App\Http\Controllers\FoodController::class, 'viewDrink'] ) ->name('drink.food');
+Route::get('/fastFood',[App\Http\Controllers\FoodController::class, 'viewFastFood'] ) ->name('fastFood.food');
+Route::get('/dessert',[App\Http\Controllers\FoodController::class, 'viewDessert'] ) ->name('dessert.food');
+Route::get('/mainDishes',[App\Http\Controllers\FoodController::class, 'viewMainDishes'] ) ->name('mainDishes.food');
 //Cart
 //Add
 Route::post('/add-to-cart',[CartController::class, 'addCart']);

@@ -121,5 +121,48 @@ class FoodController extends Controller
         }
         return view('/view', compact('viewFoods', 'ratings','rating_value'));
     }
+    public function searchFood(){
+        $r=request();
+        $keyword=$r->keyword;
+        $foods=DB::table('food')
+        ->leftjoin('categories','categories.id','=','food.CategoryID')
+        ->select('food.*','categories.name as cName')
+        ->where('food.name','like','%'.$keyword.'%')
+        
+        ->get();
+        return view('menu')->with('foods',$foods);
+    }
+
+    public function viewDrink(){
+        $foods=DB::table('food')->where('CategoryID','=','1')
+        ->leftjoin('categories','categories.id','=','food.CategoryID')
+         ->select('food.*','categories.name as cName')
+         ->get();
+        return view('menu')->with('foods',$foods);
+     }
+ 
+     public function viewFastFood(){
+         $foods=DB::table('food')->where('CategoryID','=','2')
+         ->leftjoin('categories','categories.id','=','food.CategoryID')
+         ->select('food.*','categories.name as cName')
+         ->get();
+         return view('menu')->with('foods',$foods);
+     }
+ 
+     public function viewDessert(){
+        $foods=DB::table('food')->where('CategoryID','=','3')
+        ->leftjoin('categories','categories.id','=','food.CategoryID')
+        ->select('food.*','categories.name as cName')
+        ->get();
+        return view('menu')->with('foods',$foods);
+    }
+ 
+    public function viewMainDishes(){
+        $foods=DB::table('food')->where('CategoryID','=','4')
+        ->leftjoin('categories','categories.id','=','food.CategoryID')
+        ->select('food.*','categories.name as cName')
+        ->get();
+        return view('menu')->with('foods',$foods);
+    }
 
 }
