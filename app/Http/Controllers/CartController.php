@@ -21,8 +21,8 @@ class CartController extends Controller
             'orderID'=>'',
         ]);
 
-        Session::flash('msg', 'You have success add this item to your cart. You can confirm your order later.');
-        return redirect()->back();
+        Session::flash('msg', 'You have success add this item to your cart.');
+        return redirect()->route('viewCart');
     }
 
     //View Cart
@@ -35,5 +35,14 @@ class CartController extends Controller
         ->get();       
 
         return view('auth.viewCart', compact('carts'));
+    }
+
+    public function delete($id){
+        $deleteFood=Cart::find($id); //binding record
+        $deleteFood->delete();//delete record
+        if($deleteFood){
+        Session::flash('success','Item was remove successfully!');
+        return redirect()->route('viewCart');
+        }
     }
 }

@@ -136,13 +136,13 @@
         <div class="profile">
             <div class="top-icon">
                 <div>
-                   <a href="home"><i class="fas fa-arrow-left" style="color:white;"></i></a> 
+                   <a href="home"><i class="fas fa-arrow-left" style="color:white;font-size:24px;" ></i></a> 
                 </div>
                 <div>
                     <h4>Menu</h4>
                 </div>
                 <div>
-                    <a href="#"><i class="fas fa-ellipsis-v"  style="color:white;"></i></a>
+                    <a href="/viewCart"><i class="fa fa-shopping-cart"  style="color:white;font-size:20px;"></i></a>
                 </div>
             </div>
             
@@ -154,11 +154,12 @@
                  </div>
                 </form>
             <br>
+            <a href="/all"><button class="my-button">All</button></a>
+            <a href="/noodles"><button class="my-button">Noodles</button></a>
+            <a href="/rice"><button class="my-button">Rice</button></a>
             <a href="/drink"><button class="my-button">Drink</button></a>
-            <a href="/fastFood"><button class="my-button">Fast Food</button></a>
             <a href="/dessert"><button class="my-button">Dessert</button></a>
-            <a href="/mainDishes"><button class="my-button">Main Dishes</button></a>
-
+        
 <div class="row">
     <div class="col-sm-1"></div>
     <div class="col-sm-10">
@@ -168,7 +169,7 @@
         
             <div class="col-6">
                 <div class="box">
-                <a href="{{ route('food.detail', ['id' => $food->id]) }}"><img src="{{asset('images/'.$food->image )}}" alt="Image" ></a>
+                <a href="{{ route('view.food', ['id' => $food->id]) }}"><img src="{{asset('images/'.$food->image )}}" alt="Image" ></a>
                 <div class="top-left">
                     <h6 style="color:white; text-shadow: 3px 3px 3px black, 0 0 20px black, 0 0 10px black;">{{$food -> name}}</h6>
                 </div>

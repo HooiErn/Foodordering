@@ -107,7 +107,6 @@ class FoodController extends Controller
         }
     }
 
-    //View Food
     public function view($id){
         $viewFoods = Food::all()->where('id',$id);
         $ratings = Rating::where('food_id', $id)->get();
@@ -121,14 +120,33 @@ class FoodController extends Controller
         }
         return view('/view', compact('viewFoods', 'ratings','rating_value'));
     }
+
+    public function foodDetail($id){
+         $foods = DB::table('food')
+        ->leftjoin('categories','categories.id','=','food.CategoryID')
+        ->select('food.*','categories.name as cName')
+        ->where('food.id',$id)
+        ->get();
+        return view('foodDetail', compact('foods'));
+    }
+
     public function searchFood(){
         $r=request();
         $keyword=$r->keyword;
+        $categories = DB::table('categories')->select('categories.*')->get();
         $foods=DB::table('food')
         ->leftjoin('categories','categories.id','=','food.CategoryID')
         ->select('food.*','categories.name as cName')
         ->where('food.name','like','%'.$keyword.'%')
         
+        ->get();
+        return view('menu')->with('foods',$foods)->with(["categories" => $categories]);
+    }
+
+    public function viewAll(){
+        $foods=DB::table('food')
+        ->leftjoin('categories','categories.id','=','food.CategoryID')
+        ->select('food.*','categories.name as cName')
         ->get();
         return view('menu')->with('foods',$foods);
     }
@@ -141,7 +159,7 @@ class FoodController extends Controller
         return view('menu')->with('foods',$foods);
      }
  
-     public function viewFastFood(){
+     public function viewNoodles(){
          $foods=DB::table('food')->where('CategoryID','=','2')
          ->leftjoin('categories','categories.id','=','food.CategoryID')
          ->select('food.*','categories.name as cName')
@@ -157,7 +175,7 @@ class FoodController extends Controller
         return view('menu')->with('foods',$foods);
     }
  
-    public function viewMainDishes(){
+    public function viewRice(){
         $foods=DB::table('food')->where('CategoryID','=','4')
         ->leftjoin('categories','categories.id','=','food.CategoryID')
         ->select('food.*','categories.name as cName')

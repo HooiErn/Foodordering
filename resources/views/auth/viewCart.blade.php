@@ -1,109 +1,11 @@
-<div class="container">
-    <div class="row">
-        <div class="col-1"></div>
-        <div class="col-10">
-            <table>
-                <tr>
-                    <th>&nbsp;</th>
-                    <th>No. </th>
-                    <th>Name </th>
-                    <th>Image </th>
-                    <th>Quantity </th>
-                    <th>Subtotal</th>
-                </tr>
-                @foreach($carts as $cart)
-                <form action="{{ route('payment.post') }}" method="post" class="require-validation" data-cc-on-file="false" data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form"> 
-                    @csrf
-                    <tr>
-                        <td><input type="checkbox" name="cid[]" id="cid[]" value="{{$cart->cid}}" onclick="cal()">&nbsp;&nbsp;<input type="hidden" name="subtotal[]" id="subtotal[]" value="{{$cart->price*$cart->cartQTY}}"></td>
-                        <td></td>
-                        <td>{{$cart -> name}}</td>
-                        <td><img src="{{asset('images/')}}/{{$cart->image}}" alt="" width="100" class="img-fluid"></td>
-                        <th>{{$cart -> cartQTY}}</th>
-                        <th>RM {{$cart->price*$cart->cartQTY}}</th>
-                        <th><a href="#" class="btn btn-danger btn-xs" onClick="return confirm('Are you confirm to delete?')">Delete</a></th>
-                    </tr>
-                @endforeach
-                <tr>
-                    <td colspan="5">&nbsp;</td>
-                    <td><input type="text" name="sub" id="sub" value="0" size="7" readoly style="user-select: none;"/></td>
-                    <td>&nbsp;</td>
-                </tr>
-            </table>
-        </div>
-        <div class="col-1"></div>
-        <div class="row">
-    <div class="col-sm-2"></div>
-    <div class="col-sm-8">
-    </div>
-    <div class="col-sm-2"></div>
-</div>
-
-<div class="paymentMethod">
-        Card<input type="radio" name="card" id="card" value="card">
-        Wallet<input type="radio" name="wallet" id="wallet" value="wallet">
-</div>
-
-<div class="row">
-    <div class="col-sm-1"></div>
-    <div class="col-sm-1"></div>
-    <div class="col-sm-10"> 
-        <div class="row" id="wallet-payment" style="display: none;">
-            <h3>Wallet Payment</h3>
-        </div>
-        <div class="row" id="card-payment" style="display: none;">        
-            <div class="col-md-6 col-md-offset-3">
-                <div class="panel panel-default credit-card-box">
-                <div class="panel-heading" >
-                    <div class="row">
-                        <h3>Card Payment</h3>                    
-                    </div>
-                </div>
-                <div class="panel-body">                              
-                        <div class='form-row row'>
-                            <div class='col-xs-12 col-md-6 form-group required'>
-                            <label class='control-label'>Name on Card</label> 
-                            <input class='form-control' size='4' type='text'>
-                            </div>
-                            <div class='col-xs-12 col-md-6 form-group required'>
-                            <label class='control-label'>Card Number</label> 
-                            <input autocomplete='off' class='form-control card-number' size='20' type='text'>
-                            </div>                           
-                        </div>                        
-                        <div class='form-row row'>
-                            <div class='col-xs-12 col-md-4 form-group cvc required'>
-                            <label class='control-label'>CVC</label> 
-                            <input autocomplete='off' class='form-control card-cvc' placeholder='ex. 311' size='4' type='text'>
-                            </div>
-                            <div class='col-xs-12 col-md-4 form-group expiration required'>
-                            <label class='control-label'>Expiration Month</label> 
-                            <input class='form-control card-expiry-month' placeholder='MM' size='2' type='text'>
-                            </div>
-                            <div class='col-xs-12 col-md-4 form-group expiration required'>
-                            <label class='control-label'>Expiration Year</label> 
-                            <input class='form-control card-expiry-year' placeholder='YYYY' size='4' type='text'>
-                            </div>
-                        </div>
-                    {{-- <div class='form-row row'>
-                        <div class='col-md-12 error form-group hide'>
-                            <div class='alert-danger alert'>Please correct the errors and try
-                                again.
-                            </div>
-                        </div>
-                    </div> --}}
-                        <div class="form-row row">
-                            <div class="col-xs-12">
-                            <button class="btn btn-primary btn-lg btn-block" type="submit">Pay Now</button>
-                            </div>
-                            
-                        </div>
-                    <br><br>
-                </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<!-- Styles -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+        <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
+        <link rel="stylesheet" href="path/to/fontawesome.min.css">
+        <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/profile.css') }}" rel="stylesheet">
+    <title>MY Cart</title>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
@@ -118,31 +20,8 @@
             }
         }
         document.getElementById('sub').value=subtotal.toFixed(2);
-    }
-</script>
-<script>
-    $("input[type='radio']").change(function(){
-   
-   if($(this).val()=="card")
-   {
-       $("#card-payment").show();
-       $("#wallet-payment").hide();
-       document.getElementById('wallet').checked = false;
-   }
-   else if($(this).val()=="wallet")
-   {
-        $("#card-payment").hide();
-       $("#wallet-payment").show();
-       document.getElementById('card').checked = false;
-   }
-   else{
-        $("#card-payment").hide();
-       $("#wallet-payment").hide();
-       document.getElementById('wallet').checked = false;
-       document.getElementById('card').checked = false;
-   }
        
-   });
+    }
 </script>
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
     <script type="text/javascript">
@@ -191,6 +70,157 @@
     }
     });
     </script>
+
+<style>
+    .top-left{
+        position: absolute;
+        top: 8px;
+        left: 16px;
+    }
+
+    .bottom-right{
+        position: absolute;
+        bottom: 13px;
+        right: 16px;
+    }
+
+    table.tb { border-collapse: collapse; width:300px; }
+  .tb th, .tb td { padding: 5px; border: solid 1px #777; }
+  .tb th { background-color: lightblue;}
+
+  table.tb {
+  width: 80%;
+}
+
+table, td, th {
+  border: 6px solid black;
+}
+
+</style>
+
+<body>
+    <div class="container">
+        <div class="profile">
+            <div class="top-icon">
+                <div>
+                   <a href="menu"><i class="fas fa-arrow-left" style="color:white;font-size:24px;" ></i></a> 
+                </div>
+                <div>
+                    <h4>My Cart</h4>
+                </div>
+                <div>
+                    
+                </div>
+            </div>
+            <br>
+            
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-10">
+            <table class="tb">
+                <tr>
+                    <th>&nbsp;</th>
+                    <th>No. </th>
+                    <th>Name </th>
+                    <th>Image </th>
+                    <th>Quantity </th>
+                    <th>Subtotal</th>
+                </tr>
+                @foreach($carts as $cart)
+                <form action="{{ route('payment.post') }}" method="post" class="require-validation" data-cc-on-file="false" data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form"> 
+                    @csrf
+                    <tr>
+                        <td><input type="checkbox" name="cid[]" id="cid[]" value="{{$cart->cid}}" onclick="cal()">&nbsp;&nbsp;<input type="hidden" name="subtotal[]" id="subtotal[]" value="{{$cart->price*$cart->cartQTY}}"></td>
+                        <td>{{$loop -> iteration}}</td>
+                        <td style="width: 30%;">{{$cart -> name}}</td>
+                        <td><img src="{{asset('images/')}}/{{$cart->image}}" alt="" width="100" class="img-fluid"></td>
+                        <th>{{$cart -> cartQTY}}</th>
+                        <th>RM {{number_format((float)$cart -> price*$cart->cartQTY, 2, '.', '')}}</th>
+                        <th><a href="{{ route('delete.cart.food',['id'=>$cart->cid]) }}" class="btn btn-danger btn-xs" onClick="return confirm('Are you confirm to delete?')">Delete</a></th>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="5">&nbsp;TOTAL: RM</td>
+                    <td><input type="text" name="sub" id="sub" value="0" size="8" readonly style="user-select: none;"/></td>
+                    <td></td>
+                </tr>
+            </table>
+        </div>
+        <div class="col-1"></div>
+        <div class="row">
+    <div class="col-sm-2"></div>
+    <div class="col-sm-8">
+    </div>
+    <div class="col-sm-2"></div>
+</div>
+
+<br><br><br>
+<div class="row">
+    <div class="col-sm-1"></div>
+    <div class="col-sm-1"></div>
+    <div class="col-sm-10"> 
+        <div class="row">        
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel panel-default credit-card-box">
+                <div class="panel-heading" >
+                    <div class="row">
+                    &nbsp; &nbsp;<h3>Card Payment</h3>                    
+                    </div>
+                </div>
+                <div class="panel-body">                
+                    <br>                
+                        <div class='form-row row'>
+                            <div class='col-xs-12 col-md-6 form-group required'>
+                            <label class='control-label'>Name on Card</label> 
+                            <input class='form-control' size='4' type='text'>
+                            </div>
+                            <div class='col-xs-12 col-md-6 form-group required'>
+                            <label class='control-label'>Card Number</label> 
+                            <input autocomplete='off' class='form-control card-number' size='20' type='text'>
+                            </div>                           
+                        </div>                        
+                        <div class='form-row row'>
+                            <div class='col-xs-12 col-md-4 form-group cvc required'>
+                            <label class='control-label'>CVC</label> 
+                            <input autocomplete='off' class='form-control card-cvc' placeholder='ex. 311' size='4' type='text'>
+                            </div>
+                            <div class='col-xs-12 col-md-4 form-group expiration required'>
+                            <label class='control-label'>Expiration Month</label> 
+                            <input class='form-control card-expiry-month' placeholder='MM' size='2' type='text'>
+                            </div>
+                            <div class='col-xs-12 col-md-4 form-group expiration required'>
+                            <label class='control-label'>Expiration Year</label> 
+                            <input class='form-control card-expiry-year' placeholder='YYYY' size='4' type='text'>
+                            </div>
+                        </div>
+                    {{-- <div class='form-row row'>
+                        <div class='col-md-12 error form-group hide'>
+                            <div class='alert-danger alert'>Please correct the errors and try
+                                again.
+                            </div>
+                        </div>
+                    </div> --}}
+                        <div class="form-row row">
+                            <div class="col-xs-12">
+                            <button class="btn btn-primary btn-lg btn-block" type="submit">Pay Now</button>
+                            </div>
+                            
+                        </div>
+                    <br><br>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
     </div>
     
     </form>
+          
+    </div>
+</div>
+   
+</body>
+</html>

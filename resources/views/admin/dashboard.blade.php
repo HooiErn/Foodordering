@@ -21,15 +21,11 @@
     .food{
         background-color: #ffebcd;
     }
-</style>                
-<div style="margin-left:20px;">
-        <a href="#">Create Branch</a>
-        <a href="#">Create Agents</a>
-        <a href="{{route('member.register')}}">Create Members</a>
-    </div>
+</style>                .
+
         <div class="content">
             
-            <h3 style="margin-top:5px;display:inline;">Category</h3>         
+            <h3 style="margin-top:5px;display:inline;">Category</h3>    
                 <!-- Button trigger modal -->
                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal" style="float:right;">
                 Create
@@ -99,12 +95,12 @@
                         <td>{{$category -> name}}</td>
                         <td style="white-space: nowrap;">
                         <!-- Button trigger modal -->
-                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal2">
+                    <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal2{{$category->id}}">
                     Edit
                     </button>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
+<div class="modal fade" id="exampleModal2{{$category->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel2" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -192,6 +188,7 @@
         @endif
     </head>
     <body>
+        
         <div class="container">
             <form action="{{ route('food.add') }}" method="POST"  enctype="multipart/form-data">
                 @csrf
@@ -270,15 +267,15 @@
                         <td>RM {{number_format((float)$food -> price, 2, '.', '')}}</td>
                         <td>{{$food -> available}}</td>
                        <td><img src="{{ asset('images') }}/{{ $food -> image }}" alt="previous image" width="100px" height="100px"></td>
-                        <td>{{$food-> categoryID}}</td>
+                        <td>{{$food-> cName}}</td>
                         <td style="white-space: nowrap;">
                           <!-- Button trigger modal --> 
-<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal4">
+<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#exampleModal4{{$food->id}}">
   Edit
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel4" aria-hidden="true">
+<div class="modal fade" id="exampleModal4{{$food->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel4" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -315,7 +312,7 @@
                 </div>
                 <div class="form-group">
                     <label for="price">Food Price</label>
-                    <input type="number" class="form-control" id="price" name="price" value="{{$food->price}}" min="0">
+                    <input type="text" class="form-control" id="price" name="price" value="{{$food->price}}" min="0">
                 </div>
                 <div class="form-group">
                     <label for="available">Food Available</label>
