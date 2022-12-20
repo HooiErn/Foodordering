@@ -140,7 +140,7 @@ class FoodController extends Controller
         ->where('food.name','like','%'.$keyword.'%')
         
         ->get();
-        return view('menu')->with('foods',$foods)->with(["categories" => $categories]);
+        return view('pages.menu')->with('foods',$foods)->with(["categories" => $categories]);
     }
 
     public function viewAll(){
@@ -148,7 +148,7 @@ class FoodController extends Controller
         ->leftjoin('categories','categories.id','=','food.CategoryID')
         ->select('food.*','categories.name as cName')
         ->get();
-        return view('menu')->with('foods',$foods);
+        return view('pages.menu')->with('foods',$foods);
     }
 
     public function viewDrink(){
@@ -156,7 +156,7 @@ class FoodController extends Controller
         ->leftjoin('categories','categories.id','=','food.CategoryID')
          ->select('food.*','categories.name as cName')
          ->get();
-        return view('menu')->with('foods',$foods);
+        return view('pages.menu')->with('foods',$foods);
      }
  
      public function viewNoodles(){
@@ -164,7 +164,7 @@ class FoodController extends Controller
          ->leftjoin('categories','categories.id','=','food.CategoryID')
          ->select('food.*','categories.name as cName')
          ->get();
-         return view('menu')->with('foods',$foods);
+         return view('pages.menu')->with('foods',$foods);
      }
  
      public function viewDessert(){
@@ -172,7 +172,7 @@ class FoodController extends Controller
         ->leftjoin('categories','categories.id','=','food.CategoryID')
         ->select('food.*','categories.name as cName')
         ->get();
-        return view('menu')->with('foods',$foods);
+        return view('pages.menu')->with('foods',$foods);
     }
  
     public function viewRice(){
@@ -180,7 +180,7 @@ class FoodController extends Controller
         ->leftjoin('categories','categories.id','=','food.CategoryID')
         ->select('food.*','categories.name as cName')
         ->get();
-        return view('menu')->with('foods',$foods);
+        return view('pages.menu')->with('foods',$foods);
     }
 
 }

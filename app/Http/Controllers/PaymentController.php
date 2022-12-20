@@ -39,8 +39,12 @@ class PaymentController extends Controller
             $carts->save();
         }
 
+        //Food available decrease
+        
+
+        //Clear cart
         $deleteCart = Cart::where('userID',Auth::id())->where('orderID','!=','');
-        $deleteCart -> delete();
+        $deleteCart -> delete(); 
 
         Session::flash('success','Order succeessully!');   
         return back();

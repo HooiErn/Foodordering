@@ -5,10 +5,10 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FoodController;
+use App\Http\Controllers\RatingController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
-use App\Http\Controllers\RatingController;
-use App\Http\Controllers\Auth\LoginController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -24,17 +24,34 @@ use App\Http\Controllers\Auth\LoginController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('login', [LoginController::class, 'index'])->name('login');
-Route::post('login', [LoginController::class, 'postLogin'])->name('login.post');
-Route::get('logout', [LoginController::class, 'logout'])->name('user.logout');
 
 //Admin Login & Logout
-Route::get('admin/login', [AdminController::class, 'login'])->name('admin.login');
+Route::get('admin/login', [AdminController::class, 'login']);
 Route::post('admin/login', [AdminController::class, 'check_login']);
-Route::get('admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
+Route::get('admin/logout', [AdminController::class, 'logout']);
 
-//Admin DashBoard
-Route::get('admin/dashboard', [AdminController::class, 'index'])->name('dashboard');
+//Admin
+//Dashboard
+Route::get('admin/dashboard', [AdminController::class, 'index']);
+
+//Food
+Route::get('admin/food',[AdminController::class, 'food']);
+Route::post('admin/addFood',[AdminController::class, 'addFood']);
+Route::post('admin/updateFood',[AdminController::class, 'updateFood']);
+Route::get('admin/deleteFood/{id}',[AdminController::class, 'deleteFood']);
+//Category
+Route::post('admin/addCategory',[AdminController::class,'addCategory']);
+Route::get('admin/deleteCategory/{id}',[AdminController::class, 'deleteCategory']);
+Route::post('admin/updateCategory',[AdminController::class,'updateCategory']);
+//Others
+Route::get('changeStatus/{id}',[AdminController::class, 'changeStatus']);
+
+//Table
+Route::get('admin/table',[AdminController::class, 'table']);
+Route::get('admin/addTable',[AdminController::class, 'addTable']);
+Route::get('admin/deleteTable/{id}',[AdminController::class, 'deleteTable']);
+//Test
+Route::get('admin/test',[AdminController::class,'test']);
 
 //Category
 //Add
@@ -59,35 +76,19 @@ Route::get('food/delete/{id}',[FoodController::class, 'delete'])->name('delete.f
 Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
 
 //Rating
+//Add
 Route::post('/add-rating', [RatingController::class, 'rating']);
 
-// Customer
-Route::get('profile',[AdminController::class, 'profile'])->name('profile');
-Route::get('transactionHistory',[AdminController::class, 'transactionHistory'])->name('view.transactionHistory');
-Route::get('Transfer',[AdminController::class, 'transfer'])->name('transfer');
-Route::get('QrScan',[AdminController::class, 'QrScan'])->name('QrScan');
-Route::get('MemberRegistration',[AdminController::class, 'MemberRegistration'])->name('member.register');
-Route::get('BranchRegistration',[AdminController::class, 'BranchRegistration'])->name('branch.register');
-Route::get('AgentsRegistration',[AdminController::class, 'AgentsRegistration'])->name('agent.register');
-Route::post('/menu',[App\Http\Controllers\FoodController::class, 'searchFood'] ) ->name('search.food');
-
-Route::get('/drink',[App\Http\Controllers\FoodController::class, 'viewDrink'] ) ->name('drink.food');
-Route::get('/fastFood',[App\Http\Controllers\FoodController::class, 'viewFastFood'] ) ->name('fastFood.food');
-Route::get('/dessert',[App\Http\Controllers\FoodController::class, 'viewDessert'] ) ->name('dessert.food');
-Route::get('/mainDishes',[App\Http\Controllers\FoodController::class, 'viewMainDishes'] ) ->name('mainDishes.food');
-Route::get('/foodDetail/{id}',[FoodController::class,'foodDetail'])->name('food.detail');
 //Cart
 //Add
 Route::post('/add-to-cart',[CartController::class, 'addCart']);
 //View
 Route::get('/viewCart', [CartController::class, 'view']);
 
-//Menu
-Route::get('menu',[AdminController::class, 'menu'])->name('menu');
 
 //Payment
 Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');
 
 Auth::routes();
 
-Route::get('/home', [LoginController::class, 'home'])->name('home');
+Route::get('/home', [HomeController::class, 'index'])->name('home');

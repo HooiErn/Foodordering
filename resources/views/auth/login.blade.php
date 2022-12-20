@@ -1,6 +1,11 @@
 @extends('layouts.app')
-
 @section('content')
+@if(Session::has('error'))
+           <div class="alert" style="background-color:#F83030;">
+                <span class="msg"  style="color:white;">{{Session::get('error')}}</span>
+                <span class="crose" data-dismiss="alert">&times;</span>
+            </div>
+        @endif
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">

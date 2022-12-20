@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Admin;
 
-class UserTableSeeder extends Seeder
+class AdminSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -15,9 +15,8 @@ class UserTableSeeder extends Seeder
     public function run()
     {
         Admin::factory()->create([
-            'name'      => 'Admin',
-            'password'  => bcrypt('password'),
+            'name' => 'admin',
+            'password' => sha1("password"),
         ]);
-
     }
 }

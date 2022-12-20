@@ -154,12 +154,12 @@
                 <a class="navbar-brand" href="{{ route('dashboard')}}" style="color:white;display:inline;"> Restaurant App</a>
             <!--Login & Logout-->
             <div style="float:right;margin-right:25px;"> 
-                @guest
+                @if(!Session::has('adminData'))
                    <a class="nav-link" href="{{ route('admin.login') }}" style="color:white;"><i class="fas fa-sign-in-alt"></i></a>
-                @elseif(Auth::check())
+                @else
                 <a class="nav-link" href="{{ route('admin.logout') }}" onclick="return confirm('Are you sure you want to logout?')" style="color:white;"><i class="fa fa-solid fa fa-right-to-bracket"></i></a>
                    
-                @endguest
+                @endif
                 </div>
         </nav> 
     <!-- TopNav second 
