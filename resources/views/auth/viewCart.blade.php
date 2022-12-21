@@ -87,6 +87,7 @@
     table.tb { border-collapse: collapse; width:300px; }
   .tb th, .tb td { padding: 5px; border: solid 1px #777; }
   .tb th { background-color: lightblue;}
+   td { background-color: lightblue;}
 
   table.tb {
   width: 80%;
@@ -95,7 +96,6 @@
 table, td, th {
   border: 6px solid black;
 }
-
 </style>
 
 <body>
@@ -121,26 +121,27 @@ table, td, th {
                 <tr>
                     <th>&nbsp;</th>
                     <th>No. </th>
-                    <th>Name </th>
-                    <th>Image </th>
-                    <th>Quantity </th>
-                    <th>Subtotal</th>
+                    <th><center>Name</center></th>
+                    <th><center>Image</center></th>
+                    <th><center>Quantity</center></th>
+                    <th><center>Subtotal</center> </th>
+                    <th></th>
                 </tr>
                 @foreach($carts as $cart)
                 <form action="{{ route('payment.post') }}" method="post" class="require-validation" data-cc-on-file="false" data-stripe-publishable-key="{{ env('STRIPE_KEY') }}" id="payment-form"> 
                     @csrf
                     <tr>
-                        <td><input type="checkbox" name="cid[]" id="cid[]" value="{{$cart->cid}}" onclick="cal()">&nbsp;&nbsp;<input type="hidden" name="subtotal[]" id="subtotal[]" value="{{$cart->price*$cart->cartQTY}}"></td>
-                        <td>{{$loop -> iteration}}</td>
+                        <td><center><input type="checkbox" class="checkmark" name="cid[]" id="cid[]" value="{{$cart->cid}}" onclick="cal()">&nbsp;&nbsp;<input type="hidden" name="subtotal[]" id="subtotal[]" value="{{$cart->price*$cart->cartQTY}}"></center></td>
+                        <td><center>{{$loop -> iteration}}.</center></td>
                         <td style="width: 30%;">{{$cart -> name}}</td>
                         <td><img src="{{asset('images/')}}/{{$cart->image}}" alt="" width="100" class="img-fluid"></td>
-                        <th>{{$cart -> cartQTY}}</th>
+                        <th><center>{{$cart -> cartQTY}}</center></th>
                         <th>RM {{number_format((float)$cart -> price*$cart->cartQTY, 2, '.', '')}}</th>
-                        <th><a href="{{ route('delete.cart.food',['id'=>$cart->cid]) }}" class="btn btn-danger btn-xs" onClick="return confirm('Are you confirm to delete?')">Delete</a></th>
+                        <th><a href="{{ route('delete.cart.food',['id'=>$cart->cid]) }}" class="btn btn-danger btn-xs" onclick="return confirm('Are you sure you want to delete it?')">Delete</a></th>
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="5">&nbsp;TOTAL: RM</td>
+                    <td colspan="5" style="height:20px;"> <h5 style="float:right;">TOTAL: RM</h5></td>
                     <td><input type="text" name="sub" id="sub" value="0" size="8" readonly style="user-select: none;"/></td>
                     <td></td>
                 </tr>
@@ -182,7 +183,7 @@ table, td, th {
                         <div class='form-row row'>
                             <div class='col-xs-12 col-md-4 form-group cvc required'>
                             <label class='control-label'>CVC</label> 
-                            <input autocomplete='off' class='form-control card-cvc' placeholder='ex. 311' size='4' type='text' style="margin-top:54%">
+                            <input autocomplete='off' class='form-control card-cvc' placeholder='ex. 311' size='4' type='text'>
                             </div>
                             <div class='col-xs-12 col-md-4 form-group expiration required'>
                             <label class='control-label'>Expiration Month</label> 

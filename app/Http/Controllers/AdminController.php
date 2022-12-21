@@ -12,6 +12,7 @@ use App\Models\Table;
 use Session;
 use Cookie;
 use DB;
+use Brian2694\Toastr\Facades\Toastr;
 
 class AdminController extends Controller
 {
@@ -38,6 +39,8 @@ class AdminController extends Controller
         if($admin > 0){
             $adminData = Admin::where(['name' => $request->name, 'password' => sha1($request->password)])->get();
             session(['adminData' => $adminData]);
+
+            Toastr::success('Login Successfully', 'Welcome back', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/dashboard');
         }
         else{
@@ -86,7 +89,7 @@ class AdminController extends Controller
                     'name' => $request -> name,
                 ]);
 
-                Session::flash('success','Category create successfully!');
+                Toastr::success('You Successfully Created a Category!','Category Created', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/food');
             }
         }
