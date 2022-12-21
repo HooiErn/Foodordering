@@ -1,7 +1,12 @@
-@extends('layout')
-@section('content')
+<!Doctype html>
+<html>
     <head>
         <title>Edit Category</title>
+        @if(!Session::has('adminData'))
+            <script type="text/javascript">
+                window.location.href="{{url('admin/login')}}"
+            </script>
+        @endif
     </head>
     <body>
         <div class="container">
@@ -24,4 +29,5 @@
                 @endif
             </form>
         </div>
-@endsection
+    </body>
+</html>

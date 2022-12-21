@@ -22,17 +22,17 @@ use App\Http\Controllers\PaymentController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
 
 //Admin Login & Logout
-Route::get('admin/login', [AdminController::class, 'login']);
+Route::get('admin/login', [AdminController::class, 'login'])->name('admin.login');
 Route::post('admin/login', [AdminController::class, 'check_login']);
-Route::get('admin/logout', [AdminController::class, 'logout']);
+Route::get('admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
 //Admin
-//Dashboard
-Route::get('admin/dashboard', [AdminController::class, 'index']);
+//Admin DashBoard
+Route::get('admin/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
 //Food
 Route::get('admin/food',[AdminController::class, 'food']);
@@ -75,15 +75,36 @@ Route::get('food/delete/{id}',[FoodController::class, 'delete'])->name('delete.f
 //View
 Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
 
+//View Food
+Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
+Route::post('/menu',[App\Http\Controllers\FoodController::class, 'searchFood'] ) ->name('search.food');
+Route::get('menu',[FoodController::class, 'menu'])->name('menu');
+
+//Select Categories
+Route::get('/all',[App\Http\Controllers\FoodController::class, 'viewAll'] ) ->name('All.food');
+Route::get('/drink',[App\Http\Controllers\FoodController::class, 'viewDrink'] ) ->name('drink.food');
+Route::get('/noodles',[App\Http\Controllers\FoodController::class, 'viewNoodles'] ) ->name('noodles.food');
+Route::get('/dessert',[App\Http\Controllers\FoodController::class, 'viewDessert'] ) ->name('dessert.food');
+Route::get('/rice',[App\Http\Controllers\FoodController::class, 'viewRice'] ) ->name('Rice.food');
+
 //Rating
 //Add
 Route::post('/add-rating', [RatingController::class, 'rating']);
 
-//Cart
+//--- Cart ---
 //Add
 Route::post('/add-to-cart',[CartController::class, 'addCart']);
 //View
-Route::get('/viewCart', [CartController::class, 'view']);
+Route::get('/viewCart', [CartController::class, 'view'])->name('viewCart');
+//Delete
+Route::get('cart/delete/{id}',[CartController::class, 'delete'])->name('delete.cart.food');
+
+//Payment
+Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');
+
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::post('login', [LoginController::class, 'postLogin'])->name('login.post');
+Route::get('/logout', [LoginController::class, 'logout'])->name('user.logout');
 
 
 //Payment
