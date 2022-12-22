@@ -8,6 +8,7 @@ use App\Http\Controllers\FoodController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Auth\AuthController;
 
 
 /*
@@ -37,7 +38,7 @@ Route::get('admin/dashboard', [AdminController::class, 'index'])->name('dashboar
 //Food
 Route::get('admin/food',[AdminController::class, 'food']);
 Route::post('admin/addFood',[AdminController::class, 'addFood']);
-Route::post('admin/updateFood',[AdminController::class, 'updateFood']);
+Route::post('admin/updateFood',[AdminController::class, 'updateFood'])->name('update.food');
 Route::get('admin/deleteFood/{id}',[AdminController::class, 'deleteFood']);
 //Category
 Route::post('admin/addCategory',[AdminController::class,'addCategory']);
@@ -102,10 +103,9 @@ Route::get('cart/delete/{id}',[CartController::class, 'delete'])->name('delete.c
 //Payment
 Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');
 
-Route::get('/login', [LoginController::class, 'index'])->name('login');
-Route::post('login', [LoginController::class, 'postLogin'])->name('login.post');
-Route::get('/logout', [LoginController::class, 'logout'])->name('user.logout');
-
+Route::get('login', [AuthController::class, 'index']);
+Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post'); 
+Route::get('logout', [AuthController::class, 'logout'])->name('user.logout');
 
 //Payment
 Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');

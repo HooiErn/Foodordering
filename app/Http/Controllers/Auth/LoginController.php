@@ -40,39 +40,4 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-    public function index(){
-
-        return view('auth.login');
-
-    }
-
-    public function postLogin(Request $request){
-
-        $request->validate([
-            'password' => 'required',
-            'email' => 'required',
-        ]);
-        
-
-        return redirect('login')->with('error', 'Username or password is incorrect. Please try again.');;
-
-    }
-
-    public function home(){
-
-        if(Auth::check()){
-            $foods = Food::all();
-            return view('home')->with('foods',$foods);
-            
-        }
-
-        return redirect('login')->withSuccess('You do not have access to this page!');
-    }
-    public function logout()
-    {
-        Session::flush();
-        Auth::logout();
-
-        return redirect('login');
-    }
 }

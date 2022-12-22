@@ -24,11 +24,11 @@
                 </div>
                 <div class="form-group">
                     <label for="price">Food Price</label>
-                    <input type="number" class="form-control" id="price" name="price" value="{{$food->price}}">
+                    <input type="number" class="form-control" id="price" name="price" value="{{$food->price}}" min="0">
                 </div>
                 <div class="form-group">
                     <label for="available">Food Available</label>
-                    <input type="number" class="form-control" id="available" name="available" value="{{$food->available}}">
+                    <input type="number" class="form-control" id="available" name="available" value="{{$food->available}}" min="0">
                 </div>
                 <div>
                     <label for="oldImage">Previous Image</label>
@@ -40,13 +40,13 @@
                 </div>
                 <div class="form-group">
                     <label for="categoryID">Food Category</label>
-                    @foreach($categories as $category)
                     <select name="categoryID" id="categoryID" name="categoryID">
+                    @foreach($categories as $category)
                         <option value="{{$category -> id}}">{{$category-> name}}</option>
-                    </select>
                     @endforeach
+                    </select>
                 </div>
-                @endforeach
+              
                 <button class="btn btn-primary" type="submit">Submit</button>
                 @if($errors->any())
                     @foreach($errors->all() as $error)
@@ -57,3 +57,14 @@
         </div>
     </body>
 </html>
+
+      </div>
+    </div>
+  </div>
+</div>
+                            <a href="{{ route('delete.food',['id'=>$food->id]) }}" onClick="return confirm('Are you sure to delete?')" class="btn btn-danger">Delete</a>
+                        </td>
+                    </tr> 
+                     @endforeach
+                </table>
+                </div>

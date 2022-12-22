@@ -11,6 +11,7 @@ use App\Models\Food;
 use App\Models\Table;
 use Session;
 use Cookie;
+use File;
 use DB;
 use Brian2694\Toastr\Facades\Toastr;
 
@@ -108,7 +109,7 @@ class AdminController extends Controller
             $category -> name = $request -> name;
             $category -> save();
 
-            Session::flash('success','Update Successfully');
+            Toastr::success('You Successfully Updated a Category!','Category Updated', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/food');
         }
     }
@@ -154,7 +155,7 @@ class AdminController extends Controller
                 'image'=>$imageName,
             ]);
 
-            Session::flash('success', 'Food create successfully!');
+            Toastr::success('You Successfully Added a Food!','Food Added', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/food');
         }
     }
@@ -175,6 +176,10 @@ class AdminController extends Controller
             return redirect('admin/food')->withErrors($validator)->withInput();
         }
         else{
+            if ($food->file != ''  && $foods->file != null){  //code for remove old file
+                $file_old = $path.$foods->file;
+                unlink($file_old);
+           }
             if($request -> file('foodImage')!=''){
                 $image=$request->file('foodImage');        
                 $image->move('images',$image->getClientOriginalName());               
@@ -188,7 +193,7 @@ class AdminController extends Controller
                 $food -> price = $request ->price;
                 $food -> save();
 
-                Session::flash('success','Category update successfully!');
+                Toastr::success('You Successfully Updated a Food!','Food Updated', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/food');
             }
         }

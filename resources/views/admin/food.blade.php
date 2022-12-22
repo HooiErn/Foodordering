@@ -1,4 +1,17 @@
 @extends('layouts.admin')
+<style>
+    /* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+</style>
 @section('content')
 
 <title>Food</title>
@@ -30,6 +43,7 @@
                                 <th>Image</th>
                                 <th>Name</th>
                                 <th>Price</th>
+                                <th>Available</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -41,6 +55,7 @@
                                     <td><img src="{{ asset('images') }}/{{$food -> image}}" alt="" width="50px" height="50px"></td>
                                     <td>{{ $food -> name }}</td>
                                     <td>{{ number_format($food -> price,2) }}</td>
+                                    <td>{{$food -> available}}</td>
                                     @if($food -> available > 0)
                                         <td>
                                             <a href="{{ url('changeStatus',['id' => $food -> id]) }}" class="btn btn-success">
@@ -55,7 +70,7 @@
                                         </td>
                                     @endif
                                     <td>
-                                        <a href="#" data-toggle="modal" data-target="#{{$food -> name}}"><i class="fas fa-pen"></i></a>
+                                    <a href="#" data-toggle="modal" data-target="#food{{$food -> id}}"><i class="fas fa-pen"></i></a>
                                         <a href="{{ url('admin/deleteFood',['id' => $food -> id])}}" onclick="return confirm('Are you sure to delete this food?')"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
@@ -148,6 +163,10 @@
                             <input type="number" class="form-control form-control-line" id="price" name="price" step=".01">
                         </div>
                         <div class="form-group">
+                            <label for="available">Available</label>
+                            <input type="number" class="form-control form-control-line" id="available" name="available" step="0" min="0">
+                        </div>
+                        <div class="form-group">
                             <label for="foodImage">Food Image</label>
                             <input type="file" class="form-control form-control-line" id="foodImage" name="foodImage">
                         </div>
@@ -166,9 +185,9 @@
 
 <!-- Edit Food Modal -->
 @foreach($foods as $food)
-    <form action="{{ url('admin/updateFood') }}" method="POST" class="form-horizontal form-material" enctype="multipart/form-data">
+    <form action="{{ route('update.food') }}" method="POST" class="form-horizontal form-material" enctype="multipart/form-data">
         @csrf
-        <div class="modal fade" id="{{$food -> name}}" tabindex="-1" role="dialog" aria-labelledby="{{$food -> name}}Title" aria-hidden="true">
+        <div class="modal fade" id="food{{$food->id}}" tabindex="-1" role="dialog" aria-labelledby="{{$food -> name}}Title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -179,18 +198,21 @@
                     </div>
                     <div class="modal-body">
                         <input type="hidden" class="form-control form-control-line" id="foodID" name="foodID" value="{{$food->id}}">
-                        <input type="hidden" class="form-control form-control-line" id="available" name="available" value="1">
                         <div class="form-group">
                             <label for="name">Food Name</label>
-                            <input type="text" class="form-control form-control-line" id="name" name="name" placeholder="{{$food -> name}}">
+                            <input type="text" class="form-control form-control-line" id="name" name="name" value="{{$food -> name}}">
                         </div>
                         <div class="form-group">
                             <label for="description">Food Description</label>
-                            <input type="text" class="form-control form-control-line" id="description" name="description" placeholder="{{$food -> description}}">
+                            <input type="text" class="form-control form-control-line" id="description" name="description" value="{{$food -> description}}">
                         </div>
                         <div class="form-group">
                             <label for="price">Food Price</label>
-                            <input type="number" class="form-control form-control-line" id="price" name="price" step=".01" placeholder="{{$food -> price}}">
+                            <input type="number" class="form-control form-control-line" id="price" name="price" step=".01" value="{{$food -> price}}">
+                        </div>
+                        <div class="form-group">
+                            <label for="available">Available</label>
+                            <input type="number" class="form-control form-control-line" id="available" name="available" step="0" min="0" value="{{$food->available}}">
                         </div>
                         <div class="form-group">
                             <label for="foodImage">Food Image</label>

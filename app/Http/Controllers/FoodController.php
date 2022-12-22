@@ -77,12 +77,17 @@ class FoodController extends Controller
             return redirect('food/editForm')->withErrors($validator)->withInput();
         }
         else{
+             if ($foods->file != ''  && $foods->file != null){  //code for remove old file
+                 $file_old = $path.$foods->file;
+                 unlink($file_old);
+            }
             if($request -> file('foodImage')!=''){
                 $image=$request->file('foodImage');        
                 $image->move('images',$image->getClientOriginalName());               
                 $imageName=$image->getClientOriginalName(); 
                 $foods-> image = $imageName;
             }
+          
 
             $foods -> name = $request -> name;
             $foods -> description = $request -> description;
@@ -129,6 +134,13 @@ class FoodController extends Controller
         ->get();
         return view('foodDetail', compact('foods'));
     }
+    
+     //Menu
+   public function menu(){
+    $categories = DB::table('categories')->select('categories.*')->get();
+    $foods = DB::table('food')->leftjoin('categories','food.categoryID','=','categories.id')->select('food.*','categories.name as cName')->get();
+    return view('pages.menu')->with(["categories" => $categories])->with('foods',$foods);
+}  
 
     public function searchFood(){
         $r=request();
