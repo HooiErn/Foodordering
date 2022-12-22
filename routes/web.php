@@ -36,9 +36,9 @@ Route::get('admin/logout', [AdminController::class, 'logout'])->name('admin.logo
 Route::get('admin/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
 //Food
-Route::get('admin/food',[AdminController::class, 'food']);
+Route::get('admin/food',[AdminController::class, 'food'])->name('admin.food');
 Route::post('admin/addFood',[AdminController::class, 'addFood']);
-Route::post('admin/updateFood',[AdminController::class, 'updateFood'])->name('update.food');
+Route::post('admin/updateFood/',[AdminController::class, 'updateFood'])->name('update.food');
 Route::get('admin/deleteFood/{id}',[AdminController::class, 'deleteFood']);
 //Category
 Route::post('admin/addCategory',[AdminController::class,'addCategory']);

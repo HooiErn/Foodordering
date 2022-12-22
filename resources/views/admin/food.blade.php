@@ -126,7 +126,7 @@ input[type=number] {
                         <div class="form-group">
                         <input type="hidden" class="form-control form-control-line" id="catID" name="catID" value="{{$category -> id}}">
                             <label for="categoryName">Category Name</label>
-                            <input type="text" id="name" name="name" class="form-control form-control-line" placeholder="{{$category -> name}}">
+                            <input type="text" id="name" name="name" class="form-control form-control-line" value="{{$category -> name}}">
                         </div>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>

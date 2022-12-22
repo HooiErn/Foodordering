@@ -82,6 +82,7 @@
                <h5><div class="card-text"><strong><b style="color:red;">Price:&nbsp;</b></strong><b>RM {{number_format((float)$food -> price, 2, '.', '')}}</b></div></h5>
                
                     <p class="card-text" >Description: {{$food -> description}}</p>
+                    <p class="available">Avaible: {{$food -> available}}</p>
                     @php $rateNumber = number_format($rating_value) @endphp
                     <input type="hidden" name="rating" value="{{$rateNumber}}">
                     <div class="stars_rated">
@@ -92,7 +93,7 @@
                             <i class="fa fa-star"></i>
                         @endfor
                         @if($ratings -> count() > 0)
-                            <span>{{ $ratings -> count()}} Ratings</span>
+                            <span>{{ $rateNumber}} Ratings</span>
                         @else
                             No Ratings
                         @endif
@@ -117,14 +118,14 @@
                                 </div>
                                 <div class="modal-body">
                                     <p>Please select the quantity:</p>
-                                    <div class="available">Avaible: {{$food -> available}}
-                                        &nbsp;
-                                        <select name="quantity" id="quantity">
+                                  
+                                        <center>
+                                        <select name="quantity" id="quantity" style="width:50px;">
                                             @for($i=1; $i<=$food -> available; $i++)
                                                 <option value="{{$i}}">{{$i}}</option>
                                             @endfor
                                         </select>
-                                    </div>
+                                      </center>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

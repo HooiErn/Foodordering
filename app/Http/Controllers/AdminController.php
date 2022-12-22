@@ -82,7 +82,7 @@ class AdminController extends Controller
         }
         else{
             if(count($categories)){
-                Session::flash('error','Category already exists');
+                Toastr::error('The Category Already Exists!','Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/food');
             }
             else{
@@ -97,21 +97,24 @@ class AdminController extends Controller
     }
 
     public function updateCategory(Request $request){
-        $check = Category::where('name','like','%'.$request -> name.'%')->get();
+        $check = Category::where('name',$request -> name)->get();
 
+        $validated = $this->validate($request,[
+            'name' => 'required'
+        ]); 
+        
         if(count($check)){
-            Session::flash('error','This categories already exists');
+            Toastr::error('This categories already exists!','Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/food');
-        }
-        else{
-            $category = Category::where('id',$request -> catID)->first();
+        }else{
+        $category = Category::where('id',$request -> catID)->first();
+        $category -> name = $request -> name;
+        $category -> save();
 
-            $category -> name = $request -> name;
-            $category -> save();
-
-            Toastr::success('You Successfully Updated a Category!','Category Updated', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect('admin/food');
+        Toastr::success('You Successfully Updated a Category!','Category Updated', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+        return redirect()->route('admin.food', $category->id);
         }
+        
     }
 
     public function deleteCategory($id){
@@ -122,8 +125,7 @@ class AdminController extends Controller
             $food -> delete();
         }
         $category -> delete();
-
-        Session::flash('success','Successfully delete category and its food');
+        Toastr::success('You Successfully Deleted a Category and its Food!','Category Deleted', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
         return redirect('admin/food');
     }
 
@@ -176,17 +178,13 @@ class AdminController extends Controller
             return redirect('admin/food')->withErrors($validator)->withInput();
         }
         else{
-            if ($food->file != ''  && $foods->file != null){  //code for remove old file
-                $file_old = $path.$foods->file;
-                unlink($file_old);
-           }
             if($request -> file('foodImage')!=''){
                 $image=$request->file('foodImage');        
                 $image->move('images',$image->getClientOriginalName());               
                 $imageName=$image->getClientOriginalName(); 
                 $food-> image = $imageName;
             }
-            else{
+            
                 $food -> name = $request -> name;
                 $food -> description = $request -> description;
                 $food -> available = $request -> available;
@@ -195,7 +193,7 @@ class AdminController extends Controller
 
                 Toastr::success('You Successfully Updated a Food!','Food Updated', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/food');
-            }
+            
         }
     }
 
@@ -205,7 +203,7 @@ class AdminController extends Controller
         $deleteFood->delete();
         
         if($deleteFood){
-           Session::flash('success',"Food delete successfully!");
+            Toastr::success('You Successfully Deleted a Food!','Food Deleted', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/food'); 
         }
     }
@@ -242,16 +240,16 @@ class AdminController extends Controller
                 'name' => "Table $number",
             ]);
             if($addTable){
-                Session::flash('success','Successfully create a table');
+                Toastr::success('You Successfully Created a Table!','Table Created', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/table');
             }
             else{
-                Session::flash('error','Fail to create a table');
+                Toastr::error('You Failed To Created a Table!','Failed to create table', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/table');
             }
         }
         else{
-            Session::flash('error','Something went wrong!');
+            Toastr::error('Something went wrong!','Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/table');
         }
     }
@@ -261,11 +259,11 @@ class AdminController extends Controller
         $table -> delete();
 
         if($table){
-            Session::flash('success','Successfully delete table');
+            Toastr::success('You Successfully Deleted a Table!','Table Deleted', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/table');
         }
         else{
-            Session::flash('error','Something went wrong!');
+            Toastr::error('Something went wrong!','Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/table');
         }
     }

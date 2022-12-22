@@ -135,8 +135,8 @@
     <div class="container">
         <div class="profile">
             <div class="top-icon">
-                <div>
-                   <a href="home"><i class="fas fa-arrow-left" style="color:white;font-size:24px;" ></i></a> 
+                <div style="padding-left:10px;">
+
                 </div>
                 <div>
                     <h4>Menu</h4>

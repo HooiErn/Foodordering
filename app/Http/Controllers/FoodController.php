@@ -59,13 +59,14 @@ class FoodController extends Controller
         return view('admin/food/editForm')->with('foods',$foods)->with('categories',$categories);
     }
 
+   
     //Update Food
     public function update(Request $request){
 
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
-            'foodImage',
+            'foodImage' => 'required',
             'available' => 'required',
             'price' => 'required',
             'categoryID' => 'required',
@@ -77,17 +78,12 @@ class FoodController extends Controller
             return redirect('food/editForm')->withErrors($validator)->withInput();
         }
         else{
-             if ($foods->file != ''  && $foods->file != null){  //code for remove old file
-                 $file_old = $path.$foods->file;
-                 unlink($file_old);
-            }
             if($request -> file('foodImage')!=''){
                 $image=$request->file('foodImage');        
                 $image->move('images',$image->getClientOriginalName());               
                 $imageName=$image->getClientOriginalName(); 
                 $foods-> image = $imageName;
             }
-          
 
             $foods -> name = $request -> name;
             $foods -> description = $request -> description;
@@ -100,7 +96,7 @@ class FoodController extends Controller
             return redirect('admin/dashboard');
         }
     }
-
+   
     //Delete Food
     public function delete($id){
         $deleteFood=Food::find($id);
@@ -172,7 +168,7 @@ class FoodController extends Controller
      }
  
      public function viewNoodles(){
-         $foods=DB::table('food')->where('CategoryID','=','2')
+         $foods=DB::table('food')->where('CategoryID','=','3')
          ->leftjoin('categories','categories.id','=','food.CategoryID')
          ->select('food.*','categories.name as cName')
          ->get();
@@ -180,7 +176,7 @@ class FoodController extends Controller
      }
  
      public function viewDessert(){
-        $foods=DB::table('food')->where('CategoryID','=','3')
+        $foods=DB::table('food')->where('CategoryID','=','2')
         ->leftjoin('categories','categories.id','=','food.CategoryID')
         ->select('food.*','categories.name as cName')
         ->get();
