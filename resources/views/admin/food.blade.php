@@ -30,7 +30,7 @@ input[type=number] {
                         <thead>
                             <tr>
                                 <th colspan="5">Category : {{ $category -> name }}</th>
-                                <th class="text-end">
+                                <th class="text-end" style="float:right;">
                                     <div>
                                     <a href="#" type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#{{$category -> name}}"><i class="fas fa-plus"></i></a>
                                     <a href="#" type="button" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm" data-toggle="modal" data-target="#{{$category -> name}}{{$category -> id}}"><i class="fas fa-pen" style="color: white;"></i></a>
