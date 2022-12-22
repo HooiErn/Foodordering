@@ -42,7 +42,7 @@ ul, #myUL {
 </style>
 <div class="container">
                 <div class="cart d-flex float-right">
-                    <a href="{{ url('/viewCart') }}">Cart</a><span class="text-danger">{{$carts -> count()}}</span>
+                    <a href="{{ url('/viewCart') }}">Cart</a><span class="text-danger"></span>
                 </div>
 
     <form action="{{ url('/add-rating')}}" method="POST">

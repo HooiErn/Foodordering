@@ -15,7 +15,7 @@
             <div class="card border-dark">
                 <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
                     <h5 class="card-title">{{$table -> name}}</h5>
-                    <a href="{{ url('admin/deleteTable',['id' => $table -> id])}}" onclick="return confirm('Are you sure to delete this table?')"><i class="fas fa-trash" style="color: black;"></i></a>
+                    <a href="{{ url('admin/deleteTable',['id' => $table -> id])}}" onclick="return confirm('Are you sure to delete this table?')"><i class="fas fa-trash" style="color: red;"></i></a>
                 </div>
                 <div class="card-body">
                     

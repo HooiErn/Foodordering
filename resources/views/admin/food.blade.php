@@ -70,8 +70,9 @@ input[type=number] {
                                         </td>
                                     @endif
                                     <td>
-                                    <a href="#" data-toggle="modal" data-target="#food{{$food -> id}}"><i class="fas fa-pen"></i></a>
-                                        <a href="{{ url('admin/deleteFood',['id' => $food -> id])}}" onclick="return confirm('Are you sure to delete this food?')"><i class="fas fa-trash"></i></a>
+                                    <a href="#" data-toggle="modal" data-target="#food{{$food -> id}}"><i class="fas fa-pen" style="color:blue;"></i></a>
+                                    &nbsp; &nbsp;
+                                        <a href="{{ url('admin/deleteFood',['id' => $food -> id])}}" onclick="return confirm('Are you sure to delete this food?')"><i class="fas fa-trash" style="color:red;"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -110,7 +111,7 @@ input[type=number] {
 
 <!-- Edit Category Modal -->
 @foreach($categories as $category)
-    <form action="{{ url('admin/updateCategory') }}" method="POST" class="form-horizontal form-material">
+    <form action="{{ route('update.category') }}" method="POST" class="form-horizontal form-material">
         @csrf
         <div class="modal fade" id="{{$category -> name}}{{$category -> id}}" tabindex="-1" role="dialog" aria-labelledby="categoryTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">

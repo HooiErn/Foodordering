@@ -43,7 +43,7 @@ Route::get('admin/deleteFood/{id}',[AdminController::class, 'deleteFood']);
 //Category
 Route::post('admin/addCategory',[AdminController::class,'addCategory']);
 Route::get('admin/deleteCategory/{id}',[AdminController::class, 'deleteCategory']);
-Route::post('admin/updateCategory',[AdminController::class,'updateCategory']);
+Route::post('admin/updateCategory',[AdminController::class,'updateCategory'])->name('update.category');
 //Others
 Route::get('changeStatus/{id}',[AdminController::class, 'changeStatus']);
 
@@ -53,28 +53,6 @@ Route::get('admin/addTable',[AdminController::class, 'addTable']);
 Route::get('admin/deleteTable/{id}',[AdminController::class, 'deleteTable']);
 //Test
 Route::get('admin/test',[AdminController::class,'test']);
-
-//Category
-//Add
-Route::get('category/addForm', [CategoryController::class, 'addForm']);
-Route::post('category/addForm', [CategoryController::class, 'add'])->name('category.add');
-//Edit
-Route::get('category/editForm/{id}',[CategoryController::class, 'editForm'])->name('category.edit');
-Route::post('category/editForm',[CategoryController::class, 'update'])->name('category.update');
-//Delete
-Route::get('category/delete/{id}', [CategoryController::class, 'delete'])->name('delete.category');
-
-//Food
-//Add
-Route::get('food/addForm', [FoodController::class, 'addForm']);
-Route::post('food/addForm', [FoodController::class, 'add'])->name('food.add');
-//Edit
-Route::get('food/editForm/{id}',[FoodController::class, 'editForm'])->name('food.edit');
-Route::post('food/editForm',[FoodController::class, 'update'])->name('food.update');
-//Delete
-Route::get('food/delete/{id}',[FoodController::class, 'delete'])->name('delete.food');
-//View
-Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
 
 //View Food
 Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
