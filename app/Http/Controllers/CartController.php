@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Food;
 use App\Models\Cart;
+use App\Models\Order;
 use Session;
 use DB;
 
@@ -16,13 +17,13 @@ class CartController extends Controller
         
         $addFoodCart=Cart::Create([
             'food_id'=>$request->food_id,
-            'quantity'=>$request->quantity,
-            'userID'=>Auth::id(),
+            'table_id' => $request -> table_id,
             'orderID'=>'',
+            'is_paid' => 0,
         ]);
 
-        Session::flash('msg', 'You have success add this item to your cart.');
-        return redirect()->route('viewCart');
+        Session::flash('msg', 'You have success add this item to your cart. You can confirm your order later.');
+        return redirect()->back();
     }
 
     //View Cart
@@ -37,12 +38,26 @@ class CartController extends Controller
         return view('auth.viewCart', compact('carts'));
     }
 
-    public function delete($id){
-        $deleteFood=Cart::find($id); //binding record
-        $deleteFood->delete();//delete record
-        if($deleteFood){
-        Session::flash('success','Item was remove successfully!');
-        return redirect()->route('viewCart');
-        }
+    //Delete Cart
+    public function deleteCart($id){
+        $cart = Cart::where('id',$id)->first();
+        $cart -> delete();
+
+        return redirect('viewCart');
+    }
+
+    //Confirm Order
+    public function confirmOrder(Request $request){
+
+        $carts = Cart::where('id',$request -> cartID)->update(['quantity' => $request -> quantity]);
+
+        $addOrder = Order::create([
+            'status' => '',
+            'amount' => $request -> total,
+            'addon' => $request -> addon,
+            'waiter' => '',
+        ]);
+
+        return back();
     }
 }

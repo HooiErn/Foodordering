@@ -3,17 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Validator;
+use Brian2694\Toastr\Facades\Toastr;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Admin;
 use App\Models\Category;
 use App\Models\Food;
 use App\Models\Table;
+use App\Models\Waiter;
+use App\Models\Cart;
 use Session;
 use Cookie;
-use File;
 use DB;
-use Brian2694\Toastr\Facades\Toastr;
 
 class AdminController extends Controller
 {
@@ -40,18 +41,19 @@ class AdminController extends Controller
         if($admin > 0){
             $adminData = Admin::where(['name' => $request->name, 'password' => sha1($request->password)])->get();
             session(['adminData' => $adminData]);
-
-            Toastr::success('Login Successfully', 'Welcome back', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            Toastr::success('Welcome back '.$request -> name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/dashboard');
         }
         else{
-            return redirect('admin/login')->with('msg', 'Invalid name/password!!');
+            Toastr::error('Please try again', 'Invalid name / password', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect('admin/login');
         }
     }
 
     //Logout
     public function logout(){
         session()->forget(['adminData']);
+        Toastr::info('You have logout your account', 'Logout Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
         return redirect('admin/login');
     }
 
@@ -78,11 +80,12 @@ class AdminController extends Controller
         ]);
 
         if($validator -> fails()){
-            return redirect('admin/food')->withErrors($validator)->withInput(); 
+            Toastr::error('Something went wrong', 'Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect('admin/food'); 
         }
         else{
             if(count($categories)){
-                Toastr::error('The Category Already Exists!','Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+                Toastr::error('This name has been used <br> Please try a new one', 'Repeat name', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/food');
             }
             else{
@@ -90,33 +93,32 @@ class AdminController extends Controller
                     'name' => $request -> name,
                 ]);
 
-                Toastr::success('You Successfully Created a Category!','Category Created', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+                Toastr::success('A new category has been added', 'Add Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/food');
             }
         }
     }
 
+    //Update Category
     public function updateCategory(Request $request){
-        $check = Category::where('name',$request -> name)->get();
+        $check = Category::where('name','like','%'.$request -> name.'%')->get();
 
-        $validated = $this->validate($request,[
-            'name' => 'required'
-        ]); 
-        
         if(count($check)){
-            Toastr::error('This categories already exists!','Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            Toastr::error('This category name already exists. <br> Please try again.', 'Repeat name', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/food');
-        }else{
-        $category = Category::where('id',$request -> catID)->first();
-        $category -> name = $request -> name;
-        $category -> save();
-
-        Toastr::success('You Successfully Updated a Category!','Category Updated', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-        return redirect()->route('admin.food', $category->id);
         }
-        
+        else{
+            $category = Category::where('id',$request -> catID)->first();
+
+            $category -> name = $request -> name;
+            $category -> save();
+
+            Toastr::success('Category&#39;s name has been changed', 'Update Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect('admin/food');
+        }
     }
 
+    //Delete Category
     public function deleteCategory($id){
         $category = Category::where('id',$id)->first();
         $foods = Food::where('categoryID',$category -> id)->get();
@@ -125,7 +127,8 @@ class AdminController extends Controller
             $food -> delete();
         }
         $category -> delete();
-        Toastr::success('You Successfully Deleted a Category and its Food!','Category Deleted', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+
+        Toastr::success('Category and related food have been deleted', 'Delete Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
         return redirect('admin/food');
     }
 
@@ -142,7 +145,8 @@ class AdminController extends Controller
         ]);
 
         if($validator -> fails()){
-            return redirect('admin/food')->withErrors($validator)->withInput(); 
+            Toastr::error('Something went wrong. <br> Please try again', 'Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect('admin/food'); 
         }
         else{
             $image=$request->file('foodImage');        
@@ -157,7 +161,7 @@ class AdminController extends Controller
                 'image'=>$imageName,
             ]);
 
-            Toastr::success('You Successfully Added a Food!','Food Added', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            Toastr::success('A new food has been added', 'Add Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/food');
         }
     }
@@ -165,36 +169,25 @@ class AdminController extends Controller
     //Update Food
     public function updateFood(Request $request){
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'required',
-            'available' => 'required',
-            'price' => 'required',
-        ]);
-
         $food = Food::all()->find($request->foodID);
 
-        if($validator -> fails()){
-            return redirect('admin/food')->withErrors($validator)->withInput();
+        if($request -> file('foodImage')!=''){
+            $image=$request->file('foodImage');        
+            $image->move('images',$image->getClientOriginalName());               
+            $imageName=$image->getClientOriginalName(); 
+            $food-> image = $imageName;
         }
-        else{
-            if($request -> file('foodImage')!=''){
-                $image=$request->file('foodImage');        
-                $image->move('images',$image->getClientOriginalName());               
-                $imageName=$image->getClientOriginalName(); 
-                $food-> image = $imageName;
-            }
-            
-                $food -> name = $request -> name;
-                $food -> description = $request -> description;
-                $food -> available = $request -> available;
-                $food -> price = $request ->price;
-                $food -> save();
 
-                Toastr::success('You Successfully Updated a Food!','Food Updated', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-                return redirect('admin/food');
-            
-        }
+        $food -> name = $request -> name;
+        $food -> description = $request -> description;
+        $food -> available = $request -> available;
+        $food -> price = $request ->price;
+        $food -> categoryID = $request -> categoryID;
+        $food -> save();
+
+        Toastr::success('You have changed the food detail', 'Update Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+        return redirect('admin/food');
+
     }
 
     //Delete Food
@@ -203,7 +196,7 @@ class AdminController extends Controller
         $deleteFood->delete();
         
         if($deleteFood){
-            Toastr::success('You Successfully Deleted a Food!','Food Deleted', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+           Session::flash('success',"Food delete successfully!");
             return redirect('admin/food'); 
         }
     }
@@ -226,51 +219,92 @@ class AdminController extends Controller
     //Table
     public function table(){
         $tables = Table::all();
-        return view('admin/table',compact('tables'));
+        $carts = DB::table('carts')
+        ->leftjoin('food','carts.food_id','=','food.id')
+        ->select('carts.*','food.name as name','food.price as price','carts.quantity as quantity');
+        return view('admin/table',compact('tables','carts'));
     }
 
     //Add Table
     public function addTable(){
-        $tables = DB::table('tables')->count();
+        $id = $this -> generateTableId();
 
-        $number = $tables + 1;
-
-        if($number){
+        if($id){
             $addTable = Table::create([
-                'name' => "Table $number",
+                'table_id' => $id,
             ]);
             if($addTable){
-                Toastr::success('You Successfully Created a Table!','Table Created', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+                Session::flash('success','Successfully create a table');
                 return redirect('admin/table');
             }
             else{
-                Toastr::error('You Failed To Created a Table!','Failed to create table', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+                Session::flash('error','Fail to create a table');
                 return redirect('admin/table');
             }
         }
-        else{
-            Toastr::error('Something went wrong!','Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect('admin/table');
-        }
+        
     }
 
+    public function generateTableId(){
+        $tableID = '';
+        for($i = 0; $i < 5; $i++){ $tableID .= mt_rand(0, 9); }
+        return $tableID;
+    }
+
+    //Delete Table
     public function deleteTable($id){
         $table = Table::where('id',$id)->first();
         $table -> delete();
 
         if($table){
-            Toastr::success('You Successfully Deleted a Table!','Table Deleted', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            Session::flash('success','Successfully delete table');
             return redirect('admin/table');
         }
         else{
-            Toastr::error('Something went wrong!','Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            Session::flash('error','Something went wrong!');
             return redirect('admin/table');
+        }
+    }
+
+    //Waiter
+    public function waiter(){
+        $waiters = Waiter::all();
+
+        return view('admin/waiter',compact('waiters'));
+    }
+
+    public function registerWaiter(Request $request){
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'password' => 'required',
+        ]);
+
+        if($validator -> fails()){
+            Toastr::error('Invalid input <br> Please try again','Validate Error',["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect('admin/waiter');
+        }
+        else{
+            $addWaiter = Waiter::create([
+                'name' => $request -> name,
+                'password' => sha1($request -> password),
+            ]);
+
+            Toastr::success('You successfully register a new waiter account','Register a waiter',["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect('admin/waiter');
         }
     }
 
     //Test
     public function test(){
         return view('admin/test');
+    }
+
+    public function print(){
+        $tables = Table::all();
+        $carts = DB::table('carts')
+        ->leftjoin('food','carts.food_id','=','food.id')
+        ->select('carts.*','food.name as name','food.price as price','carts.quantity as quantity');
+        return view('pages.receipt',compact('tables','carts'));
     }
 
 }

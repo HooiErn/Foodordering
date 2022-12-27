@@ -50,7 +50,7 @@
             max-width: 100%;
             height: 150px;
             font-size: 8px;
-        }
+   }
     }
     
     @media only screen and (min-width: 200px){
@@ -61,14 +61,14 @@
          max-width: 100%;
          height: 100px;
          font-size: 8px;
-        }
+   }
  }
 
 
     //Min x - x++
     //Max x-- - x
     @media only screen and (max-width: 1000px){
-        
+    
         img{
             display:flex;
             width: 200px;

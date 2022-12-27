@@ -8,7 +8,9 @@ use App\Http\Controllers\FoodController;
 use App\Http\Controllers\RatingController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Auth\AuthController;
+
 
 
 /*
@@ -47,12 +49,26 @@ Route::post('admin/updateCategory',[AdminController::class,'updateCategory'])->n
 //Others
 Route::get('changeStatus/{id}',[AdminController::class, 'changeStatus']);
 
-//Table
+// --- Waiter ---
+Route::get('admin/waiter',[AdminController::class, 'waiter']);
+Route::post('admin/registerWaiter',[AdminController::class, 'registerWaiter']);
+
+//Table 
 Route::get('admin/table',[AdminController::class, 'table']);
 Route::get('admin/addTable',[AdminController::class, 'addTable']);
 Route::get('admin/deleteTable/{id}',[AdminController::class, 'deleteTable']);
 //Test
 Route::get('admin/test',[AdminController::class,'test']);
+
+//Waiter login and logout
+Route::get('waiter/login', [WaiterController::class, 'login']);
+Route::post('waiter/login', [WaiterController::class, 'check_login']);
+Route::get('waiter/logout', [WaiterController::class, 'logout']);
+
+//Waiter
+// --- Dashboard ---
+Route::get('waiter/scan',[WaiterController::class, 'scan']);
+
 
 //View Food
 Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
@@ -78,6 +94,10 @@ Route::get('/viewCart', [CartController::class, 'view'])->name('viewCart');
 //Delete
 Route::get('cart/delete/{id}',[CartController::class, 'delete'])->name('delete.cart.food');
 
+Route::post('update-to-cart',[CartController::class,'updateCart']);
+Route::get('deleteCart/{id}',[CartController::class,'deleteCart']);
+Route::post('confirmOrder',[CartController::class,'confirmOrder']);
+
 //Payment
 Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');
 
@@ -85,8 +105,8 @@ Route::get('login', [AuthController::class, 'index']);
 Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post'); 
 Route::get('logout', [AuthController::class, 'logout'])->name('user.logout');
 
-//Payment
-Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');
+//Print
+Route::get('print', [AdminController::class, 'print'])->name('print.receipt');
 
 Auth::routes();
 
