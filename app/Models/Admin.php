@@ -14,7 +14,5 @@ class Admin extends Model
         'name',
         'password',
     ];
-
-    public $timestamps = false;
     
 }

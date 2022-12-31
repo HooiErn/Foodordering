@@ -48,6 +48,9 @@
         </style>
     </head>
     <body>
+        <!-- Toastr -->
+        @include('functions.toastr')
+
         <div class="container">
             <div class="row">
                 <div class="col-md-6 offset-md-3">
@@ -55,43 +58,32 @@
                     <h2 class="text-center mb-5 text-dark">Welcome back admin!</h2>
                     <div class="card my-5">
 
-                    <form class="card-body cardbody-color p-lg-5" method="POST" action="{{ url('admin/login')}}">
-                        @csrf
-                        <div class="text-center">
-                            <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80" class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3" width="200px" alt="profile">
-                        </div>
+                        <form class="card-body cardbody-color p-lg-5" method="POST" action="{{ url('admin/login')}}">
+                            @csrf
+                            <div class="text-center">
+                                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8MXx8fGVufDB8fHx8&w=1000&q=80" class="img-fluid profile-image-pic img-thumbnail rounded-circle my-3" width="200px" alt="profile">
+                            </div>
 
-                        <div class="mb-3">
-                            <input type="text" class="form-control" name="name" id="name" aria-describedby="emailHelp" placeholder="User Name"  @if(Cookie::has('name')) value="{{Cookie::get('name')}}" @endif>
-                        </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" name="name" id="name" aria-describedby="emailHelp" placeholder="User Name"  @if(Cookie::has('name')) value="{{Cookie::get('name')}}" @endif>
+                            </div>
 
-                        <div class="mb-3">
-                            <input type="password" class="form-control" name="password" id="password" placeholder="Password"  @if(Cookie::has('password')) value="{{Cookie::get('password')}}" @endif>
-                        </div>
+                            <div class="mb-3">
+                                <input type="password" class="form-control" name="password" id="password" placeholder="Password"  @if(Cookie::has('password')) value="{{Cookie::get('password')}}" @endif>
+                            </div>
 
-                        <div class="rememberme">
-                            <input type="checkbox" name="rememberme" id="rememberme" @if(Cookie::has('name')) checked @endif><span>Remember Me</span>
-                        </div>
+                            <div class="rememberme">
+                                <input type="checkbox" name="rememberme" id="rememberme" @if(Cookie::has('name')) checked @endif><span>Remember Me</span>
+                            </div>
 
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-color px-5 mb-5 w-100">Login</button>
-                        </div>
-
-                        @if($errors->any())
-                            @foreach($errors->all() as $error)
-                                <p class="text-danger">{{$error}}</p>
-                            @endforeach
-                        @endif
-
-                        @if(Session::has('msg'))
-                            <p class="text-danger">{{Session('msg')}}</p>
-                        @endif
-                    </form>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-color px-5 mb-5 w-100">Login</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
     </body>
 </html>
-
 

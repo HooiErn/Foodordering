@@ -42,12 +42,16 @@ Route::get('admin/food',[AdminController::class, 'food'])->name('admin.food');
 Route::post('admin/addFood',[AdminController::class, 'addFood']);
 Route::post('admin/updateFood/',[AdminController::class, 'updateFood'])->name('update.food');
 Route::get('admin/deleteFood/{id}',[AdminController::class, 'deleteFood']);
+
 //Category
 Route::post('admin/addCategory',[AdminController::class,'addCategory']);
 Route::get('admin/deleteCategory/{id}',[AdminController::class, 'deleteCategory']);
 Route::post('admin/updateCategory',[AdminController::class,'updateCategory'])->name('update.category');
+
 //Others
 Route::get('changeStatus/{id}',[AdminController::class, 'changeStatus']);
+Route::get('viewOrder/{name}',[AdminController::class, 'viewTakenOrder']);
+Route::get('viewCart/{orderID}',[AdminController::class, 'viewCart']);
 
 // --- Waiter ---
 Route::get('admin/waiter',[AdminController::class, 'waiter']);
@@ -64,6 +68,7 @@ Route::get('admin/test',[AdminController::class,'test']);
 Route::get('waiter/login', [WaiterController::class, 'login']);
 Route::post('waiter/login', [WaiterController::class, 'check_login']);
 Route::get('waiter/logout', [WaiterController::class, 'logout']);
+Route::get('takeOrder', [WaiterController::class, 'takeOrder']);
 
 //Waiter
 // --- Dashboard ---
@@ -90,12 +95,11 @@ Route::post('/add-rating', [RatingController::class, 'rating']);
 //Add
 Route::post('/add-to-cart',[CartController::class, 'addCart']);
 //View
-Route::get('/viewCart', [CartController::class, 'view'])->name('viewCart');
+Route::get('viewCart/{id}',[HomeController::class,'view']);
 //Delete
-Route::get('cart/delete/{id}',[CartController::class, 'delete'])->name('delete.cart.food');
+Route::get('deleteCart/{id}',[CartController::class,'deleteCart']);
 
 Route::post('update-to-cart',[CartController::class,'updateCart']);
-Route::get('deleteCart/{id}',[CartController::class,'deleteCart']);
 Route::post('confirmOrder',[CartController::class,'confirmOrder']);
 
 //Payment
@@ -110,4 +114,6 @@ Route::get('print', [AdminController::class, 'print'])->name('print.receipt');
 
 Auth::routes();
 
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+//Menu
+Route::get('/home/{id}', [HomeController::class, 'index'])->name('home');
+

@@ -12,6 +12,7 @@ use App\Models\Food;
 use App\Models\Table;
 use App\Models\Waiter;
 use App\Models\Cart;
+use App\Models\Order;
 use Session;
 use Cookie;
 use DB;
@@ -42,7 +43,7 @@ class AdminController extends Controller
             $adminData = Admin::where(['name' => $request->name, 'password' => sha1($request->password)])->get();
             session(['adminData' => $adminData]);
             Toastr::success('Welcome back '.$request -> name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect('admin/dashboard');
+            return redirect('admin/food');
         }
         else{
             Toastr::error('Please try again', 'Invalid name / password', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
@@ -220,8 +221,10 @@ class AdminController extends Controller
     public function table(){
         $tables = Table::all();
         $carts = DB::table('carts')
-        ->leftjoin('food','carts.food_id','=','food.id')
-        ->select('carts.*','food.name as name','food.price as price','carts.quantity as quantity');
+        ->join('food as detail','carts.food_id','detail.id')
+        ->join('orders as o1','carts.orderID','o1.orderID')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price','o1.amount as total','o1.status as status','o1.addon as addon')
+        ->get();
         return view('admin/table',compact('tables','carts'));
     }
 
@@ -306,5 +309,24 @@ class AdminController extends Controller
         ->select('carts.*','food.name as name','food.price as price','carts.quantity as quantity');
         return view('pages.receipt',compact('tables','carts'));
     }
+    
+     public function viewTakenOrder($name)
+    {
+        $waiter = Waiter::where('name',$name)->first();
+        $orders = DB::table('orders')->join('waiters','orders.waiter','=','waiters.name')
+        ->select('orders.*','waiters.name')->where('waiters.name',$name)->get();
 
+        return view('admin.viewOrder',compact('waiter','orders'));
+    }
+
+    public function viewCart($orderID)
+    {
+        $order = Order::where('orderID',$orderID)->first();
+        $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
+        ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
+        ->where('orders.orderID',$orderID)->get();
+
+        return view('admin.viewCart',compact('order','carts'));
+    }
+    
 }

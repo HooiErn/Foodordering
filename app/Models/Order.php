@@ -11,8 +11,11 @@ class Order extends Model
 
     protected $fillable =[
         'id',
-        'paymentStatus',
-        'userID',
+        'orderID',
+        'status',
         'amount',
+        'addon',
+        'waiter',
     ];
+
 }

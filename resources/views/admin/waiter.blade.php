@@ -1,6 +1,9 @@
 @extends('layouts.admin')
 @section('content')
 
+
+
+
 <title>Waiter</title>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
@@ -11,21 +14,27 @@
     </a>
 </div>
 
-<div class="row">
+    <div class="row">
     <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        
+            <table class="table table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Created time</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach($waiters as $waiter)    
+                    <tr>
+                        <td>{{$waiter -> name}}</td>
+                        <td>{{$waiter -> created_at}}</td>
+                    </tr>
+                @endforeach    
+                </tbody>
+            </table>
+        
+    </div>
 </div>
 
 <!-- Waiter Modal -->

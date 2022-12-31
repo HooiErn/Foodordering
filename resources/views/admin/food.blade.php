@@ -1,17 +1,4 @@
 @extends('layouts.admin')
-<style>
-    /* Chrome, Safari, Edge, Opera */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-
-/* Firefox */
-input[type=number] {
-  -moz-appearance: textfield;
-}
-</style>
 @section('content')
 
 <title>Food</title>
@@ -30,7 +17,7 @@ input[type=number] {
                         <thead>
                             <tr>
                                 <th colspan="5">Category : {{ $category -> name }}</th>
-                                <th class="text-end" style="float:right;">
+                                <th class="text-end">
                                     <div>
                                     <a href="#" type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#{{$category -> name}}"><i class="fas fa-plus"></i></a>
                                     <a href="#" type="button" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm" data-toggle="modal" data-target="#{{$category -> name}}{{$category -> id}}"><i class="fas fa-pen" style="color: white;"></i></a>
@@ -43,7 +30,6 @@ input[type=number] {
                                 <th>Image</th>
                                 <th>Name</th>
                                 <th>Price</th>
-                                <th>Available</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -55,7 +41,6 @@ input[type=number] {
                                     <td><img src="{{ asset('images') }}/{{$food -> image}}" alt="" width="50px" height="50px"></td>
                                     <td>{{ $food -> name }}</td>
                                     <td>{{ number_format($food -> price,2) }}</td>
-                                    <td>{{$food -> available}}</td>
                                     @if($food -> available > 0)
                                         <td>
                                             <a href="{{ url('changeStatus',['id' => $food -> id]) }}" class="btn btn-success">
@@ -70,9 +55,8 @@ input[type=number] {
                                         </td>
                                     @endif
                                     <td>
-                                    <a href="#" data-toggle="modal" data-target="#food{{$food -> id}}"><i class="fas fa-pen" style="color:blue;"></i></a>
-                                    &nbsp; &nbsp;
-                                        <a href="{{ url('admin/deleteFood',['id' => $food -> id])}}" onclick="return confirm('Are you sure to delete this food?')"><i class="fas fa-trash" style="color:red;"></i></a>
+                                        <a href="#" data-toggle="modal" data-target="#food{{$food -> id}}"><i class="fas fa-pen"></i></a>
+                                        <a href="{{ url('admin/deleteFood',['id' => $food -> id])}}" onclick="return confirm('Are you sure to delete this food?')"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -111,7 +95,7 @@ input[type=number] {
 
 <!-- Edit Category Modal -->
 @foreach($categories as $category)
-    <form action="{{ route('update.category') }}" method="POST" class="form-horizontal form-material">
+    <form action="{{ url('admin/updateCategory') }}" method="POST" class="form-horizontal form-material">
         @csrf
         <div class="modal fade" id="{{$category -> name}}{{$category -> id}}" tabindex="-1" role="dialog" aria-labelledby="categoryTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -126,7 +110,7 @@ input[type=number] {
                         <div class="form-group">
                         <input type="hidden" class="form-control form-control-line" id="catID" name="catID" value="{{$category -> id}}">
                             <label for="categoryName">Category Name</label>
-                            <input type="text" id="name" name="name" class="form-control form-control-line" value="{{$category -> name}}">
+                            <input type="text" id="name" name="name" class="form-control form-control-line" placeholder="{{$category -> name}}">
                         </div>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
@@ -164,12 +148,11 @@ input[type=number] {
                             <input type="number" class="form-control form-control-line" id="price" name="price" step=".01">
                         </div>
                         <div class="form-group">
-                            <label for="available">Available</label>
-                            <input type="number" class="form-control form-control-line" id="available" name="available" step="0" min="0">
-                        </div>
-                        <div class="form-group">
                             <label for="foodImage">Food Image</label>
-                            <input type="file" class="form-control form-control-line" id="foodImage" name="foodImage">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="validatedCustomFile" name="foodImage" id="foodImage">
+                                <label class="custom-file-label" for="validatedCustomFile">Choose file</label>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="categoryID">Food Category</label>
@@ -186,7 +169,7 @@ input[type=number] {
 
 <!-- Edit Food Modal -->
 @foreach($foods as $food)
-    <form action="{{ route('update.food') }}" method="POST" class="form-horizontal form-material" enctype="multipart/form-data">
+    <form action="{{ url('admin/updateFood') }}" method="POST" class="form-horizontal form-material" enctype="multipart/form-data">
         @csrf
         <div class="modal fade" id="food{{$food->id}}" tabindex="-1" role="dialog" aria-labelledby="{{$food -> name}}Title" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -199,6 +182,7 @@ input[type=number] {
                     </div>
                     <div class="modal-body">
                         <input type="hidden" class="form-control form-control-line" id="foodID" name="foodID" value="{{$food->id}}">
+                        <input type="hidden" class="form-control form-control-line" id="available" name="available" value="1">
                         <div class="form-group">
                             <label for="name">Food Name</label>
                             <input type="text" class="form-control form-control-line" id="name" name="name" value="{{$food -> name}}">
@@ -212,17 +196,19 @@ input[type=number] {
                             <input type="number" class="form-control form-control-line" id="price" name="price" step=".01" value="{{$food -> price}}">
                         </div>
                         <div class="form-group">
-                            <label for="available">Available</label>
-                            <input type="number" class="form-control form-control-line" id="available" name="available" step="0" min="0" value="{{$food->available}}">
-                        </div>
-                        <div class="form-group">
                             <label for="foodImage">Food Image</label>
-                            <input type="file" class="form-control form-control-line" id="foodImage" name="foodImage" src="{{ asset('images')}}/{{$food -> image}}">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="validatedCustomFile" name="foodImage" id="foodImage">
+                                <label class="custom-file-label" for="validatedCustomFile">Choose file</label>
+                            </div>
                         </div>
                         <div class="form-group">
-                            @foreach($categories -> where('id', $food -> categoryID) as $category)
-                                <input type="text" name="categoryID" id="oldCategory" class="form-control form-control-line" value="{{$category -> name}}" readonly>
-                            @endforeach
+                            <label for="">Category</label>
+                            <select name="categoryID" id="categoryID" class="form-control">
+                                @foreach($categories as $category)
+                                    <option value="{{$category -> id}}" @if($food -> categoryID == $category -> id) selected @endif>{{$category -> name}}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <button type="submit" class="btn btn-primary">Save</button>
                     </div>
