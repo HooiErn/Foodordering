@@ -10,7 +10,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Auth\AuthController;
-
+use App\Models\Cart;
+use App\Models\Order;
 
 
 /*
@@ -51,7 +52,7 @@ Route::post('admin/updateCategory',[AdminController::class,'updateCategory'])->n
 //Others
 Route::get('changeStatus/{id}',[AdminController::class, 'changeStatus']);
 Route::get('viewOrder/{name}',[AdminController::class, 'viewTakenOrder']);
-Route::get('viewCart/{orderID}',[AdminController::class, 'viewCart']);
+
 
 // --- Waiter ---
 Route::get('admin/waiter',[AdminController::class, 'waiter']);
@@ -76,7 +77,6 @@ Route::get('waiter/scan',[WaiterController::class, 'scan']);
 
 
 //View Food
-Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
 Route::post('/menu',[App\Http\Controllers\FoodController::class, 'searchFood'] ) ->name('search.food');
 Route::get('menu',[FoodController::class, 'menu'])->name('menu');
 
@@ -109,11 +109,26 @@ Route::get('login', [AuthController::class, 'index']);
 Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post'); 
 Route::get('logout', [AuthController::class, 'logout'])->name('user.logout');
 
-//Print
-Route::get('print', [AdminController::class, 'print'])->name('print.receipt');
+//Print receipt
+Route::get('receipt/{orderID}',function($orderID){
+    $order = Order::where('orderID',$orderID)->first();
+    $carts = \DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
+    ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
+    ->where('orders.orderID',$orderID)->get(); //if use Cart model, it somehow pass all food in there, regardless if you choose it or not
+
+    return view('pages.receipt',compact('carts','order'));
+})->name('receipt');
+//User
+Route::get('user',function(){
+    return view('user');
+});
 
 Auth::routes();
 
 //Menu
 Route::get('/home/{id}', [HomeController::class, 'index'])->name('home');
 
+
+Route::get('aaa', function(){
+    return view('hello-world');
+});

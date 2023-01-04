@@ -19,7 +19,7 @@ class CreateOrdersTable extends Migration
             $table->string('status');
             $table->double('amount',8,2);
             $table->string('addon')->nullable();
-            $table->string('waiter');
+            $table->string('waiter')->nullable();
             $table->timestamps();
         });
     }

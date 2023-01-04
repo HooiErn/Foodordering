@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Food;
 use App\Models\Table;
 use App\Models\Waiter;
+use App\Models\Order;
 use Session;
 use Cookie;
 use DB;
@@ -59,5 +60,26 @@ class WaiterController extends Controller
     //Scan
     public function scan(){
         return view('waiter/scan');
+    }
+
+    //After Scan Take Order
+    public function takeOrder(Request $request){
+        $order = Order::where('orderID',$request -> orderID)->first();
+        $data = Session::get('waiterData');
+        $waiterName = $data[0] -> name;
+
+        if($order -> waiter == null){
+            $order -> waiter = $waiterName;
+            $order -> save();
+
+            $output = "Successfully Take Order";
+            return response($output);
+        }
+        else{
+            $output = "This order has been taken.";
+            return response($output);
+        }
+        
+        
     }
 }

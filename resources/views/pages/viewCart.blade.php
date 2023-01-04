@@ -5,7 +5,7 @@
 <table>
     <thead>
         <tr>
-            {{$order->orderID}}
+ 
             <th>#</th>
             <th>Food Name</th>
             <th>Quantity</th>

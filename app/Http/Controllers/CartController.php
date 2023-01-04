@@ -68,9 +68,20 @@ public function delete($id){
                 $cart -> save();
             }
             
-            return back();
+            return \Redirect::route('receipt',['orderID' => $orderID]);
         }
 
+    }
+
+       //Receipt blade
+       public function receipt($orderID){
+
+        $order = Order::where('orderID',$orderID)->first();
+        $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
+        ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
+        ->where('orders.orderID',$orderID)->get();//zhege meiyong dao le
+
+        return view('pages.receipt',compact('order','carts'));
     }
 
     public function generateOrderID(){

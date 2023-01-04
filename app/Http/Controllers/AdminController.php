@@ -302,13 +302,13 @@ class AdminController extends Controller
         return view('admin/test');
     }
 
-    public function print(){
-        $tables = Table::all();
-        $carts = DB::table('carts')
-        ->leftjoin('food','carts.food_id','=','food.id')
-        ->select('carts.*','food.name as name','food.price as price','carts.quantity as quantity');
-        return view('pages.receipt',compact('tables','carts'));
-    }
+    // public function print(){
+    //     $tables = Table::all();
+    //     $carts = DB::table('carts')
+    //     ->leftjoin('food','carts.food_id','=','food.id')
+    //     ->select('carts.*','food.name as name','food.price as price','carts.quantity as quantity');
+    //     return view('pages.receipt',compact('tables','carts'));
+    // }
     
      public function viewTakenOrder($name)
     {
@@ -319,7 +319,7 @@ class AdminController extends Controller
         return view('admin.viewOrder',compact('waiter','orders'));
     }
 
-    public function viewCart($orderID)
+    public function viewCart()
     {
         $order = Order::where('orderID',$orderID)->first();
         $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')

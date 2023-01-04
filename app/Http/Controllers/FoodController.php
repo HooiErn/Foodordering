@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Rating;
 use App\Models\Food;
+use App\Models\Table;
 use Session;
 use DB;
 
@@ -112,6 +113,7 @@ class FoodController extends Controller
         $viewFoods = Food::all()->where('id',$id);
         $ratings = Rating::where('food_id', $id)->get();
         $ratings_sum = Rating::where('food_id', $id)->sum('stars_rated');
+        $table = Table::all();
         // Check if there is no rating
         if($ratings -> count() > 0){
             $rating_value = $ratings_sum / $ratings->count();
@@ -119,7 +121,7 @@ class FoodController extends Controller
         else{
             $rating_value = 0;
         }
-        return view('/view', compact('viewFoods', 'ratings','rating_value'));
+        return view('/view', compact('viewFoods', 'ratings','rating_value','table'));
     }
 
     public function foodDetail($id){

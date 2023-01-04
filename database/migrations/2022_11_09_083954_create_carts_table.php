@@ -18,7 +18,7 @@ class CreateCartsTable extends Migration
             $table->string('food_id')->nullable();
             $table->integer('quantity')->default(1);
             $table->string('table_id');
-            $table->string('orderID');
+            $table->string('orderID')->nullable();
             $table->integer('is_paid');
             $table->timestamps();
         });

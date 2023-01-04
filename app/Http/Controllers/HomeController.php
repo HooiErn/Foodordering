@@ -40,6 +40,7 @@ class HomeController extends Controller
         ->get();
 
         return view('view',compact('details','table'));
+
     }
 
     public function info(){

@@ -8,13 +8,23 @@
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 <script>
     function onScanSuccess(decodedText, decodedResult) {
-        window.location.href= decodedText;
-        console.log(`Code matched = ${decodedText}`, decodedResult);
+        //Code
+        $(function() {
+            $.ajax({
+                type: 'get',
+                url: '{{URL::to('takeOrder')}}',
+                data: {'orderID': decodedText},
+                success: function(data) {
+                    console.log(data);
+                    alert(data);
+                }
+            });
+        });
     }
 
     function onScanFailure(error) {
 
-        console.warn(`Code scan error = ${error}`);
+        //
     }
 
     let html5QrcodeScanner = new Html5QrcodeScanner(
@@ -22,6 +32,14 @@
     );
     html5QrcodeScanner.render(onScanSuccess, onScanFailure);
     
+</script>
+
+<script type="text/javascript">
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
 </script>
 
 @endsection
