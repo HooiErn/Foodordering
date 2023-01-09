@@ -51,8 +51,8 @@ Route::post('admin/updateCategory',[AdminController::class,'updateCategory'])->n
 
 //Others
 Route::get('changeStatus/{id}',[AdminController::class, 'changeStatus']);
-Route::get('viewOrder/{name}',[AdminController::class, 'viewTakenOrder']);
-
+Route::get('viewOrder/{name}',[AdminController::class, 'viewTakenOrder'])->name('view.order');
+Route::get('viewFoodList/{orderID}',[AdminController::class, 'viewFoodList']);
 
 // --- Waiter ---
 Route::get('admin/waiter',[AdminController::class, 'waiter']);
@@ -74,7 +74,7 @@ Route::get('takeOrder', [WaiterController::class, 'takeOrder']);
 //Waiter
 // --- Dashboard ---
 Route::get('waiter/scan',[WaiterController::class, 'scan']);
-
+Route::get('waiter/order',[WaiterController::class, 'viewTakenOrder'])->name('waiter.order');
 
 //View Food
 Route::post('/menu',[App\Http\Controllers\FoodController::class, 'searchFood'] ) ->name('search.food');

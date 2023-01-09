@@ -51,10 +51,12 @@
             </div>
         </form>
     </div>
-    <div class="row">
+</div>
+    <center>
+    <div class="row" style="float:right;margin-right:15px;">
         <button class="btn btn-info" onclick="history.back()">Back</button>
     </div>
-</div>
+    </center>
 
 <script>
     $(document).ready(function () {

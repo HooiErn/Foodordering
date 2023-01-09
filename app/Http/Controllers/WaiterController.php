@@ -18,6 +18,7 @@ use DB;
 
 class WaiterController extends Controller
 {
+    
     //Login
     public function login(){
         return view('waiter/login');
@@ -82,4 +83,16 @@ class WaiterController extends Controller
         
         
     }
+       public function viewTakenOrder(Request $request)
+    {
+        $data = Session::get('waiterData');
+        $waiterName = $data[0] -> name;
+        $waiter = Waiter::where('name',$waiterName)->first();
+        $orders = DB::table('orders')->join('waiters','orders.waiter','=','waiters.name')
+        ->select('orders.*','waiters.name')->where('waiters.name',$waiterName)->get();
+
+        return view('waiter.viewOrder',compact('waiter','orders'));
+    }
+
+
 }

@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Support\Facades\Validator;
-use Brian2694\Toastr\Facades\Toastr;
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Admin;
-use App\Models\Category;
+use DB;
+use Cookie;
+use Session;
+use App\Models\Cart;
 use App\Models\Food;
+use App\Models\Admin;
+use App\Models\Order;
 use App\Models\Table;
 use App\Models\Waiter;
-use App\Models\Cart;
-use App\Models\Order;
-use Session;
-use Cookie;
-use DB;
+use App\Models\Category;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Brian2694\Toastr\Facades\Toastr;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -65,13 +65,6 @@ class AdminController extends Controller
         return view('admin/dashboard')->with(["categories" => $categories])->with(["foods" => $foods]);
     }
 
-    //Food
-    public function food(){
-        $categories = Category::all();
-        $foods = Food::all();
-        return view('admin/food', compact('categories','foods'));
-    }
-
     //Add Category
     public function addCategory(Request $request){
         $categories = Category::where('name','like','%'.$request -> name.'%')->get();
@@ -114,7 +107,7 @@ class AdminController extends Controller
             $category -> name = $request -> name;
             $category -> save();
 
-            Toastr::success('Category&#39;s name has been changed', 'Update Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            Toastr::success('Category name has been changed', 'Update Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/food');
         }
     }
@@ -129,14 +122,14 @@ class AdminController extends Controller
         }
         $category -> delete();
 
-        Toastr::success('Category and related food have been deleted', 'Delete Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+        Toastr::success('You Successfully Deleted a Category', 'Category Deleted', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
         return redirect('admin/food');
     }
 
     //Add Food
     public function addFood(Request $request){
 
-        $validator = Validator::make($request->all(), [
+        $validator = \Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
             'foodImage' => 'required',
@@ -162,7 +155,7 @@ class AdminController extends Controller
                 'image'=>$imageName,
             ]);
 
-            Toastr::success('A new food has been added', 'Add Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            Toastr::success('You Successfully created food', 'Food Created', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/food');
         }
     }
@@ -170,37 +163,55 @@ class AdminController extends Controller
     //Update Food
     public function updateFood(Request $request){
 
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
+            'description' => 'required',
+            'available' => 'required',
+            'price' => 'required',
+        ]);
+
         $food = Food::all()->find($request->foodID);
 
-        if($request -> file('foodImage')!=''){
-            $image=$request->file('foodImage');        
-            $image->move('images',$image->getClientOriginalName());               
-            $imageName=$image->getClientOriginalName(); 
-            $food-> image = $imageName;
+        if($validator -> fails()){
+            return redirect('admin/food')->withErrors($validator)->withInput();
         }
+        else{
+            if($request -> file('foodImage')!=''){
+                $image=$request->file('foodImage');        
+                $image->move('images',$image->getClientOriginalName());               
+                $imageName=$image->getClientOriginalName(); 
+                $food-> image = $imageName;
+            }
+            
+            $food -> name = $request -> name;
+            $food -> description = $request -> description;
+            $food -> available = $request -> available;
+            $food -> price = $request ->price;
+            $food -> categoryID = $request->categoryID;
+            $food -> save();
 
-        $food -> name = $request -> name;
-        $food -> description = $request -> description;
-        $food -> available = $request -> available;
-        $food -> price = $request ->price;
-        $food -> categoryID = $request -> categoryID;
-        $food -> save();
-
-        Toastr::success('You have changed the food detail', 'Update Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-        return redirect('admin/food');
-
-    }
-
-    //Delete Food
-    public function deleteFood($id){
-        $deleteFood=Food::find($id);
-        $deleteFood->delete();
-        
-        if($deleteFood){
-           Session::flash('success',"Food delete successfully!");
-            return redirect('admin/food'); 
+            Toastr::success('You Successfully updated Food.', 'Food Updated', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect('admin/food');
         }
     }
+
+    //Food
+    public function food(){
+        $categories = Category::all();
+        $foods = Food::all();
+        return view('admin/food', compact('categories','foods'));
+    }
+
+//Delete Food
+public function deleteFood($id){
+    $deleteFood=Food::find($id);
+    $deleteFood->delete();
+    
+    if($deleteFood){
+       Session::flash('success',"Food delete successfully!");
+        return redirect('admin/food'); 
+    }
+}
 
     //Change Food Status
     public function changeStatus($id){
@@ -237,15 +248,14 @@ class AdminController extends Controller
                 'table_id' => $id,
             ]);
             if($addTable){
-                Session::flash('success','Successfully create a table');
+                Toastr::success('You Successfully Created a Table', 'Table Created', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/table');
             }
             else{
-                Session::flash('error','Fail to create a table');
+                Toastr::error('Failed to create table...', 'Create Failed', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
                 return redirect('admin/table');
             }
         }
-        
     }
 
     public function generateTableId(){
@@ -269,11 +279,16 @@ class AdminController extends Controller
         }
     }
 
+    
     //Waiter
     public function waiter(){
+
         $waiters = Waiter::all();
 
-        return view('admin/waiter',compact('waiters'));
+        $total = DB::table('waiters')->join('orders as total','waiters.name','=','total.waiter')
+            ->select('waiters.*','total.amount as amount')->sum('amount');
+
+        return view('admin/waiter',compact('waiters','total'));
     }
 
     public function registerWaiter(Request $request){
@@ -297,20 +312,14 @@ class AdminController extends Controller
         }
     }
 
-    //Test
-    public function test(){
-        return view('admin/test');
-    }
-
-    // public function print(){
-    //     $tables = Table::all();
-    //     $carts = DB::table('carts')
-    //     ->leftjoin('food','carts.food_id','=','food.id')
-    //     ->select('carts.*','food.name as name','food.price as price','carts.quantity as quantity');
-    //     return view('pages.receipt',compact('tables','carts'));
+     //QrCode
+    //  public function QrCode($id){
+    //     $tables = Table::where('id',$id)->first();
+    //     return view('QrCode',compact('tables'));
     // }
     
-     public function viewTakenOrder($name)
+
+    public function viewTakenOrder($name)
     {
         $waiter = Waiter::where('name',$name)->first();
         $orders = DB::table('orders')->join('waiters','orders.waiter','=','waiters.name')
@@ -319,14 +328,14 @@ class AdminController extends Controller
         return view('admin.viewOrder',compact('waiter','orders'));
     }
 
-    public function viewCart()
+    public function viewFoodlist($orderID)
     {
         $order = Order::where('orderID',$orderID)->first();
         $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
         ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
         ->where('orders.orderID',$orderID)->get();
 
-        return view('admin.viewCart',compact('order','carts'));
+        return view('admin.viewFoodList',compact('order','carts'));
     }
-    
+//那你的cart是从那里pass过去
 }

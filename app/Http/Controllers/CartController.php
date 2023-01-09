@@ -19,7 +19,6 @@ class CartController extends Controller
             'food_id'=>$request->food_id,
             'table_id' => $request -> table_id,
             'quantity' => $request -> quantity,
-            'orderID'=>'',
             'is_paid' => 0,
         ]);
 
@@ -48,30 +47,29 @@ public function delete($id){
         }
     }
 
-    //Confirm Order
-    public function confirmOrder(Request $request){
+  //Confirm Order
+  public function confirmOrder(Request $request){
 
-        $orderID = $this->generateOrderID();
+    $orderID = $this->generateOrderID();
 
-        $addOrder = Order::create([
-            'orderID' => $orderID,
-            'status' => '',
-            'amount' => $request -> total,
-            'addon' => $request -> addon,
-            'waiter' => '',
-        ]);
+    $addOrder = Order::create([
+        'orderID' => $orderID,
+        'status' => '',
+        'amount' => $request -> total,
+        'addon' => $request -> addon,
+        'waiter' => null,
+    ]);
 
-        if($addOrder){
-            $carts = Cart::where('table_id',$request -> tableID)->get();
-            foreach($carts as $cart){
-                $cart -> orderID = $orderID;
-                $cart -> save();
-            }
-            
-            return \Redirect::route('receipt',['orderID' => $orderID]);
+    if($addOrder){
+        $carts = Cart::where('table_id',$request -> tableID)->where('orderID',null)->get(); 
+        foreach($carts as $cart){
+            $cart -> orderID = $orderID;
+            $cart -> save();
         }
 
+        return \Redirect::route('receipt',['orderID' => $orderID]);
     }
+}
 
        //Receipt blade
        public function receipt($orderID){
