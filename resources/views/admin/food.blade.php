@@ -37,7 +37,7 @@
                         <tbody>
                             @foreach($foods -> where('categoryID', $category -> id) as $food)
                                 <tr>
-                                    <td>{{ $loop -> iteration }}</td>
+                                    <td>{{ $loop -> iteration }}.</td>
                                     <td><img src="{{ asset('images') }}/{{$food -> image}}" alt="" width="50px" height="50px"></td>
                                     <td>{{ $food -> name }}</td>
                                     <td>{{ number_format($food -> price,2) }}</td>

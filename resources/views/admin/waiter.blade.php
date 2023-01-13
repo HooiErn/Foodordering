@@ -3,6 +3,12 @@
 
 <title>Waiter</title>
 
+<style>
+    #name{
+        text-decoration:none;
+    }
+</style>
+
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Waiter</h1>
     <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#waiterModal">
@@ -14,23 +20,38 @@
 <div class="row">
     <div class="table-responsive">
         
-            <table class="table table-hover">
+            <table class="table table-hover table-bordered">
                 <thead>
-                    <tr class="bg-primary">
+                    <tr>
                         <th>Name</th>
+                         <th>Total Amount(RM)</th>
                     </tr>
                 </thead>
                 <tbody>
                 @foreach($waiters as $waiter)    
                     <tr>
+                        @if(count($waiter -> order))
+                        <td> <a href="{{ url('viewOrder',['name' => $waiter -> name]) }}" id="name">{{$waiter -> name}} </td>
+                        @else
                         <td>{{$waiter -> name}}</td>
+                        @endif
+                        @php
+                            $data = DB::table('waiters')->join('orders as total','waiters.name','=','total.waiter')
+                            ->select('waiters.*','total.amount as amount')->where('total.waiter','=',$waiter -> name)->sum('amount'); 
+                        @endphp
+                        <td><span id="amount" name="amount">{{number_format($data,2)}} </span></td>
                     </tr>
-                @endforeach    
+                @endforeach
+                <tr>
+                    <td class="text-right">Total :</td>
+                    <td><span id="total"></span></td>
+                </tr>
                 </tbody>
             </table>
         
-    </div>
+  </div>
 </div>
+
 
 <!-- Waiter Modal -->
 <form action="{{ url('admin/registerWaiter') }}" method="POST">
@@ -59,5 +80,19 @@
         </div>
     </div>
 </form>
+
+<script>
+    $(document).ready(function () {
+        var arr = document.getElementsByName('amount');
+        var tot=0.00;
+        for(var i=0;i<arr.length;i++){
+            if(parseFloat(arr[i].innerHTML))
+                tot += parseFloat(arr[i].innerHTML);
+        }
+        document.getElementById('total').innerHTML = tot.toFixed(2);
+    
+    });
+
+</script>
 
 @endsection

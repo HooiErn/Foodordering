@@ -202,16 +202,17 @@ class AdminController extends Controller
         return view('admin/food', compact('categories','foods'));
     }
 
+
 //Delete Food
-public function deleteFood($id){
-    $deleteFood=Food::find($id);
-    $deleteFood->delete();
-    
-    if($deleteFood){
-       Session::flash('success',"Food delete successfully!");
-        return redirect('admin/food'); 
+    public function deleteFood($id){
+        $deleteFood=Food::find($id);
+        $deleteFood->delete();
+        
+        if($deleteFood){
+           Session::flash('success',"Food delete successfully!");
+            return redirect('admin/food'); 
+        }
     }
-}
 
     //Change Food Status
     public function changeStatus($id){
@@ -279,16 +280,12 @@ public function deleteFood($id){
         }
     }
 
-    
     //Waiter
     public function waiter(){
 
         $waiters = Waiter::all();
 
-        $total = DB::table('waiters')->join('orders as total','waiters.name','=','total.waiter')
-            ->select('waiters.*','total.amount as amount')->sum('amount');
-
-        return view('admin/waiter',compact('waiters','total'));
+        return view('admin/waiter',compact('waiters'));
     }
 
     public function registerWaiter(Request $request){
@@ -311,6 +308,21 @@ public function deleteFood($id){
             return redirect('admin/waiter');
         }
     }
+    
+     //Delete Waiter
+    public function deleteWaiter($id){
+        $waiter = Table::where('id',$id)->first();
+        $waiter -> delete();
+
+        if($waiter){
+            Session::flash('success','Successfully delete waiter');
+            return redirect('admin/waiter');
+        }
+        else{
+            Session::flash('error','Something went wrong!');
+            return redirect('admin/waiter');
+        }
+    }
 
      //QrCode
     //  public function QrCode($id){
@@ -327,6 +339,13 @@ public function deleteFood($id){
 
         return view('admin.viewOrder',compact('waiter','orders'));
     }
+    
+    public function searchDate(Request $request){
+        $waiter = Waiter::where('name',$request -> name)->first();
+        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
+        
+        return redirect('admin.viewOrder');
+    }
 
     public function viewFoodlist($orderID)
     {
@@ -337,5 +356,5 @@ public function deleteFood($id){
 
         return view('admin.viewFoodList',compact('order','carts'));
     }
-//那你的cart是从那里pass过去
+
 }

@@ -1,5 +1,4 @@
 @extends('layouts.app')
-
 @section('content')
 
 <div class="row">
@@ -7,11 +6,11 @@
     <div class="col-sm-10"  style="display:flex;justify-content:center;">
         <br><br>
         <div class="row">
+            
         @foreach($foods as $food)
         
             <div class="col-6">
-                <div class="box">
-     
+               <div class="box">
                 <a href="{{asset('images/'.$food->image )}}"><img src="{{asset('images/'.$food->image )}}" alt="Image" style="width:100px;height:100px;"></a>
                 <div class="center">
                  <h6>{{$food -> name}}</h6>

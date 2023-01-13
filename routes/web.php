@@ -10,8 +10,11 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Auth\AuthController;
-use App\Models\Cart;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
 use App\Models\Order;
+use App\Models\Cart;
+
 
 
 /*
@@ -52,12 +55,13 @@ Route::post('admin/updateCategory',[AdminController::class,'updateCategory'])->n
 //Others
 Route::get('changeStatus/{id}',[AdminController::class, 'changeStatus']);
 Route::get('viewOrder/{name}',[AdminController::class, 'viewTakenOrder'])->name('view.order');
-Route::get('viewFoodList/{orderID}',[AdminController::class, 'viewFoodList']);
+Route::post('admin/searchDate',[AdminController::class,'searchDate']);
+Route::get('admin/viewFoodList/{orderID}',[AdminController::class, 'viewFoodList']);
 
 // --- Waiter ---
 Route::get('admin/waiter',[AdminController::class, 'waiter']);
 Route::post('admin/registerWaiter',[AdminController::class, 'registerWaiter']);
-
+Route::get('admin/deleteWaiter/{id}',[AdminController::class, 'deleteWaiter']);
 //Table 
 Route::get('admin/table',[AdminController::class, 'table']);
 Route::get('admin/addTable',[AdminController::class, 'addTable']);
@@ -74,18 +78,15 @@ Route::get('takeOrder', [WaiterController::class, 'takeOrder']);
 //Waiter
 // --- Dashboard ---
 Route::get('waiter/scan',[WaiterController::class, 'scan']);
+
+// --- Order ---
 Route::get('waiter/order',[WaiterController::class, 'viewTakenOrder'])->name('waiter.order');
+Route::get('waiter/viewFoodList/{orderID}',[WaiterController::class,'viewFoodList']);
+Route::post('waiter/searchDate',[WaiterController::class,'searchDate']);
+
 
 //View Food
-Route::post('/menu',[App\Http\Controllers\FoodController::class, 'searchFood'] ) ->name('search.food');
-Route::get('menu',[FoodController::class, 'menu'])->name('menu');
-
-//Select Categories
-Route::get('/all',[App\Http\Controllers\FoodController::class, 'viewAll'] ) ->name('All.food');
-Route::get('/drink',[App\Http\Controllers\FoodController::class, 'viewDrink'] ) ->name('drink.food');
-Route::get('/noodles',[App\Http\Controllers\FoodController::class, 'viewNoodles'] ) ->name('noodles.food');
-Route::get('/dessert',[App\Http\Controllers\FoodController::class, 'viewDessert'] ) ->name('dessert.food');
-Route::get('/rice',[App\Http\Controllers\FoodController::class, 'viewRice'] ) ->name('Rice.food');
+Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
 
 //Rating
 //Add
@@ -100,7 +101,7 @@ Route::get('viewCart/{id}',[HomeController::class,'view']);
 Route::get('deleteCart/{id}',[CartController::class,'deleteCart']);
 
 Route::post('update-to-cart',[CartController::class,'updateCart']);
-Route::post('confirmOrder',[CartController::class,'confirmOrder']);
+Route::post('confirmOrder',[CartController::class,'confirmOrder'])->name('confirmOrder');
 
 //Payment
 Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');
@@ -115,20 +116,13 @@ Route::get('receipt/{orderID}',function($orderID){
     $carts = \DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
     ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
     ->where('orders.orderID',$orderID)->get(); //if use Cart model, it somehow pass all food in there, regardless if you choose it or not
-
     return view('pages.receipt',compact('carts','order'));
 })->name('receipt');
-//User
-Route::get('user',function(){
-    return view('user');
-});
 
+//Place Order waiter
+Route::get('waiter/placeOrder',[WaiterController::class, 'placeOrder']);
 Auth::routes();
 
 //Menu
 Route::get('/home/{id}', [HomeController::class, 'index'])->name('home');
 
-
-Route::get('aaa', function(){
-    return view('hello-world');
-});

@@ -5,7 +5,8 @@
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
-        <form action="{{ url('confirmOrder') }}" method="POST">
+        <form action="{{ route('confirmOrder') }}" method="POST">
+
             @csrf
             <div class="col-sm-auto">
                 <div class="table-responsive">
@@ -37,13 +38,13 @@
                                     <input type="text" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/>
                                 </td>
                                 <td><textarea name="addon" id="addon" class="form-control" cols="20" rows="1"></textarea></td>
-                                <td><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger">Remove</a></td>
+                                <td><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food?')">Remove</a></td>
                             </tr>
                             @endforeach
                             <tr>
                                 <td class="text-end" colspan="4">Sub Total :</td>
                                 <td colspan="2"><input type="number" name="total" id="total" readonly class="form-control-plaintext"></td>
-                                <td><button class="btn btn-primary" type="submit">Confirm Order</button></td>
+                                <td><a href="javascript: w={{route('receipt')}}; w.print(); w.close();"></a><button id="btnPrint" class="btn btn-primary" type="submit" onclick="return confirm('Are you sure to place order now?')">Confirm Order</button></td>
                             </tr>
                         </tbody>
                     </table>
@@ -57,7 +58,7 @@
         <button class="btn btn-info" onclick="history.back()">Back</button>
     </div>
     </center>
-
+    <script src="{{ asset('js/script.js') }}"></script>
 <script>
     $(document).ready(function () {
         var arr = document.getElementsByName('grandprice');

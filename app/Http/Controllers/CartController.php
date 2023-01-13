@@ -9,6 +9,8 @@ use App\Models\Cart;
 use App\Models\Order;
 use Session;
 use DB;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
 
 class CartController extends Controller
 {
@@ -38,27 +40,46 @@ class CartController extends Controller
     }
 
 //Delete Cart
-public function delete($id){
+public function deleteCart($id){
         $deleteFood=Cart::find($id); //binding record
         $deleteFood->delete();//delete record
         if($deleteFood){
         Session::flash('success','Item was remove successfully!');
-        return redirect()->route('viewCart');
+       
+        
+        return back();
         }
     }
 
-  //Confirm Order
-  public function confirmOrder(Request $request){
+   //Confirm Order
+   public function confirmOrder(Request $request){
 
     $orderID = $this->generateOrderID();
+    $waiterData = Session::get('waiterData');
 
-    $addOrder = Order::create([
-        'orderID' => $orderID,
-        'status' => '',
-        'amount' => $request -> total,
-        'addon' => $request -> addon,
-        'waiter' => null,
-    ]);
+    //If session waiterData exists, automatically add waiter name to the order
+    if(Session::has('waiterData'))
+    {
+        $waiterName = $waiterData[0] -> name;
+
+        $addOrder = Order::create([
+            'orderID' => $orderID,
+            'status' => '',
+            'amount' => $request -> total,
+            'addon' => $request -> addon,
+            'waiter' => $waiterName,
+        ]);
+    }
+    else
+    {
+        $addOrder = Order::create([
+            'orderID' => $orderID,
+            'status' => '',
+            'amount' => $request -> total,
+            'addon' => $request -> addon,
+            'waiter' => null,
+        ]);
+    }
 
     if($addOrder){
         $carts = Cart::where('table_id',$request -> tableID)->where('orderID',null)->get(); 
@@ -68,19 +89,37 @@ public function delete($id){
         }
 
         return \Redirect::route('receipt',['orderID' => $orderID]);
+    
+
+
+        
+            // $connector = new WindowsPrintConnector("XP1");
+            // $printer = new Printer($connector);
+            // try {
+            //     $printer -> text("Hello World");
+            //     $printer -> cut();
+            // //} finally {
+            //     $printer -> close();
+            // } catch(Exception $e) {
+            //     echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
+            // }
+            // dd($printer);
+            // dd($addOrder);
+
+       
     }
 }
 
-       //Receipt blade
-       public function receipt($orderID){
+    //    //Receipt blade
+    //    public function receipt($orderID){
 
-        $order = Order::where('orderID',$orderID)->first();
-        $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
-        ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
-        ->where('orders.orderID',$orderID)->get();//zhege meiyong dao le
+    //     $order = Order::where('orderID',$orderID)->first();
+    //     $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
+    //     ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
+    //     ->where('orders.orderID',$orderID)->get();//zhege meiyong dao le
 
-        return view('pages.receipt',compact('order','carts'));
-    }
+    //     return view('pages.receipt',compact('order','carts'));
+    // }
 
     public function generateOrderID(){
         $orderID = '';

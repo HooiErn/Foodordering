@@ -65,7 +65,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{url('waiter/placeOrder')}}">
                     <i class="fas fa-fw fa-download"></i>
                     <span>Place Order</span>
                 </a>
@@ -81,12 +81,13 @@
                     <span>Order</span>
                 </a>
             </li>
-            <li class="nav-item">
+               <li class="nav-item">
                 <a class="nav-link" href="{{ url('waiter/logout') }}">
                     <i class="fas fa-fw fa-sign-out-alt "></i>
                     <span>Logout</span>
                 </a>
             </li>
+
 
         </ul>
         

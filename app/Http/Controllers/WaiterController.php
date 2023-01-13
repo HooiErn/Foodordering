@@ -12,13 +12,13 @@ use App\Models\Food;
 use App\Models\Table;
 use App\Models\Waiter;
 use App\Models\Order;
+use App\Models\Cart;
 use Session;
 use Cookie;
 use DB;
 
 class WaiterController extends Controller
 {
-    
     //Login
     public function login(){
         return view('waiter/login');
@@ -83,7 +83,7 @@ class WaiterController extends Controller
         
         
     }
-       public function viewTakenOrder(Request $request)
+    public function viewTakenOrder(Request $request)
     {
         $data = Session::get('waiterData');
         $waiterName = $data[0] -> name;
@@ -93,6 +93,17 @@ class WaiterController extends Controller
 
         return view('waiter.viewOrder',compact('waiter','orders'));
     }
+    public function placeOrder()
+    {
+        $table = Table::all();
+        $food = Food::all();
 
+        $details = Cart::leftjoin('food','carts.food_id','=','food.id')
+        ->select('carts.*','food.name as name','food.price as price','food.image as image','food.description as description','food.id as foodID')
+        ->where('carts.orderID',null)
+        ->get();
+
+        return view('waiter/placeOrder',compact('table','food','details'));
+    }
 
 }

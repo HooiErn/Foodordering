@@ -39,9 +39,7 @@
                     Menu
                 </a>
     
-                    <ul class="navbar-nav ms-auto">
-                    <a href="/viewCart"><i class="fa fa-shopping-cart"  style="color:black;font-size:20px;"></i></a>
-                    </ul>
+                    
                 </div>
             </div>
         </nav>

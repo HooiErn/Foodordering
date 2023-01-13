@@ -1,31 +1,56 @@
 @extends('layouts.admin')
 @section('content')
+
 <title>View Cart</title>
 
-<table>
-    <thead>
-        <tr>
- 
-            <th>#</th>
-            <th>Food Name</th>
-            <th>Quantity</th>
-            <th>Price(per unit)</th>
-            <th>Subtotal</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach($carts as $cart)
-        <tr>
-            <td>{{$loop->iteration}}</td>
-            <td>{{$cart -> fName}}</td>
-            <td>{{$cart -> quantity}}</th>
-            <td>{{$cart -> fPrice}}</td>
-            <td>{{$cart -> quantity * $cart -> fPrice}}</td>
-        @endforeach
-            <td>Total: </td>
-            <td>{{$order->amount}}</td>
-        </tr>
+<div class="row">
+    <div class="table-responsive">
         
-    </tbody>
-</table>
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr class="thead-dark">
+                        <th colspan="5">{{$order->orderID}}</th>
+                    </tr>
+                    <tr>
+                        <th>#</th>
+                        <th>Food Name</th>
+                        <th>Quantity</th>
+                        <th>Price(RM per unit)</th>
+                        <th>Subtotal(RM)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                @foreach($carts as $cart)
+                    <tr>
+                        <td>{{$loop->iteration}}</td>
+                        <td>{{$cart -> fName}}</td>
+                        <td>{{$cart -> quantity}}</th>
+                        <td>{{number_format($cart -> fPrice,2)}}</td>
+                        <td><span id="amount" name="amount">{{number_format(($cart -> quantity * $cart -> fPrice),2)}}</span></td>
+                    </tr>
+                @endforeach
+                <tr>
+                    <td colspan="4" class="text-right">Total :</td>
+                    <td><span id="total"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var arr = document.getElementsByName('amount');
+        var tot=0.00;
+        for(var i=0;i<arr.length;i++){
+            if(parseFloat(arr[i].innerHTML))
+                tot += parseFloat(arr[i].innerHTML);
+        }
+        document.getElementById('total').innerHTML = tot.toFixed(2);
+    
+    });
+
+</script>
+
 @endsection

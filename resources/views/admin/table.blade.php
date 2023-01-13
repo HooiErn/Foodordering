@@ -15,7 +15,7 @@
             <div class="card border-dark">
                 <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
                     <h5 class="card-title">Table {{$loop -> iteration}}</h5>
-                     <h5>{{$table -> table_id}} </h5>
+                     {{QrCode::generate('https://foodorder.ctosweb.com/home/'.$table->table_id);}}
                 </div>
                 <div class="card-body">
                   <div class="table-responsive">
@@ -32,17 +32,17 @@
                     </tr>
                 </thead>
                 <tbody>
-                     @foreach($tables as $table) 
+                    
                 @foreach($carts -> where('table_id',$table->table_id) -> where('is_paid','0') -> where('orderID','!=',null) as $cart)   
                     <tr>
-                        <td></td>
+                        <td>{{$loop -> iteration}}.</td>
                         <td>{{$cart -> name}}</td>
-                        <td>{{$cart -> quantity}}</td>
+                        <td><center>{{$cart -> quantity}}</center></td>
                         <td>{{number_format($cart -> quantity * $cart -> price,2)}}</td>
                         <td>{{$cart -> status}}</td>
                     </tr>
                 </tbody>
-                @endforeach  
+               
                 @endforeach
             </table>
   
