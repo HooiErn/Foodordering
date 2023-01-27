@@ -13,4 +13,8 @@ class Waiter extends Model
         'name',
         'password',
     ];
+    
+    public function order(){
+        return $this -> hasMany(Order::class,'waiter','name');
+    }
 }

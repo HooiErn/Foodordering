@@ -19,7 +19,6 @@ class CreateCartsTable extends Migration
             $table->integer('quantity')->default(1);
             $table->string('table_id');
             $table->string('orderID')->nullable();
-            $table->integer('is_paid');
             $table->timestamps();
         });
     }

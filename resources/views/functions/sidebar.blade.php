@@ -45,14 +45,6 @@
         </a>
     </li>
 
-    <!-- Nav Item - Test -->
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('admin/test') }}">
-            <i class="fas fa-fw fa-table"></i>
-            <span>Test</span>
-        </a>
-    </li>
-
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">
 

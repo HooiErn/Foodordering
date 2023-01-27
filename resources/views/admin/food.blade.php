@@ -148,10 +148,6 @@
                             <input type="number" class="form-control form-control-line" id="price" name="price" step=".01">
                         </div>
                         <div class="form-group">
-                            <label for="available">Available</label>
-                            <input type="number" class="form-control form-control-line" id="available" name="available" min="1" >
-                        </div>
-                        <div class="form-group">
                             <label for="foodImage">Food Image</label>
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input" id="validatedCustomFile" name="foodImage" id="foodImage">

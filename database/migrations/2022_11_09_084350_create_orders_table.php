@@ -20,6 +20,7 @@ class CreateOrdersTable extends Migration
             $table->double('amount',8,2);
             $table->string('addon')->nullable();
             $table->string('waiter')->nullable();
+            $table->integer('is_paid');
             $table->date('created_at');
             $table->date('updated_at');
         

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -29,16 +28,16 @@
                         <td>{{$loop->iteration}}</td>
                         <td class="quantity" style="text-align:center;">{{$cart -> quantity}}</td>
                         <td class="description">{{$cart -> fName}}</td>
-                        <td class="price">{{$cart -> fPrice}}</td>
-                        <td class="price">{{$cart->quantity * $cart->fPrice}}</td>
+                        <td class="price">{{number_format($cart -> fPrice,2)}}</td>
+                        <td class="price">{{number_format($cart->quantity * $cart->fPrice,2)}}</td>
                     </tr>
                     @endforeach
                     <tr>
                         <td></td>
                         <td class="quantity"></td>
                         <td class="description"></td>
-                        <td>Total</td>
-                        <td>RM {{$order->amount}}</td>
+                        <td class="text-right">Total:</td>
+                        <td>{{number_format($order->amount,2)}}</td>
                     </tr>   
                 </tbody>
             </table>

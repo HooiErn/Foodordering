@@ -13,6 +13,7 @@ class Cart extends Model
         'id',
         'food_id',
         'table_id',
+        'quantity',
         'orderID',
         'is_paid',
     ];

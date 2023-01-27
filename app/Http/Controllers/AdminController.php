@@ -261,7 +261,8 @@ class AdminController extends Controller
 
     public function generateTableId(){
         $tableID = '';
-        for($i = 0; $i < 5; $i++){ $tableID .= mt_rand(0, 9); }
+        $count = Table::all()->count();
+        $tableID = $count + 1;
         return $tableID;
     }
 
@@ -334,17 +335,16 @@ class AdminController extends Controller
     public function viewTakenOrder($name)
     {
         $waiter = Waiter::where('name',$name)->first();
-        $orders = DB::table('orders')->join('waiters','orders.waiter','=','waiters.name')
-        ->select('orders.*','waiters.name')->where('waiters.name',$name)->get();
+        $orders = Order::where('waiter',$name)->get();
 
         return view('admin.viewOrder',compact('waiter','orders'));
     }
     
     public function searchDate(Request $request){
         $waiter = Waiter::where('name',$request -> name)->first();
-        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
+        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->where('waiter',$request->name)->get();
         
-        return redirect('admin.viewOrder');
+        return view('admin.viewOrder',['name' => $request -> name],compact('waiter','orders'));
     }
 
     public function viewFoodlist($orderID)

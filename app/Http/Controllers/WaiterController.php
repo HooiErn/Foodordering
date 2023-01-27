@@ -88,22 +88,43 @@ class WaiterController extends Controller
         $data = Session::get('waiterData');
         $waiterName = $data[0] -> name;
         $waiter = Waiter::where('name',$waiterName)->first();
-        $orders = DB::table('orders')->join('waiters','orders.waiter','=','waiters.name')
-        ->select('orders.*','waiters.name')->where('waiters.name',$waiterName)->get();
+        $orders = Order::where('waiter',$waiterName)->get();
 
         return view('waiter.viewOrder',compact('waiter','orders'));
     }
-    public function placeOrder()
+    
+    public function searchDate(Request $request){
+        $data = Session::get('waiterData');
+        $waiterName = $data[0] -> name;
+        $waiter = Waiter::where('name',$waiterName)->first();
+        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->where('waiter',$waiterName)->get();
+        
+        return view('waiter.viewOrder',compact('waiter','orders'));
+    }
+    
+    public function viewFoodlist($orderID)
     {
-        $table = Table::all();
-        $food = Food::all();
+        $order = Order::where('orderID',$orderID)->first();
+        $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
+        ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
+        ->where('orders.orderID',$orderID)->get();
 
-        $details = Cart::leftjoin('food','carts.food_id','=','food.id')
-        ->select('carts.*','food.name as name','food.price as price','food.image as image','food.description as description','food.id as foodID')
-        ->where('carts.orderID',null)
-        ->get();
+        return view('waiter.viewFoodList',compact('order','carts'));
+    }
+    
+    public function placeOrder(){
+        $tables = Table::all();
+        return view('waiter/placeOrder',compact('tables'));
+    }
+    
+    public function addToCart($id){
+        $table = Table::where('table_id',$id)->first();
+        $foods = Food::all();
+        $carts = Cart::leftjoin('food','carts.food_id','=','food.id')
+        ->select('carts.*','food.name as fName', 'food.price as fPrice', 'food.image as fImage', 'food.description as fDescription')
+        ->where('table_id',$id)->where('orderID',null)->get();
 
-        return view('waiter/placeOrder',compact('table','food','details'));
+        return view('waiter/add-to-cart', compact('table','foods','carts'));
     }
 
 }

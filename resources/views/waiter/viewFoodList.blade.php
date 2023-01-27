@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.waiter')
 @section('content')
 
 <title>View Cart</title>

@@ -28,7 +28,7 @@ class HomeController extends Controller
         $table = Table::where('table_id',$id)->first();
         session('tabledata',$table);
         $foods = Food::all();
-        $carts = Cart::all();
+        $carts = Cart::where('table_id',$id)->get();
         return view('home',compact('foods','carts','table'));
     }
 
@@ -36,7 +36,9 @@ class HomeController extends Controller
         $table = Table::where('table_id',$id)->first();
 
         $details = Cart::leftjoin('food','carts.food_id','=','food.id')
-        ->select('carts.*','food.name as name','food.price as price','food.image as image','food.description as description','food.id as foodID')
+        ->select('carts.*','food.name as name','food.price as price',
+        'food.image as image','food.description as description','food.id as foodID')
+        ->where('table_id',$id)
         ->get();
 
         return view('view',compact('details','table'));

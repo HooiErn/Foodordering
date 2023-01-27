@@ -81,7 +81,8 @@
     </div>
 </form>
 
-<script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script scr="text/javascript">
     $(document).ready(function () {
         var arr = document.getElementsByName('amount');
         var tot=0.00;

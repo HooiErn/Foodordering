@@ -10,8 +10,6 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\WaiterController;
 use App\Http\Controllers\Auth\AuthController;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-use Mike42\Escpos\Printer;
 use App\Models\Order;
 use App\Models\Cart;
 
@@ -83,6 +81,8 @@ Route::get('waiter/scan',[WaiterController::class, 'scan']);
 Route::get('waiter/order',[WaiterController::class, 'viewTakenOrder'])->name('waiter.order');
 Route::get('waiter/viewFoodList/{orderID}',[WaiterController::class,'viewFoodList']);
 Route::post('waiter/searchDate',[WaiterController::class,'searchDate']);
+Route::get('waiter/placeOrder',[WaiterController::class, 'placeOrder']);
+Route::get('waiter/add-to-cart/{id}', [WaiterController::class, 'addToCart']);
 
 
 //View Food
@@ -101,7 +101,7 @@ Route::get('viewCart/{id}',[HomeController::class,'view']);
 Route::get('deleteCart/{id}',[CartController::class,'deleteCart']);
 
 Route::post('update-to-cart',[CartController::class,'updateCart']);
-Route::post('confirmOrder',[CartController::class,'confirmOrder'])->name('confirmOrder');
+Route::post('confirmOrder',[CartController::class,'confirmOrder']);
 
 //Payment
 Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');
@@ -116,11 +116,13 @@ Route::get('receipt/{orderID}',function($orderID){
     $carts = \DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
     ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
     ->where('orders.orderID',$orderID)->get(); //if use Cart model, it somehow pass all food in there, regardless if you choose it or not
+
     return view('pages.receipt',compact('carts','order'));
 })->name('receipt');
 
 //Place Order waiter
 Route::get('waiter/placeOrder',[WaiterController::class, 'placeOrder']);
+
 Auth::routes();
 
 //Menu

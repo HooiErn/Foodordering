@@ -133,64 +133,64 @@ class FoodController extends Controller
         return view('foodDetail', compact('foods'));
     }
     
-     //Menu
-   public function menu(){
-    $categories = DB::table('categories')->select('categories.*')->get();
-    $foods = DB::table('food')->leftjoin('categories','food.categoryID','=','categories.id')->select('food.*','categories.name as cName')->get();
-    return view('pages.menu')->with(["categories" => $categories])->with('foods',$foods);
-}  
+//      //Menu
+//   public function menu(){
+//     $categories = DB::table('categories')->select('categories.*')->get();
+//     $foods = DB::table('food')->leftjoin('categories','food.categoryID','=','categories.id')->select('food.*','categories.name as cName')->get();
+//     return view('pages.menu')->with(["categories" => $categories])->with('foods',$foods);
+// }  
 
-    public function searchFood(){
-        $r=request();
-        $keyword=$r->keyword;
-        $categories = DB::table('categories')->select('categories.*')->get();
-        $foods=DB::table('food')
-        ->leftjoin('categories','categories.id','=','food.CategoryID')
-        ->select('food.*','categories.name as cName')
-        ->where('food.name','like','%'.$keyword.'%')
+    // public function searchFood(){
+    //     $r=request();
+    //     $keyword=$r->keyword;
+    //     $categories = DB::table('categories')->select('categories.*')->get();
+    //     $foods=DB::table('food')
+    //     ->leftjoin('categories','categories.id','=','food.CategoryID')
+    //     ->select('food.*','categories.name as cName')
+    //     ->where('food.name','like','%'.$keyword.'%')
         
-        ->get();
-        return view('pages.menu')->with('foods',$foods)->with(["categories" => $categories]);
-    }
+    //     ->get();
+    //     return view('pages.menu')->with('foods',$foods)->with(["categories" => $categories]);
+    // }
 
-    public function viewAll(){
-        $foods=DB::table('food')
-        ->leftjoin('categories','categories.id','=','food.CategoryID')
-        ->select('food.*','categories.name as cName')
-        ->get();
-        return view('pages.menu')->with('foods',$foods);
-    }
+    // public function viewAll(){
+    //     $foods=DB::table('food')
+    //     ->leftjoin('categories','categories.id','=','food.CategoryID')
+    //     ->select('food.*','categories.name as cName')
+    //     ->get();
+    //     return view('pages.menu')->with('foods',$foods);
+    // }
 
-    public function viewDrink(){
-        $foods=DB::table('food')->where('CategoryID','=','1')
-        ->leftjoin('categories','categories.id','=','food.CategoryID')
-         ->select('food.*','categories.name as cName')
-         ->get();
-        return view('pages.menu')->with('foods',$foods);
-     }
+    // public function viewDrink(){
+    //     $foods=DB::table('food')->where('CategoryID','=','1')
+    //     ->leftjoin('categories','categories.id','=','food.CategoryID')
+    //      ->select('food.*','categories.name as cName')
+    //      ->get();
+    //     return view('pages.menu')->with('foods',$foods);
+    //  }
  
-     public function viewNoodles(){
-         $foods=DB::table('food')->where('CategoryID','=','3')
-         ->leftjoin('categories','categories.id','=','food.CategoryID')
-         ->select('food.*','categories.name as cName')
-         ->get();
-         return view('pages.menu')->with('foods',$foods);
-     }
+    //  public function viewNoodles(){
+    //      $foods=DB::table('food')->where('CategoryID','=','3')
+    //      ->leftjoin('categories','categories.id','=','food.CategoryID')
+    //      ->select('food.*','categories.name as cName')
+    //      ->get();
+    //      return view('pages.menu')->with('foods',$foods);
+    //  }
  
-     public function viewDessert(){
-        $foods=DB::table('food')->where('CategoryID','=','2')
-        ->leftjoin('categories','categories.id','=','food.CategoryID')
-        ->select('food.*','categories.name as cName')
-        ->get();
-        return view('pages.menu')->with('foods',$foods);
-    }
+    //  public function viewDessert(){
+    //     $foods=DB::table('food')->where('CategoryID','=','2')
+    //     ->leftjoin('categories','categories.id','=','food.CategoryID')
+    //     ->select('food.*','categories.name as cName')
+    //     ->get();
+    //     return view('pages.menu')->with('foods',$foods);
+    // }
  
-    public function viewRice(){
-        $foods=DB::table('food')->where('CategoryID','=','4')
-        ->leftjoin('categories','categories.id','=','food.CategoryID')
-        ->select('food.*','categories.name as cName')
-        ->get();
-        return view('pages.menu')->with('foods',$foods);
-    }
+    // public function viewRice(){
+    //     $foods=DB::table('food')->where('CategoryID','=','4')
+    //     ->leftjoin('categories','categories.id','=','food.CategoryID')
+    //     ->select('food.*','categories.name as cName')
+    //     ->get();
+    //     return view('pages.menu')->with('foods',$foods);
+    // }
 
 }

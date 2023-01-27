@@ -6,14 +6,6 @@ use Mike42\Escpos\Printer;
 $connector = new WindowsPrintConnector("XP1");
 $printer = new Printer($connector);
 $printer -> text("Hello World!\n");
-foreach ($items as $item) {
-    $printer->addItem(
-        $item['name'],
-        $item['qty'],
-        $item['price']
-    );
-}
-$printer -> text($additem);
 $printer -> cut();
 $printer -> close();
 
