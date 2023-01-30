@@ -22,7 +22,6 @@
             right: 30px;
             z-index: 99;
             border: none;
-            background-color: grey;
             color: white;
             padding: 3px 10px 4px 10px;
             border-radius: 4px;
@@ -53,9 +52,9 @@
               <div class="card-body">
                   <p class="card-price">RM{{$food -> price}}</p>
               </div>
-              <div class="card-footer border-0">
+              <div class="card-footer border-0" style="background-color: rgba(0,0,0,0) !important; color: white;">
                   @if($food -> available == 1)
-                    <a class="btn btn-success" data-toggle="modal" data-target=".food{{$food -> id}}">Add To Cart</a>
+                    <a class="btn btn-success" data-toggle="modal" data-target=".food{{$food -> id}}">Add To Cart <span><i class="fa fa-shopping-cart"></span></i></a>
                   @elseif($food -> available == 0)
                     <span class="text-info">Not Available</span>
                   @endif

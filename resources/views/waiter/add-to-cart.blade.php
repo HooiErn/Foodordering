@@ -66,6 +66,7 @@
         <div class="content">
             <form action="{{ url('confirmOrder') }}" method="POST">
                 @csrf
+                <input type="hidden" name="tableID" value="{{$table -> table_id}}"> 
                 <div class="table-responsive">
                     <table class="table table-border">
                         <thead>

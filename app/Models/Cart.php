@@ -15,6 +15,5 @@ class Cart extends Model
         'table_id',
         'quantity',
         'orderID',
-        'is_paid',
     ];
 }

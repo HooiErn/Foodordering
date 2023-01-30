@@ -21,7 +21,7 @@
                 </thead>
                 <tbody>
                 @foreach($carts as $cart)
-                    <tr>
+                    <tr >
                         <td>{{$loop->iteration}}</td>
                         <td>{{$cart -> fName}}</td>
                         <td>{{$cart -> quantity}}</th>

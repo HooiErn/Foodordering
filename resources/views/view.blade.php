@@ -1,41 +1,62 @@
 @extends('layouts.app')
 @section('content')
 
+<title>View Cart</title>
+
 <div class="row">
     <div class="col-md-2"></div>
     <div class="col-md-8">
         <form action="{{ url('confirmOrder') }}" method="POST">
             @csrf
-            <input type="hidden" name="tableID" value="{{$table -> table_id}}">
+            <input type="hidden" name="tableID" id="tableID" value="{{$table -> table_id}}">
             <div class="col-sm-auto">
                 <div class="table-responsive">
                     <table class="table tabl-hover">
+                        <thead>
+                            <tr>
+                                <td>Image</td>
+                                <td>Name</td>
+                                <td>Quantity</td>
+                                <td>Grand Price</td>
+                                <td></td>
+                            </tr>
+                        </thead>
                         <tbody>
                             @foreach($details ->where('orderID','=',null) as $detail)
                             <input type="hidden" name="cartID" id="cartID" value="{{$detail -> id}}">
                             <tr>
                                 <td><img src="{{ asset('images')}}/{{$detail->image}}" alt="" width="50px" height="50px"></td>
                                 <td>{{$detail -> name}}</td>
-                                <td>{{number_format($detail -> price,2)}}</td>
-                                <td>x{{$detail -> quantity}}</td>
-                                <td><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food?')">Remove</a></td>
-                                 <td><textarea name="addon" id="addon" class="form-control" cols="20" rows="1"></textarea></td>
-                                 
-                                    
+                                <td>{{$detail -> quantity}}</td>
                                 <td>
-                                    <input type="text" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/>
+                                    <span>{{number_format($detail -> quantity * $detail -> price,2)}}</span>
+                                    <input type="hidden" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/>
                                 </td>
+                                <td><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food?')"><i class="fa fa-trash"></i></a></td>
                                
                             </tr>
                             @endforeach
                             <tr>
-                                <td class="text-right" colspan="2">Sub Total :</td>
-                                <td colspan="2"><input type="number" name="total" id="total" readonly class="form-control-plaintext"></td>
-                                <td><button class="btn btn-success" type="submit" onclick="return confirm('Are you sure to place order now?')">Confirm Order &nbsp; &#10003;</button></td>
+                                <td class="text-right" colspan="3">Sub Total :</td>
+                                <td><span name="total2" id="total2"></span></td>
+                                <input type="hidden" name="total" id="total" readonly class="form-control-plaintext">
+                            </tr>
+                            <tr>
+                                <td class="text-right" colspan="3">Pay By :</td>
+                                <td>
+                                    <select name="payment" id="payment">
+                                        <option disabled selected="" class="form-control">-- Method --</option>
+                                        <option value="1">Cash</option>
+                                        <option value="2">Touch n Go</option>
+                                    </select>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
+            </div>
+            <div class="d-flex align-items-center justify-content-center">
+                <button class="btn btn-success" type="submit" onclick="return confirm('Are you sure to place order now?')">Confirm Order &nbsp; &#10003;</button>
             </div>
         </form>
     </div>
@@ -50,7 +71,9 @@
                 tot += parseFloat(arr[i].value);
         }
         document.getElementById('total').value = tot.toFixed(2);
+        document.getElementById('total2').innerHTML = tot.toFixed(2);
         
+        document.getElementById('grandprice2').innerHTML = document.getElementById('grandprice').value;
     });
 
 </script>

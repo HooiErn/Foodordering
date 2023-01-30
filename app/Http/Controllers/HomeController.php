@@ -23,10 +23,15 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
+    public function method($id){
+        $table = Table::where('table_id',$id)->first();
+        
+        return view('method');
+    }
+     
     public function index($id)
     {
         $table = Table::where('table_id',$id)->first();
-        session('tabledata',$table);
         $foods = Food::all();
         $carts = Cart::where('table_id',$id)->get();
         return view('home',compact('foods','carts','table'));

@@ -54,8 +54,10 @@ img {
 }
 
 @media print {
-    .hidden-print,
-    .hidden-print * {
+     body {
+        margin: -2rem 0 0 0;
+        }
+    .hidden-print {
         display: none !important;
     }
 }

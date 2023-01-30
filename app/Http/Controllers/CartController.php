@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Brian2694\Toastr\Facades\Toastr;
 use App\Models\Food;
 use App\Models\Cart;
 use App\Models\Order;
@@ -19,7 +20,6 @@ class CartController extends Controller
             'food_id'=>$request->food_id,
             'table_id' => $request -> table_id,
             'quantity' => $request -> quantity,
-            'is_paid' => 0,
         ]);
 
         Session::flash('msg', 'You have success add this item to your cart. You can confirm your order later.');
@@ -62,9 +62,10 @@ public function confirmOrder(Request $request){
 
             $addOrder = Order::create([
                 'orderID' => $orderID,
-                'status' => '',
+                'table_id' => $request -> tableID,
                 'amount' => $request -> total,
                 'addon' => $request -> addon,
+                'is_paid' => 0,
                 'waiter' => $waiterName,
             ]);
         }
@@ -72,9 +73,10 @@ public function confirmOrder(Request $request){
         {
             $addOrder = Order::create([
                 'orderID' => $orderID,
-                'status' => '',
+                'table_id' => $request -> tableID,
                 'amount' => $request -> total,
                 'addon' => $request -> addon,
+                'is_paid' => 0,
                 'waiter' => null,
             ]);
         }
@@ -85,8 +87,13 @@ public function confirmOrder(Request $request){
                 $cart -> orderID = $orderID;
                 $cart -> save();
             }
-
-            return \Redirect::route('receipt',['orderID' => $orderID]);
+            if(Session::has('waiterData')){
+                return back();
+            }
+            else{
+                return \Redirect::route('receipt',['orderID' => $orderID]);
+            }
+            
         }
 
     }

@@ -12,9 +12,10 @@ class Order extends Model
     protected $fillable =[
         'id',
         'orderID',
-        'status',
+        'table_id',
         'amount',
         'addon',
+        'is_paid',
         'waiter',
     ];
 

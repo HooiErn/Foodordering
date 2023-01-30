@@ -234,10 +234,10 @@ class AdminController extends Controller
         $tables = Table::all();
         $carts = DB::table('carts')
         ->join('food as detail','carts.food_id','detail.id')
-        ->join('orders as o1','carts.orderID','o1.orderID')
-        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price','o1.amount as total','o1.status as status','o1.addon as addon')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
         ->get();
-        return view('admin/table',compact('tables','carts'));
+        $orders = DB::table('orders')->get();
+        return view('admin/table',compact('tables','carts','orders'));
     }
 
     //Add Table
@@ -285,8 +285,8 @@ class AdminController extends Controller
     public function waiter(){
 
         $waiters = Waiter::all();
-
-        return view('admin/waiter',compact('waiters'));
+        $orders = Order::all();
+        return view('admin/waiter',compact('waiters','orders'));
     }
 
     public function registerWaiter(Request $request){
@@ -335,7 +335,7 @@ class AdminController extends Controller
     public function viewTakenOrder($name)
     {
         $waiter = Waiter::where('name',$name)->first();
-        $orders = Order::where('waiter',$name)->get();
+        $orders = Order::where('waiter',$name)->where('is_paid',"1")->get();
 
         return view('admin.viewOrder',compact('waiter','orders'));
     }
@@ -355,6 +355,10 @@ class AdminController extends Controller
         ->where('orders.orderID',$orderID)->get();
 
         return view('admin.viewFoodList',compact('order','carts'));
+    }
+    
+    public function setup(){
+        return view('admin.setup');
     }
 
 }

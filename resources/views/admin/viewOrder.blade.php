@@ -33,13 +33,14 @@
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr class="thead-dark">
-                        <th colspan="4">{{$waiter->name}}</th>
+                        <th colspan="5">{{$waiter->name}}</th>
                     </tr>
                     <tr>
                         <th>#</th>
                         <th>OrderID</th>
-                        <th>Amount(RM)</th>
-                        <th>Created Date</th>
+                        <th>Cash</th>
+                        <th>Touch 'n Go</th>
+                        <th rowspan="2">Created Date</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -47,13 +48,21 @@
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td><a href="{{ url('admin/viewFoodList',['orderID' => $order -> orderID]) }}" id="orderID">{{$order -> orderID}} </a></td>
-                        <td><span id="amount" name="amount">{{number_format($order -> amount,2)}}</span></td>
+                        @if($order -> payment_method == 1)
+                            <td><span id="amount" name="cashAmount">{{number_format($order -> amount,2)}}</span></td>
+                            <td><span>0.00</span></td>
+                        @elseif ($order -> payment_method == 2)
+                            <td><span>0.00</span></td>
+                            <td><span id="amount" name="touchAmount">{{number_format($order -> amount,2)}}</span></td>
+                        @endif
                         <td>{{$order -> created_at -> format('d/m/Y')}}</td>
                     </tr>
                 @endforeach 
                 <tr>
-                    <td colspan="2" class="text-right">Total :</td>
-                    <td colspan="2"><span id="total"></span></td>
+                    <td colspan="2"></td>
+                    <td><span id="cashTotal"></span></td>
+                    <td><span id="touchTotal"></span></td>
+                    <td>Total : <span id="total"></span></td>
                 </tr>
                 </tbody>
             </table>
@@ -64,13 +73,22 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script scr="text/javascript">
     $(document).ready(function () {
-        var arr = document.getElementsByName('amount');
-        var tot=0.00;
-        for(var i=0;i<arr.length;i++){
-            if(parseFloat(arr[i].innerHTML))
-                tot += parseFloat(arr[i].innerHTML);
+        var cash = document.getElementsByName('cashAmount');
+        var touch = document.getElementsByName('touchAmount');
+        var cashTot = 0.00;
+        var touchTot = 0.00;
+        for(var i=0;i<cash.length;i++){
+            if(parseFloat(cash[i].innerHTML))
+                cashTot += parseFloat(cash[i].innerHTML);
         }
-        document.getElementById('total').innerHTML = tot.toFixed(2);
+        for(var i=0;i<touch.length;i++){
+            if(parseFloat(touch[i].innerHTML))
+                touchTot += parseFloat(touch[i].innerHTML);
+        }
+        document.getElementById('touchTotal').innerHTML = touchTot.toFixed(2);
+        document.getElementById('cashTotal').innerHTML = cashTot.toFixed(2);
+        var total = parseFloat(document.getElementById('cashTotal').innerHTML) + parseFloat(document.getElementById('touchTotal').innerHTML);
+        document.getElementById('total').innerHTML = total.toFixed(2);
         
         $('input[name=from]').change(function() {
             var fromDate = $(this).val();

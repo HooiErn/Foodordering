@@ -64,8 +64,9 @@ Route::get('admin/deleteWaiter/{id}',[AdminController::class, 'deleteWaiter']);
 Route::get('admin/table',[AdminController::class, 'table']);
 Route::get('admin/addTable',[AdminController::class, 'addTable']);
 Route::get('admin/deleteTable/{id}',[AdminController::class, 'deleteTable']);
-//Test
-Route::get('admin/test',[AdminController::class,'test']);
+
+//Touch n Go
+Route::get('admin/setup',[AdminController::class,'setup']);
 
 //Waiter login and logout
 Route::get('waiter/login', [WaiterController::class, 'login']);
@@ -125,6 +126,8 @@ Route::get('waiter/placeOrder',[WaiterController::class, 'placeOrder']);
 
 Auth::routes();
 
+//Payment Method
+Route::get('method/{id}', [HomeController::class, 'method']);
 //Menu
 Route::get('/home/{id}', [HomeController::class, 'index'])->name('home');
 

@@ -44,6 +44,14 @@
             <span>Waiters</span>
         </a>
     </li>
+    
+    <!-- Nav Item - Setup Touch n Go -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/setup') }}">
+            <i class="fas fa-fw fa-table"></i>
+            <span>Touch n Go</span>
+        </a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

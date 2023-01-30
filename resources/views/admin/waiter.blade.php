@@ -24,26 +24,29 @@
                 <thead>
                     <tr>
                         <th>Name</th>
-                         <th>Total Amount(RM)</th>
+                        <th>Bill Amount</th>
+                        <th>Total Amount(RM)</th>
                     </tr>
                 </thead>
                 <tbody>
                 @foreach($waiters as $waiter)    
                     <tr>
-                        @if(count($waiter -> order))
+                        @if(count($orders -> where('waiter',$waiter -> name) -> where('is_paid',"1")))
                         <td> <a href="{{ url('viewOrder',['name' => $waiter -> name]) }}" id="name">{{$waiter -> name}} </td>
                         @else
                         <td>{{$waiter -> name}}</td>
                         @endif
+                        <td>{{$orders -> where('waiter',$waiter -> name) -> where('is_paid',"1") -> count()}}</td>
                         @php
                             $data = DB::table('waiters')->join('orders as total','waiters.name','=','total.waiter')
                             ->select('waiters.*','total.amount as amount')->where('total.waiter','=',$waiter -> name)->sum('amount'); 
                         @endphp
-                        <td><span id="amount" name="amount">{{number_format($data,2)}} </span></td>
+                        <td><span id="amount" name="amount">{{number_format($orders -> where('waiter',$waiter -> name) -> where('is_paid',"1") -> sum("amount"),2)}} </span></td>
                     </tr>
                 @endforeach
                 <tr>
                     <td class="text-right">Total :</td>
+                    <td>{{$orders -> where('is_paid',"1") -> count()}}</td>
                     <td><span id="total"></span></td>
                 </tr>
                 </tbody>

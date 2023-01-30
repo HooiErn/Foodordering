@@ -30,40 +30,81 @@
                     </div>
                 </div>
                 <div class="card-body">
-                  <div class="table-responsive">
-       
                     <table class="table table-hover">
-                <thead class="thead-dark">
-  
-                    <tr>
-                        <th>No.</th>
-                        <th>Name</th>
-                        <th>Quantity</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    
-                @foreach($carts -> where('table_id',$table->table_id) -> where('is_paid','0') -> where('orderID','!=',null) as $cart)   
-                    <tr>
-                        <td>{{$loop -> iteration}}.</td>
-                        <td>{{$cart -> name}}</td>
-                        <td><center>{{$cart -> quantity}}</center></td>
-                        <td>{{number_format($cart -> quantity * $cart -> price,2)}}</td>
-                        <td><span class="text-danger">Havent Paid</span></td>
-                    </tr>
-                </tbody>
-               
-                @endforeach
-            </table>
-  
-    </div>
+                        <thead>
+                            <tr>
+                                <th>No.</th>
+                                <th>Order ID</th>
+                                <th>Responsible</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($orders->where('table_id',$table -> table_id)->where('is_paid',"0") as $order)   
+                                <tr>
+                                    <td>{{$loop -> iteration}}.</td>
+                                    <td><a href="" data-toggle="modal" data-target="#order{{$order->orderID}}" style="text-decoration: none;">{{$order -> orderID}}</a></td>
+                                    @if($order -> waiter == null)
+                                        <td><span class="text-danger">No person in charge</span></td>
+                                    @else
+                                        <td>{{$order -> waiter}}</td>
+                                    @endif
+                                    <td>RM {{number_format($order -> amount,2)}}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     @endforeach
 </div>
 
+@foreach($orders as $order) 
+    <div class="modal fade" id="order{{$order->orderID}}" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Included Cart</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table">
+                        <tbody>
+                            @foreach($carts -> where('orderID', $order -> orderID) as $cart)
+                            <tr>
+                                <td colspan="2">{{$cart -> name}}</td>
+                                <td>{{$cart -> quantity}}</td>
+                                <td><span name="amount">{{number_format($cart->quantity * $cart->price,2)}}</span></td>
+                            </tr>
+                            @endforeach
+                            <tr>
+                                <td colspan="2" class="text-right">Total:</td>
+                                <td><span id="total"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+@endforeach
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script scr="text/javascript">
+    $(document).ready(function () {
+        var arr = document.getElementsByName('amount');
+        var tot=0.00;
+        for(var i=0;i<arr.length;i++){
+            if(parseFloat(arr[i].innerHTML))
+                tot += parseFloat(arr[i].innerHTML);
+        }
+        document.getElementById('total').innerHTML = tot.toFixed(2);
+        console.log(tot);
+    });
+
+</script>
 
 @endsection

@@ -21,6 +21,7 @@ class CreateOrdersTable extends Migration
             $table->string('addon')->nullable();
             $table->string('waiter')->nullable();
             $table->integer('is_paid');
+            $table->integer('payment_method')->default(1);
             $table->date('created_at');
             $table->date('updated_at');
         
