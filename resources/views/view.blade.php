@@ -43,13 +43,8 @@
                             </tr>
                             <tr>
                                 <td class="text-right" colspan="3">Pay By :</td>
-                                <td>
-                                    <select name="payment" id="payment">
-                                        <option disabled selected="" class="form-control">-- Method --</option>
-                                        <option value="1">Cash</option>
-                                        <option value="2">Touch n Go</option>
-                                    </select>
-                                </td>
+                                <td><span id="paymentName"></span></td>
+                                <input type="hidden" name="paymentMethod" id="paymentMethod" class="form-control">
                             </tr>
                         </tbody>
                     </table>
@@ -65,10 +60,19 @@
 <script>
     $(document).ready(function () {
         var arr = document.getElementsByName('grandprice');
+        let number = localStorage.getItem("paymentMethod");
         var tot=0.00;
         for(var i=0;i<arr.length;i++){
             if(parseFloat(arr[i].value))
                 tot += parseFloat(arr[i].value);
+        }
+        if(number == 1){
+            $("span[id='paymentName']").html("Cash");
+            $("input[id='paymentMethod']").val(number);
+        }
+        if(number == 2){
+            $("span[id='paymentName']").html("Touch 'n Go");
+            $("input[id='paymentMethod']").val(number);
         }
         document.getElementById('total').value = tot.toFixed(2);
         document.getElementById('total2').innerHTML = tot.toFixed(2);

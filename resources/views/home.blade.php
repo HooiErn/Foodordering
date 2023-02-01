@@ -50,7 +50,7 @@
               <img src="{{ asset('images/'.$food -> image)}}" alt="" class="image" style="width: 100%; height: 250px;">
               <h1 class="card-title">{{$food -> name}}</h1>
               <div class="card-body">
-                  <p class="card-price">RM{{$food -> price}}</p>
+                  <p class="card-price">RM{{ number_format($food -> price,2) }}</p>
               </div>
               <div class="card-footer border-0" style="background-color: rgba(0,0,0,0) !important; color: white;">
                   @if($food -> available == 1)

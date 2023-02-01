@@ -67,6 +67,7 @@ public function confirmOrder(Request $request){
                 'addon' => $request -> addon,
                 'is_paid' => 0,
                 'waiter' => $waiterName,
+                'payment_method' => $request -> paymentMethod,
             ]);
         }
         else
@@ -78,6 +79,7 @@ public function confirmOrder(Request $request){
                 'addon' => $request -> addon,
                 'is_paid' => 0,
                 'waiter' => null,
+                'payment_method' => $request -> paymentMethod,
             ]);
         }
 

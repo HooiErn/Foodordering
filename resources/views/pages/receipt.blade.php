@@ -17,7 +17,7 @@
                     <tr>
                         <th>#</th>
                         <th class="quantity">Qty</th>
-                        <th class="description">Description</th>
+                        <th class="name">Name</th>
                         <th class="price">Price per unit(RM)</th>
                         <th class="price">Subtotal(RM)</th>
                     </tr>
@@ -27,18 +27,25 @@
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td class="quantity" style="text-align:center;">{{$cart -> quantity}}</td>
-                        <td class="description">{{$cart -> fName}}</td>
+                        <td class="name">{{$cart -> fName}}</td>
                         <td class="price">{{number_format($cart -> fPrice,2)}}</td>
                         <td class="price">{{number_format($cart->quantity * $cart->fPrice,2)}}</td>
                     </tr>
                     @endforeach
                     <tr>
                         <td></td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">Pay By:</td>
+                        <td><span id="paymentName"></span></td>
+                    </tr>
+                    <tr>
+                        <td></td>
                         <td class="quantity"></td>
-                        <td class="description"></td>
+                        <td class="name"></td>
                         <td class="text-right">Total:</td>
                         <td>{{number_format($order->amount,2)}}</td>
-                    </tr>   
+                    </tr>
                 </tbody>
             </table>
             <br>
@@ -53,5 +60,17 @@
         <button id="btnPrint" class="hidden-print">Print</button>
         <script src="{{ asset('js/script.js') }}"></script>
         </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                let number = localStorage.getItem("paymentMethod");
+                if(number == 1){
+                    $("span[id='paymentName']").html("Cash");
+                }
+                if(number == 2){
+                    $("span[id='paymentName']").html("Touch 'n Go");
+                }
+            })
+        </script>
     </body>
 </html>

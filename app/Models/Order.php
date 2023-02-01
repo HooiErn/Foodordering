@@ -17,6 +17,7 @@ class Order extends Model
         'addon',
         'is_paid',
         'waiter',
+        'payment_method',
     ];
 
 }

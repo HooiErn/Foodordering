@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use DB;
 use Cookie;
 use Session;
+use App\Models\Qrcode;
 use App\Models\Cart;
 use App\Models\Food;
 use App\Models\Admin;
@@ -359,6 +360,17 @@ class AdminController extends Controller
     
     public function setup(){
         return view('admin.setup');
+    }
+    
+    public function addQrCode(Request $request){
+        $image=$request->file('qrcode');        
+        $image->move('images',$image->getClientOriginalName());               
+        $imageName=$image->getClientOriginalName(); 
+        $addQrCode=Qrcode::create([
+            'name'=>$request->name,
+            'image'=>$imageName,
+        ]);
+        return redirect('admin.setup');
     }
 
 }

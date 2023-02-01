@@ -67,6 +67,7 @@ Route::get('admin/deleteTable/{id}',[AdminController::class, 'deleteTable']);
 
 //Touch n Go
 Route::get('admin/setup',[AdminController::class,'setup']);
+Route::post('admin/addQrcode', [AdminController::class, 'addQrcode']);
 
 //Waiter login and logout
 Route::get('waiter/login', [WaiterController::class, 'login']);
@@ -104,22 +105,10 @@ Route::get('deleteCart/{id}',[CartController::class,'deleteCart']);
 Route::post('update-to-cart',[CartController::class,'updateCart']);
 Route::post('confirmOrder',[CartController::class,'confirmOrder']);
 
-//Payment
-Route::post('/checkout', [PaymentController::class, 'paymentPost'])->name('payment.post');
-
-Route::get('login', [AuthController::class, 'index']);
-Route::post('post-login', [AuthController::class, 'postLogin'])->name('login.post'); 
-Route::get('logout', [AuthController::class, 'logout'])->name('user.logout');
-
-//Print receipt
-Route::get('receipt/{orderID}',function($orderID){
-    $order = Order::where('orderID',$orderID)->first();
-    $carts = \DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
-    ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
-    ->where('orders.orderID',$orderID)->get(); //if use Cart model, it somehow pass all food in there, regardless if you choose it or not
-
-    return view('pages.receipt',compact('carts','order'));
-})->name('receipt');
+//Receipt (cash)
+Route::get('receipt/{id}',[HomeController::class, 'receipt'])->name('receipt');
+//Receipt (touch n go)
+Route::get('touchngo', [HomeController::class, 'scanTouchnGo']);
 
 //Place Order waiter
 Route::get('waiter/placeOrder',[WaiterController::class, 'placeOrder']);
