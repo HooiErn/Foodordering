@@ -30,15 +30,17 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
         <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
+
 </head>
 <body>
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container">
+                 <a href="{{ url('home',['id' => $table -> table_id,'payment' => $table -> payment]) }}"><i class="fa fa-arrow-left" aria-hidden="true" style="color: white;"></i></a>
                 <a class="navbar-brand" href="">
                    Table {{str_pad($table -> table_id,3,'0',STR_PAD_LEFT)}}
                 </a>
-                <a href="{{ url('home',['id' => $table -> table_id]) }}"><i class="fa fa-arrow-left" aria-hidden="true" style="color: white;"></i></a>
+               
             </div>
         </nav>
 

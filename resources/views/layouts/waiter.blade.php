@@ -49,7 +49,7 @@
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
                 <a class="nav-link" href="{{ url('waiter/scan') }}">
-                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <i class="fas fa-fw fa-qrcode"></i>
                     <span>Scan</span>
                 </a>
             </li>

@@ -96,7 +96,7 @@
                         </tbody>
                     </table>
                 </div>
-                <button type="submit" class="btn btn-primary float-right">Confirm Order</button>
+                <button type="submit" class="btn btn-primary float-right" onclick="return confirm('Are you sure to place order now?')">Confirm Order</button>
             </form>
         </div>
     </div>

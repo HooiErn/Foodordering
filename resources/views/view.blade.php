@@ -3,7 +3,8 @@
 
 <title>View Cart</title>
 
-<div class="row">
+ <body onload = "JavaScript:AutoRefresh(10000);">
+<div class="row" onload="AutoRefresh(10000)">
     <div class="col-md-2"></div>
     <div class="col-md-8">
         <form action="{{ url('confirmOrder') }}" method="POST">
@@ -37,14 +38,14 @@
                             </tr>
                             @endforeach
                             <tr>
-                                <td class="text-right" colspan="3">Sub Total :</td>
-                                <td><span name="total2" id="total2"></span></td>
-                                <input type="hidden" name="total" id="total" readonly class="form-control-plaintext">
+                                <td class="text-right" colspan="3"><b>Sub Total :</b></td>
+                                <td><b><span name="total2" id="total2"></span></b></td>
+                               <input type="hidden" name="total" id="total" readonly class="form-control-plaintext">
                             </tr>
                             <tr>
-                                <td class="text-right" colspan="3">Pay By :</td>
-                                <td><span id="paymentName"></span></td>
-                                <input type="hidden" name="paymentMethod" id="paymentMethod" class="form-control">
+                                <td class="text-left" colspan="3">Pay By :
+                                <span id="paymentName"></span>
+                                <input type="hidden" name="paymentMethod" id="paymentMethod" class="form-control" value="{{$table -> payment}}"></td>
                             </tr>
                         </tbody>
                     </table>
@@ -56,11 +57,20 @@
         </form>
     </div>
 </div>
+ </body>
+ 
+<script>
+    function AutoRefresh(t){
+        setTimeout(location.reload(), t);
+    }
+</script>
 
 <script>
-    $(document).ready(function () {
+    
+    $("document").ready(function () {
+        
         var arr = document.getElementsByName('grandprice');
-        let number = localStorage.getItem("paymentMethod");
+        var number = document.getElementById("paymentMethod").value;
         var tot=0.00;
         for(var i=0;i<arr.length;i++){
             if(parseFloat(arr[i].value))
@@ -68,19 +78,24 @@
         }
         if(number == 1){
             $("span[id='paymentName']").html("Cash");
-            $("input[id='paymentMethod']").val(number);
         }
         if(number == 2){
             $("span[id='paymentName']").html("Touch 'n Go");
-            $("input[id='paymentMethod']").val(number);
         }
         document.getElementById('total').value = tot.toFixed(2);
         document.getElementById('total2').innerHTML = tot.toFixed(2);
         
         document.getElementById('grandprice2').innerHTML = document.getElementById('grandprice').value;
+        
     });
-
 </script>
 
+ <script type = "text/JavaScript">
+         <!--
+            function AutoRefresh( t ) {
+               setTimeout("location.reload(true);", t);
+            }
+         //-->
+      </script>
 
 @endsection

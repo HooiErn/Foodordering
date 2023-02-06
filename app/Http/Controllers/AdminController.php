@@ -61,9 +61,9 @@ class AdminController extends Controller
 
     //Dashboard
     public function index(){
-        $categories = DB::table('categories')->select('categories.*')->get();
-        $foods = DB::table('food')->leftjoin('categories','categories.id','=','food.categoryID')->select('food.*','categories.name as categoryName')->get();
-        return view('admin/dashboard')->with(["categories" => $categories])->with(["foods" => $foods]);
+        $orders = DB::table('orders')
+        ->get();
+        return view('admin/dashboard',compact("orders"));
     }
 
     //Add Category
@@ -359,18 +359,34 @@ class AdminController extends Controller
     }
     
     public function setup(){
-        return view('admin.setup');
+        $qrcode = DB::table('qrcodes')->first();
+        return view('admin.setup',compact('qrcode'));
     }
     
-    public function addQrCode(Request $request){
+    public function addQrcode(Request $request){
         $image=$request->file('qrcode');        
         $image->move('images',$image->getClientOriginalName());               
         $imageName=$image->getClientOriginalName(); 
         $addQrCode=Qrcode::create([
             'name'=>$request->name,
-            'image'=>$imageName,
+            'qrcode'=>$imageName,
         ]);
-        return redirect('admin.setup');
+        return back();
+    }
+    
+    public function updateQrcode(Request $request){
+        $qrcode = Qrcode::where('name',$request -> name)->first();
+        if($request -> file('qrcode')!=''){
+            $image=$request->file('qrcode');        
+            $image->move('images',$image->getClientOriginalName());               
+            $imageName=$image->getClientOriginalName(); 
+            $qrcode-> qrcode = $imageName;
+        }
+        
+        $qrcode -> name = $request -> name;
+        $qrcode -> save();
+        
+        return back();
     }
 
 }

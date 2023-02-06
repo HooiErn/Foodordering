@@ -1,3 +1,15 @@
+<style>
+.ticket {
+  background-color: lightgrey;
+  width: 140px;
+  border: 5px solid black;
+  padding: 50px;
+  margin: 20px;
+}
+
+
+</style>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -8,10 +20,22 @@
         <title>Receipt</title>
     </head>
     <body>
+           <br><br><br><br><br><br>
+       
         <div id="invoice-POS">
-        <div class="ticket">
-            <p class="centered">RECEIPT</p>
-               
+            <div class="ticket">
+                @if($order -> payment_method == 2)
+                    <div id="extra">
+                        <div>
+                            &nbsp;&nbsp;&nbsp; 
+                            <img src="{{ asset('images/')}}/{{$qrcode -> qrcode}}" style="width:70px; height:70px; float:right;">
+                            <p style="color:blue;  float:right;">Pay Here
+                        </div>
+                    </div>
+                @endif
+       
+           &nbsp;&nbsp;&nbsp; <p class="centered">RECEIPT</p>
+              
             <table>
                 <thead>
                     <tr>
@@ -28,23 +52,27 @@
                         <td>{{$loop->iteration}}</td>
                         <td class="quantity" style="text-align:center;">{{$cart -> quantity}}</td>
                         <td class="name">{{$cart -> fName}}</td>
-                        <td class="price">{{number_format($cart -> fPrice,2)}}</td>
+                        <td class="price"> {{number_format($cart -> fPrice,2)}}</td>
                         <td class="price">{{number_format($cart->quantity * $cart->fPrice,2)}}</td>
                     </tr>
                     @endforeach
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td class="text-right">Pay By:</td>
-                        <td><span id="paymentName"></span></td>
-                    </tr>
+                    
                     <tr>
                         <td></td>
                         <td class="quantity"></td>
                         <td class="name"></td>
-                        <td class="text-right">Total:</td>
-                        <td>{{number_format($order->amount,2)}}</td>
+                        <td class="text-right"><b>Total:</b></td>
+                        <td><b>{{number_format($order->amount,2)}}</b></td>
+                    </tr>
+                    
+                    <tr>
+                        <td class="text-right"><b>Pay</b></td>
+                        <td class="text-right"><b>By:</b></td>
+                        @if($order -> payment_method == 1)
+                        <td class="text-right" style="width:30%"><b><span>Cash</span></b></td>
+                        @elseif($order -> payment_method ==2)
+                        <td class="text-right" style="width:30%"><b><span>Touch 'n Go</span></b></td>
+                        @endif
                     </tr>
                 </tbody>
             </table>
@@ -57,7 +85,10 @@
             <p class="centered">Thanks for your purchase!
         </div>
             <br>
-        <button id="btnPrint" class="hidden-print">Print</button>
+            
+           
+           
+       
         <script src="{{ asset('js/script.js') }}"></script>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -71,6 +102,7 @@
                     $("span[id='paymentName']").html("Touch 'n Go");
                 }
             })
+
         </script>
     </body>
 </html>

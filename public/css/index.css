@@ -1,0 +1,38 @@
+.button {
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    transition-duration: 0.4s;
+    cursor: pointer;
+  }
+  
+  .button1 {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #14f51d;
+  }
+  
+  .button1:hover {
+    background-color: #14f51d;
+    color: white;
+  }
+  
+  .button2 {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #0000A3;
+  }
+  
+  .button2:hover {
+    background-color: #0000A3;
+    color: white;
+  }
+  
+   .body{
+        background-image: url("https://previews.123rf.com/images/279photo/279photo1612/279photo161205273/68221977-payment-terminal-with-card-on-white-background-top-view-.jpg");
+    }

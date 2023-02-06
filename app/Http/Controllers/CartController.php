@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Brian2694\Toastr\Facades\Toastr;
+use App\Models\Table;
 use App\Models\Food;
 use App\Models\Cart;
 use App\Models\Order;
@@ -84,7 +85,10 @@ public function confirmOrder(Request $request){
         }
 
         if($addOrder){
-            $carts = Cart::where('table_id',$request -> tableID)->where('orderID',null)->get(); 
+            $carts = Cart::where('table_id',$request -> tableID)->where('orderID',null)->get();
+            $table = Table::where('table_id',$request -> tableID)-> first();
+            $table -> payment = null;
+            $table -> save();
             foreach($carts as $cart){
                 $cart -> orderID = $orderID;
                 $cart -> save();
@@ -93,7 +97,7 @@ public function confirmOrder(Request $request){
                 return back();
             }
             else{
-                return \Redirect::route('receipt',['orderID' => $orderID]);
+                return \Redirect::route('receipt',['id' => $orderID]);
             }
             
         }

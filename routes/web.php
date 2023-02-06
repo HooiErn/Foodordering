@@ -68,6 +68,7 @@ Route::get('admin/deleteTable/{id}',[AdminController::class, 'deleteTable']);
 //Touch n Go
 Route::get('admin/setup',[AdminController::class,'setup']);
 Route::post('admin/addQrcode', [AdminController::class, 'addQrcode']);
+Route::post('admin/updateQrcode', [AdminController::class, 'updateQrcode']);
 
 //Waiter login and logout
 Route::get('waiter/login', [WaiterController::class, 'login']);
@@ -118,5 +119,5 @@ Auth::routes();
 //Payment Method
 Route::get('method/{id}', [HomeController::class, 'method']);
 //Menu
-Route::get('/home/{id}', [HomeController::class, 'index'])->name('home');
+Route::get('/home/{id}/{payment}', [HomeController::class, 'index'])->name('home');
 

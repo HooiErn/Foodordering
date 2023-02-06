@@ -44,7 +44,12 @@ img {
 }
 
 .ticket{
-    max-width:100%;
+  max-width:100%;
+  background-color: lightgrey;
+  width: 150px;
+  border: 8px solid black;
+  padding: 30px;
+  margin-top: 5px;
 }
 
 @media screen and (max-width:760px){

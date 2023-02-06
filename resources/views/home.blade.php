@@ -1,6 +1,6 @@
 
 <!DOCTYPE html> 
-<html class="scroll-smooth">
+<html>
   <head>
     <title>Menu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,20 +45,20 @@
     <br>
     <div class="card-group" id="wrapper">
       @foreach($foods as $food)
-          <div class="card">
+          <div class="card" style="height:350px;">
             <div class="card-content">
               <img src="{{ asset('images/'.$food -> image)}}" alt="" class="image" style="width: 100%; height: 250px;">
-              <h1 class="card-title">{{$food -> name}}</h1>
+              
               <div class="card-body">
+                  <h5>{{$food -> name}}</h5>
                   <p class="card-price">RM{{ number_format($food -> price,2) }}</p>
-              </div>
-              <div class="card-footer border-0" style="background-color: rgba(0,0,0,0) !important; color: white;">
-                  @if($food -> available == 1)
+                   @if($food -> available == 1)
                     <a class="btn btn-success" data-toggle="modal" data-target=".food{{$food -> id}}">Add To Cart <span><i class="fa fa-shopping-cart"></span></i></a>
                   @elseif($food -> available == 0)
                     <span class="text-info">Not Available</span>
                   @endif
               </div>
+              
             </div>
             @if($food -> available == 0)
               <div class="overlay">Out Of Stock!!</div>

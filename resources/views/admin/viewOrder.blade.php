@@ -6,48 +6,93 @@
     #orderID{
         text-decoration:none;
     }
+    .inline{
+        display: inline; 
+       
+    }
+    .inline2{
+        display:inline;
+        float:right;
+    }
+    .table{
+        margin-left: auto;
+        width:80% !important;
+        height:80% !important;
+        font-size:11px !important;
+
+    }
+    .table th{
+        padding:6px;
+    }
+    .table td{
+        padding:5px !important;
+    }
+    tr:nth-child(even){
+        background-color: #f2f2f2
+        }
+        /* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+/* Scroll css */
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
 </style>
 
-<form action="{{ url('admin/searchDate') }}" method="POST">
+<form action="{{ url('waiter/searchDate') }}" method="POST">
     @csrf
     <br>
-        <div class="d-flex align-items-center justify-content-center">
-            <input type="hidden" class="form-control" name="name" value="{{$waiter -> name}}">
+        <div class="d-flex align-items-center justify-content-center" style="font-size:12px;">
             <label for="date" class="col-form-label">From: </label>
             <div class="col-sm-3">
-                <input type="date" class="form-control input-sm" id="from" name="from" required>
+                <input type="date" class="form-control-sm input-sm" id="from" name="from" required>
             </div>
             <label for="date" class="col-form-label">To: </label>
             <div class="col-sm-3">
-                <input type="date" class="form-control input-sm" id="to" name="to" required>
+                <input type="date" class="form-control-sm input-sm" id="to" name="to" required>
             </div>
-            <button type="submit" class="btn btn-primary" name="search" title="Search"><i class="fas fa-search"></i></button>
+            <button type="submit" class="btn-sm btn-primary " name="search" title="Search"><i class="fas fa-search"></i></button>
         </div>  
 </form>
 
 <br>
 
 <div class="row">
-    <div class="table-responsive">
+    <div class="table-responsive" style="width:80%;height:220px;">
         
             <table class="table table-hover table-bordered">
                 <thead>
-                    <tr class="thead-dark">
-                        <th colspan="5">{{$waiter->name}}</th>
+                    <tr class="thead-dark" style="position: sticky; top: 0;">
+                        <th colspan="5">
+                            <div class="inline">{{$waiter->name}} </div>
+                            <div class="inline2">Total : <span id="total"></span></div>
+                        </th>
                     </tr>
                     <tr>
                         <th>#</th>
                         <th>OrderID</th>
                         <th>Cash</th>
                         <th>Touch 'n Go</th>
-                        <th rowspan="2">Created Date</th>
+                        <th>Created Date</th>
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($orders as $order)
+                @foreach($orders ->where("is_paid",1) as $order)
                     <tr>
                         <td>{{$loop->iteration}}</td>
-                        <td><a href="{{ url('admin/viewFoodList',['orderID' => $order -> orderID]) }}" id="orderID">{{$order -> orderID}} </a></td>
+                        <td><a href="{{ url('waiter/viewFoodList',['orderID' => $order -> orderID]) }}" id="orderID">{{$order -> orderID}} </a></td>
                         @if($order -> payment_method == 1)
                             <td><span id="amount" name="cashAmount">{{number_format($order -> amount,2)}}</span></td>
                             <td><span>0.00</span></td>
@@ -60,9 +105,9 @@
                 @endforeach 
                 <tr>
                     <td colspan="2"></td>
-                    <td><span id="cashTotal"></span></td>
-                    <td><span id="touchTotal"></span></td>
-                    <td>Total : <span id="total"></span></td>
+                    <td><b><span id="cashTotal"></span></b></td>
+                    <td><b><span id="touchTotal"></span></b></td>
+                    <td></td>
                 </tr>
                 </tbody>
             </table>
@@ -107,7 +152,6 @@
         if(localStorage.getItem("toDate")){
             $('input[name=to]').val(localStorage.getItem("toDate"));
         }
-    
     });
 
 </script>
