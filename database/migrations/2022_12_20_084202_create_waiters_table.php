@@ -17,6 +17,7 @@ class CreateWaitersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('password');
+            $table->integer('count');
             $table->timestamps();
         });
     }

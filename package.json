@@ -26,6 +26,7 @@
     },
     "dependencies": {
         "font-awesome": "^4.7.0",
-        "html5-qrcode": "^2.2.8"
+        "html5-qrcode": "^2.2.8",
+        "toastr": "^2.1.4"
     }
 }

@@ -18,6 +18,7 @@ class CreateCartsTable extends Migration
             $table->string('food_id')->nullable();
             $table->integer('quantity')->default(1);
             $table->string('table_id');
+            $table->json('addon')->nullable();
             $table->string('orderID')->nullable();
             $table->timestamps();
         });
