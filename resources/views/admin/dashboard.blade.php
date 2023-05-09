@@ -14,13 +14,14 @@
 <!-- Data -->
 @php
     use App\Models\Order;
-    $cash = $orders -> where("is_paid", 1) -> where("payment_method", 1) ->count();
-    $tng = $orders -> where("is_paid", 1) -> where("payment_method", 2) ->count();
+    $orders = DB::table('orders')->get();
+    $cash = $orders -> where("status", 1) -> where("payment_method", 1) ->count();
+    $tng = $orders -> where("status", 1) -> where("payment_method", 2) ->count();
     
-    $orders = Order::select(DB::raw("COUNT(*) as count"), DB::raw("MONTHNAME(created_at) as month_name"))
-                    ->whereYear('created_at', date('Y'))
-                    ->groupBy(DB::raw("Month(created_at)"))
-                    ->pluck('count', 'month_name');
+    $orders = Order::selectRaw('COUNT(*) as count, MONTHNAME(serve_time) as month_name')
+            ->whereYear('serve_time', date('Y'))
+            ->groupBy('month_name')
+            ->pluck('count', 'month_name');
 
 @endphp
 <input type="hidden" id="cash" value="{{$cash}}">
@@ -34,7 +35,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                             Earnings (Total)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">RM {{$orders -> sum("amount")}}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">RM {{$data -> where('waiter', '!=' , null) -> sum('amount')}}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -50,7 +51,7 @@
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                             Successful Bill</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{count($orders -> where("is_paid", 1))}}</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{count($data -> where("status", 1))}}</div>
                     </div>
                     <div class="col-auto">
                         <i class="fas fa-comments fa-2x text-gray-300"></i>

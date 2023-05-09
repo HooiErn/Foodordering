@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>MY Balance</title>
+       
         <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- Scripts -->
        <script src="{{ asset('js/app.js') }}" defer></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -20,11 +20,11 @@
         <link href="{{ asset('css/dashboard.css') }}" rel="stylesheet">
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
         <link href="{{ asset('css/refresh.css') }}" rel="stylesheet">
-        @if(!Session::has('adminData'))
+        <!-- @if(!Session::has('adminData'))
             <script type="text/javascript">
                 window.location.href="{{url('admin/login')}}"
             </script>
-        @endif   
+        @endif    -->
         <style type="text/css">
            @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
   
@@ -149,12 +149,14 @@
 
     <body>
       <!--TopNav first--> 
-    <nav class="navbar navbar-expand-lg navbar-laravel" style=" background-image:linear-gradient(to right,#4d71ff,#4d71ff); position: fixed; bottom: 0; width: 100%;">
+     
+    <nav class="navbar navbar-expand-lg navbar-laravel" style=" background-image:linear-gradient(to right,#000000,#000000); position: fixed; bottom: 0; width: 100%;">
+        
         <div class="container">
-       
-        <a class="navbar-brand" href="#" style="color:white;display:inline;"> MY Balance: RM2000</a> 
 
-        </nav> 
+        &nbsp; <a class="navbar-brand-center" href="#" style="color:white;display:inline;">  <a href="{{ url('viewCart',['id' => $table -> table_id]) }}" class="fa fa-shopping-cart float-right" style="text-decoration:none; color:red;"><span class="text-white"><sup>{{count($carts->where('table_id',$table -> table_id)->where('orderID',null))}}</> &nbsp;&nbsp; RM {{$carts->where('table_id',$table -> table_id)->where('orderID',null)->sum('price')}}</span></a> </a> 
+    </nav> 
+        
     <!--TopNav second--> 
      
         </div>

@@ -78,7 +78,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
+                <div class="card-body" style="overflow-x: scroll;">
                     <table class="table table-hover">
                         <thead>
                             <tr>

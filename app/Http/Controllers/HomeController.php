@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HomeController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -13,6 +14,7 @@ use App\Models\Table;
 use App\Models\Qrcode;
 use App\Models\Order;
 use App\Models\Work;
+use App\Models\Category;
 use App\Events\Refresh;
 use App\Events\CallWaiter;
 use App\Events\Refresh2;
@@ -61,11 +63,19 @@ class HomeController extends Controller
             event(new Refresh($table->table_id));
         }
     
+        $categories = Category::all();
         $foods = Food::all();
         $carts = Cart::leftjoin('food', 'carts.food_id', '=', 'food.id')
         ->select('carts.*','food.price as price')
         ->get();
-        return view('home', compact('foods', 'carts', 'table'));
+
+        $menu = [];
+
+        // Group foods by category
+        foreach ($categories as $category) {
+            $menu[$category->name] = $foods->where('categoryID', $category->id);
+        }
+        return view('home', compact('menu', 'carts', 'table','categories'));
         
     }
 

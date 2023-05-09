@@ -57,10 +57,19 @@
                                                                                 <table class="invoice-items" cellpadding="0" cellspacing="0">
                                                                                     <tbody>
                                                                                         @foreach($carts as $cart)
-                                                                                        <tr>
-                                                                                            <td>{{$cart -> name}} <span class="text-info">x{{$cart -> quantity}}</span></td>
-                                                                                            <td class="alignright">RM {{number_format($cart -> price * $cart -> quantity,2)}}</td>
-                                                                                        </tr>
+                                                                                            <tr>
+                                                                                                <td>{{$cart -> name}} <span class="text-info">x{{$cart -> quantity}}</span>
+                                                                                                    @if(!empty($cart->addon))
+                                                                                                        @php
+                                                                                                            $addon = json_decode($cart->addon, true);
+                                                                                                        @endphp
+                                                                                                        <ul style="list-style-type: none; margin: 0; padding: 0;">
+                                                                                                            <li>- {{$addon}}</li>
+                                                                                                        </ul>   
+                                                                                                    @endif
+                                                                                                </td>
+                                                                                                <td class="alignright">RM {{number_format($cart -> price * $cart -> quantity,2)}}</td>
+                                                                                            </tr>
                                                                                         @endforeach
                                                                                         <tr class="total">
                                                                                             <td class="alignright" width="80%">Total</td>
@@ -90,7 +99,8 @@
                     </tr>
                 </tbody>
             </table>
-        <style type="text/css">/*<![CDATA[*//* -------------------------------------
+        <style type="text/css">
+/*<![CDATA[*//* -------------------------------------
     GLOBAL
     A very basic CSS reset
 ------------------------------------- */
@@ -354,5 +364,5 @@ a {
         width: 100% !important;
     }
 }/*]]>*/</style>
-    </body>
+    </body>
 </html>

@@ -96,8 +96,8 @@ class AdminController extends Controller
 
     //Dashboard
     public function index(){
-        $orders = DB::table('orders')->get();
-        return view('admin/dashboard',compact("orders"));
+        $data = Order::all();
+        return view('admin/dashboard',compact("data"));
     }
     
     // Action List

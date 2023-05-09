@@ -1,3 +1,4 @@
+
 <!DOCTYPE html> 
 <html>
   <head>
@@ -14,7 +15,23 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu.css') }}">
+<style>
+      nav a {
+        color: #fff;
+        text-decoration: none;
+        margin: 0 10px;
+      }
 
+      /* Style for each section */
+      section {
+        height: 500px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 3em;
+      }
+
+</style>
      <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
         <script>
 
@@ -54,6 +71,7 @@
 
         </script>
   </head>
+
   <body id="page-top">
       @if($table -> payment == null)
         <script>
@@ -61,13 +79,25 @@
         </script>
     @endif
     <input type="hidden" id="table_id" value="{{$table -> table_id}}">
-    <nav class="navbar navbar-dark bg-dark">
-        <span class="navbar-brand mb-0 h1">Menu 菜单</span>
-        <a href="{{ url('viewCart',['id' => $table -> table_id]) }}" class="fa fa-shopping-cart" style="text-decoration:none;">
-            <span class="text-danger">{{count($carts->where('table_id',$table -> table_id)->where('orderID',null))}}</span>
-            <span>RM {{$carts->where('table_id',$table -> table_id)->where('orderID',null)->sum('price')}}</span>
-        </a>
-    </nav>
+    <!--Navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="#">Menu 菜单</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav">
+        @foreach ($categories as $category)
+          <li class="nav-item">
+            <a class="nav-link" href="#{{ $category->name }}">{{ $category->name }}</a>
+          </li>
+        @endforeach
+      </ul>
+    </div>
+  </div>
+</nav>
+
     
     <div class="container">
         <div class="row mt-1 mb-1">
@@ -79,10 +109,14 @@
                 </form>
             </div>
         </div>
-    
         <div class="row">
-            @foreach($foods as $food)
+        @foreach($menu as $categoryName => $foods)
                 <div class="col-lg-12 col-md-12">
+                    <br>
+                    <div class="section" id="{{ $categoryName }}">
+                       <h2>{{ $categoryName }}</h2>
+                    </div>
+                  @foreach($foods as $food)
                     <div class="card shadow">
                         <div class="row no-gutters align-items-center">
                             <div class="col-auto">
@@ -94,11 +128,11 @@
                                 <div class="h6 mb-0 font-weight-bold text-gray-800">RM {{ number_format($food -> price,2) }}</div>
                             </div>
                             <div class="col-auto mr-2">
-                                <a href="{{ url('food-detail', ['id' => $food -> id, 'table_id' => $table -> table_id]) }}" class="btn btn-success rounded-10">Add To Cart<br>加入购物车</a>
-                                <!-- data-toggle="modal" data-target=".food{{$food -> id}}" -->
+                               <a href="{{ url('food-detail', ['id' => $food -> id, 'table_id' => $table -> table_id]) }}" data-toggle="modal" data-target=".food{{$food -> id}}" class="btn btn-success rounded-10">Add To Cart<br>加入购物车</a>
                             </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
                 <form action="{{ url('/add-to-cart') }}" method="POST">
                     @csrf
@@ -121,7 +155,48 @@
                                         <span class="input-group-text">+</span>
                                     </div>
                                 </div>
-                                <br>
+                                 <input type="hidden" value="" name="select">
+        <div class="row">
+            <div class="col-md-6">
+                <center>
+                <div class="form-group">
+                    <b><label class="control-label" style="font-size: 16px;">Sugar Level:</label></b>
+                    <div class="radio">
+                        <label style="font-size: 14px;">
+                            <input type="radio" name="sugar_level" value="no_sugar"> No sugar
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label style="font-size: 14px;">
+                            <input type="radio" name="sugar_level" value="less_sugar"> Less sugar
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label style="font-size: 14px;">
+                            <input type="radio" name="sugar_level" value="standard"> Standard
+                        </label>
+                    </div>
+                  </center>
+                </div>
+            </div>
+            <div class="col-md-6 ml-auto">
+                <center>
+                <div class="form-group">
+                    <b><label class="control-label" style="font-size: 16px;">Ice Level:</label></b>
+                    <div class="radio">
+                        <label style="font-size: 14px;">
+                            <input type="radio" name="ice_level" value="no_ice"> No ice
+                        </label>
+                    </div>
+                    <div class="radio">
+                        <label style="font-size: 14px;">
+                            <input type="radio" name="ice_level" value="ice"> Ice
+                        </label>
+                    </div>
+                </div>
+                </center>
+            </div>
+      
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">Confirm 确定</button>
                                 </div>
@@ -171,6 +246,24 @@
                 window.location.href = "/home/" + table_id;
             }
         });
-    </script>
+</script>
+<!-- Load jQuery library -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<!-- Scroll to section when a menu item is clicked -->
+<script>
+    $(document).ready(function() {
+        $('a[href^="#"]').on('click', function(event) {
+            var target = $(this.getAttribute('href'));
+            if (target.length) {
+                event.preventDefault();
+                $('html, body').stop().animate({
+                    scrollTop: target.offset().top - 100
+                }, 1000);
+            }
+        });
+    });
+</script>
 </body>
 </html>
+@include('auth.money')

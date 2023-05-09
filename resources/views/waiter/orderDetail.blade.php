@@ -22,18 +22,14 @@
         <meta property="og:url" content="https://www.bootdey.com/snippets/preview/simple-invoice-receipt-email-template">
         <meta property="og:image" content="https://www.bootdey.com/files/SnippetsImages/bootstrap-snippets-527.png">
         <meta property="og:description" content="Preview Bootstrap snippets. simple invoice receipt email template. Copy and paste the html, css and js code for save time, build your app faster and responsive">
-        <meta name="msvalidate.01" content="23285BE3183727A550D31CAE95A790AB" />
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+        <meta name="msvalidate.01" content="23285BE3183727A550D31CAE95A790AB" /> 
+        <script src="/cache-js/cache-1635427806-97135bbb13d92c11d6b2a92f6a36685a.js" type="text/javascript"></script> 
     </head>
-    @if(!Session::has('waiterData'))
-        <script type="text/javascript">
-            window.location.href="{{url('waiter/login')}}"
-        </script>
-    @endif
     <body>
         <div id="snippetContent">
+            <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script> 
+            <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
             <table class="body-wrap">
                 <tbody>
                     <tr>
@@ -47,7 +43,7 @@
                                                 <table width="100%" cellpadding="0" cellspacing="0">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="content-block"><h2>{{$msg}}</h2></td>
+                                                            <td class="content-block"><h2>Successfully Confirm order</h2></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="content-block">
@@ -61,10 +57,19 @@
                                                                                 <table class="invoice-items" cellpadding="0" cellspacing="0">
                                                                                     <tbody>
                                                                                         @foreach($carts as $cart)
-                                                                                        <tr>
-                                                                                            <td>{{$cart -> name}} <span class="text-info">x{{$cart -> quantity}}</span></td>
-                                                                                            <td class="alignright">RM {{number_format($cart -> price * $cart -> quantity,2)}}</td>
-                                                                                        </tr>
+                                                                                            <tr>
+                                                                                                <td>{{$cart -> name}} <span class="text-info">x{{$cart -> quantity}}</span>
+                                                                                                    @if(!empty($cart->addon))
+                                                                                                        @php
+                                                                                                            $addon = json_decode($cart->addon, true);
+                                                                                                        @endphp
+                                                                                                        <ul style="list-style-type: none; margin: 0; padding: 0;">
+                                                                                                            <li>- {{$addon}}</li>
+                                                                                                        </ul>   
+                                                                                                    @endif
+                                                                                                </td>
+                                                                                                <td class="alignright">RM {{number_format($cart -> price * $cart -> quantity,2)}}</td>
+                                                                                            </tr>
                                                                                         @endforeach
                                                                                         <tr class="total">
                                                                                             <td class="alignright" width="80%">Total</td>
@@ -82,14 +87,6 @@
                                                                 </table>
                                                             </td>
                                                         </tr>
-                                                        @if($order -> payment_method == 2)
-                                                            <tr>
-                                                                <td class="content-block"><img src="{{ asset('images/')}}/{{$qrcode -> qrcode}}"></td>
-                                                            </tr>
-                                                        @endif
-                                                        <tr>
-                                                            <td class="content-block"><a class="btn btn-info btn-block" href="{{ url('waiter/work') }}" style="text-decoration: none;" id="close">Close</a> </td>
-                                                        </tr>
                                                     </tbody>
                                                 </table>
                                             </td>
@@ -102,7 +99,8 @@
                     </tr>
                 </tbody>
             </table>
-        <style type="text/css">/*<![CDATA[*//* -------------------------------------
+        <style type="text/css">
+/*<![CDATA[*//* -------------------------------------
     GLOBAL
     A very basic CSS reset
 ------------------------------------- */
@@ -366,19 +364,5 @@ a {
         width: 100% !important;
     }
 }/*]]>*/</style>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-    <script>
-        $(document).ready(function() {
-            $.ajax({
-                url: "{{ route('refresh') }}",
-                type: 'GET',
-                success: function(response) {
-                  console.log(response);
-                }
-            });
-        });
-    </script>
-    </body>
+    </body>
 </html>
