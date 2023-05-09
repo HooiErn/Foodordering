@@ -139,7 +139,7 @@
                    
                 </div>
                 <div>
-                    <h4>Menu</h4>
+                    <h4>Menu 菜单</h4>
                 </div>
                 <div>
                     <a href="/viewCart"><i class="fa fa-shopping-cart"  style="color:white;font-size:20px;"></i></a>

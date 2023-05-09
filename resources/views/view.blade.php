@@ -1,12 +1,44 @@
 @extends('layouts.app')
 @section('content')
 
-<title>View Cart</title>
+<title>View Cart查看购物车</title>
 
- <body onload = "JavaScript:AutoRefresh(10000);">
-<div class="row" onload="AutoRefresh(10000)">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
+<script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+<script>
+
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('472896e216249f1fefdb', {
+        cluster: 'ap1'
+    });
+
+    var channel = pusher.subscribe('refresh-channel');
+    channel.bind('refresh', function(data) {
+        var table = document.getElementById("table_id").value;
+        if(data.table == table){
+            window.location.reload();
+        }
+        else{
+            console.log(data.table, table);
+        }
+    });
+    
+    var channel2 = pusher.subscribe('placeOrder-channel');
+    channel2.bind('place-order', function(data) {
+        var table = document.getElementById("table_id").value;
+        if(data.table == table){
+            window.location.href = "/viewReceipt/" + data.orderID;
+        }
+        else{
+            console.log(data.table, table);
+        }
+    });
+</script>
+
+<div class="row">
+    <div class="col-md-12">
+    <input type="hidden" id="table_id" value="{{$table -> table_id}}">
         <form action="{{ url('confirmOrder') }}" method="POST">
             @csrf
             <input type="hidden" name="tableID" id="tableID" value="{{$table -> table_id}}">
@@ -15,10 +47,10 @@
                     <table class="table tabl-hover">
                         <thead>
                             <tr>
-                                <td>Image</td>
-                                <td>Name</td>
-                                <td>Quantity</td>
-                                <td>Grand Price</td>
+                                <td>Image 图片</td>
+                                <td>Name 名字</td>
+                                <td>Quantity 数量</td>
+                                <td>Grand Price 共计</td>
                                 <td></td>
                             </tr>
                         </thead>
@@ -33,17 +65,17 @@
                                     <span>{{number_format($detail -> quantity * $detail -> price,2)}}</span>
                                     <input type="hidden" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/>
                                 </td>
-                                <td><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food?')"><i class="fa fa-trash"></i></a></td>
+                                <td><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food? 您确定要删除该食物吗?')"><i class="fa fa-trash"></i></a></td>
                                
                             </tr>
                             @endforeach
                             <tr>
-                                <td class="text-right" colspan="3"><b>Sub Total :</b></td>
+                                <td class="text-right" colspan="3"><b>Sub Total 共计 :</b></td>
                                 <td><b><span name="total2" id="total2"></span></b></td>
                                <input type="hidden" name="total" id="total" readonly class="form-control-plaintext">
                             </tr>
                             <tr>
-                                <td class="text-left" colspan="3">Pay By :
+                                <td class="text-left" colspan="3">Pay By 付款 :
                                 <span id="paymentName"></span>
                                 <input type="hidden" name="paymentMethod" id="paymentMethod" class="form-control" value="{{$table -> payment}}"></td>
                             </tr>
@@ -51,20 +83,20 @@
                     </table>
                 </div>
             </div>
+            @if(count($details -> where('orderID',null)) > 0)
             <div class="d-flex align-items-center justify-content-center">
-                <button class="btn btn-success" type="submit" onclick="return confirm('Are you sure to place order now?')">Confirm Order &nbsp; &#10003;</button>
+                <button class="btn btn-success" type="submit" onclick="return confirm('Are you sure to place order now? 您确定要现在下单吗?')">Confirm Order 确定下单 &nbsp; &#10003;</button>
             </div>
+            @endif
         </form>
     </div>
 </div>
- </body>
- 
 <script>
-    function AutoRefresh(t){
-        setTimeout(location.reload(), t);
-    }
+    Echo.channel('orders')
+    .listen('OrderSubmitted', (e) => {
+        window.location.replace("{{ route('method',['id' =>$table -> id]) }}");
+    });
 </script>
-
 <script>
     
     $("document").ready(function () {
@@ -85,7 +117,12 @@
         document.getElementById('total').value = tot.toFixed(2);
         document.getElementById('total2').innerHTML = tot.toFixed(2);
         
-        document.getElementById('grandprice2').innerHTML = document.getElementById('grandprice').value;
+        if(document.getElementById('grandprice').value !== ""){
+            document.getElementById('grandprice2').innerHTML = document.getElementById('grandprice').value;   
+        }
+        else{
+            document.getElementById('grandprice2').innerHTML = 0.00;
+        }
         
     });
 </script>

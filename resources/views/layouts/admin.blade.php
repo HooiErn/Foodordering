@@ -6,9 +6,14 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}" />
 
     <!-- Fonts -->
     <link href="{{ asset('fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+
+    <!-- Toastr  -->
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
     <!-- Css -->
     <link href="{{ asset('css/sb-admin-2.css') }}" rel="stylesheet">
@@ -16,13 +21,32 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script>
 
-    @if(!Session::has('adminData'))
-        <script type="text/javascript">
-            window.location.href="{{url('admin/login')}}"
-        </script>
-    @endif
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
+        
+        var audio = new Audio('/sound/notification.mp3');
+        var pusher = new Pusher('472896e216249f1fefdb', {
+            cluster: 'ap1'
+        });
+        
+        var channel = pusher.subscribe('refresh2-channel');
+        channel.bind('refresh2', function() {
+            window.location.reload();
+        });
 
+        var channel2 = pusher.subscribe('placeOrder-channel');
+        channel2.bind('place-order', function(data) {
+            toastr.info("Table " + data.table + " has confirm order");
+            audio.play();
+            setTimeout(function() {
+                window.location.href = "{{ url('admin/takenOrder') }}";
+            }, 2000);
+        });
+    </script>
 </head>
 
 <body id="page-top">
@@ -36,7 +60,12 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
             <div id="content">
-              <br><br>
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-2 static-top shadow">
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+                </nav>
                 <div class="container-fluid">
                     @yield('content')
                 </div>
@@ -55,8 +84,7 @@
     
     <!-- JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{{ asset('jquery-easing/jquery.easing.min.js')}}"></script>

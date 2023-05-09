@@ -1,3 +1,3 @@
-<link rel="stylesheet" href="http://cdn.bootcss.com/toastr.js/latest/css/toastr.min.css">
-<script src="http://cdn.bootcss.com/toastr.js/latest/js/toastr.min.js"></script>
+<link href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+<script src="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 {!! Toastr::message() !!}

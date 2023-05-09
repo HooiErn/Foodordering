@@ -13,6 +13,7 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
         <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
         <style>
             .btn-color{
                 background-color: #0e1c36;
@@ -56,6 +57,7 @@
                 <div class="col-md-6 offset-md-3">
                     <br>
                     <h2 class="text-center mb-5 text-dark">Welcome back admin!</h2>
+                    <h2 class="text-center mb-5 text-dark">欢迎回来管理人!</h2>
                     <div class="card my-5">
 
                         <form class="card-body cardbody-color p-lg-5" method="POST" action="{{ url('admin/login')}}">
@@ -65,25 +67,40 @@
                             </div>
 
                             <div class="mb-3">
-                                <input type="text" class="form-control" name="name" id="name" aria-describedby="emailHelp" placeholder="User Name"  @if(Cookie::has('name')) value="{{Cookie::get('name')}}" @endif>
+                                <input type="text" class="form-control @error('name') is_invalid @enderror" name="name" aria-describedby="emailHelp" placeholder="User Name"  @if(Cookie::has('name')) value="{{Cookie::get('name')}}" @endif required>
                             </div>
 
                             <div class="mb-3">
-                                <input type="password" class="form-control" name="password" id="password" placeholder="Password"  @if(Cookie::has('password')) value="{{Cookie::get('password')}}" @endif>
+                                <input type="password" class="form-control @error('password') is_invalid @enderror" name="password" placeholder="Password"  @if(Cookie::has('password')) value="{{Cookie::get('password')}}" @endif required>
                             </div>
 
                             <div class="rememberme">
-                                <input type="checkbox" name="rememberme" id="rememberme" @if(Cookie::has('name')) checked @endif><span>Remember Me</span>
+                                <input type="checkbox" name="rememberme" id="rememberme" @if(Cookie::has('name')) checked @endif><span>Remember Me 保存</span>
                             </div>
 
                             <div class="text-center">
-                                <button type="submit" class="btn btn-color px-5 mb-5 w-100">Login</button>
+                                <button type="submit" class="btn btn-color px-5 mb-5 w-100">Login 登录</button>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $.get('{{ route('auth.check') }}', function (response) {
+                    if (response.authenticated) {
+                        if (response.role === 1) {
+                            window.location.href = '/admin/takenOrder';
+                        } else if (response.role === 2) {
+                            window.location.href = '/waiter/work';
+                        }
+                    }
+                });
+            })
+        </script>
     </body>
 </html>
 

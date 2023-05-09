@@ -30,31 +30,15 @@
     tr:nth-child(even){
         background-color: #f2f2f2
         }
-        /* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-/* Scroll css */
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1; 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888; 
-}
+     
 
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
-}
 </style>
 
-<form action="{{ url('waiter/searchDate') }}" method="POST">
+<form action="{{ url('admin/searchDate') }}" method="POST">
     @csrf
     <br>
-        <div class="d-flex align-items-center justify-content-center" style="font-size:12px;">
+    <input type="hidden" class="form-control" value="{{$waiter -> name}}" name="name" id="name">
+        <div class="d-flex align-items-center justify-content-center" style="font-size:13px;">
             <label for="date" class="col-form-label">From: </label>
             <div class="col-sm-3">
                 <input type="date" class="form-control-sm input-sm" id="from" name="from" required>
@@ -70,7 +54,7 @@
 <br>
 
 <div class="row">
-    <div class="table-responsive" style="width:80%;height:220px;">
+    <div class="table-responsive" style="width:80%;height:720px;">
         
             <table class="table table-hover table-bordered">
                 <thead>
@@ -89,15 +73,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($orders ->where("is_paid",1) as $order)
+                @foreach($orders ->where("status",1) as $order)
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td><a href="{{ url('waiter/viewFoodList',['orderID' => $order -> orderID]) }}" id="orderID">{{$order -> orderID}} </a></td>
                         @if($order -> payment_method == 1)
                             <td><span id="amount" name="cashAmount">{{number_format($order -> amount,2)}}</span></td>
-                            <td><span>0.00</span></td>
+                            <td><span>-</span></td>
                         @elseif ($order -> payment_method == 2)
-                            <td><span>0.00</span></td>
+                            <td><span>-</span></td>
                             <td><span id="amount" name="touchAmount">{{number_format($order -> amount,2)}}</span></td>
                         @endif
                         <td>{{$order -> created_at -> format('d/m/Y')}}</td>

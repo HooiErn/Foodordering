@@ -10,9 +10,8 @@ class Table extends Model
     use HasFactory;
 
     protected $fillable =[
-        'id',
         'table_id',
         'payment',
-        
+        'last_active_at',
     ];
 }

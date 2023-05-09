@@ -16,7 +16,6 @@
     }
     .table{
         margin-left: auto;
-        width:80% !important;
         height:80% !important;
         font-size:11px !important;
 
@@ -31,65 +30,49 @@
         background-color: #f2f2f2
         }
         /* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-/* Scroll css */
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1; 
-}
- 
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888; 
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555; 
-}
 </style>
-
 <form action="{{ url('waiter/searchDate') }}" method="POST">
     @csrf
-    <br>
-        <div class="d-flex align-items-center justify-content-center" style="font-size:12px;">
-            <label for="date" class="col-form-label">From: </label>
-            <div class="col-sm-3">
-                <input type="date" class="form-control-sm input-sm" id="from" name="from" required>
-            </div>
-            <label for="date" class="col-form-label">To: </label>
-            <div class="col-sm-3">
-                <input type="date" class="form-control-sm input-sm" id="to" name="to" required>
-            </div>
-            <button type="submit" class="btn-sm btn-primary " name="search" title="Search"><i class="fas fa-search"></i></button>
-        </div>  
+    <div class="row">
+        <div class="col-sm-12">
+            <label for="date" class="col-form-label">From :</label>
+            <input type="date" class="form-control form-control-line" id="from" name="from" required>
+        </div>
+        <div class="col-sm-12">
+            <label for="date" class="col-form-label">To :  </label>
+            <input type="date" class="form-control form-control-line" id="to" name="to" required>
+        </div>
+        <div class="col-sm-12 d-flex mt-2">
+            <a href="#" onclick="{{ url('waiter/order') }}" class="btn-sm btn-danger">Display All</a>
+            &nbsp;&nbsp;&nbsp;
+            <button type="submit" class="btn-sm btn-primary "><i class="fas fa-search"></i></button>
+        </div>
+    </div>  
 </form>
 
 <br>
 
 <div class="row">
-    <div class="table-responsive" style="width:80%;height:220px;">
+    <div class="table-responsive m-1">
         
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr class="thead-dark" style="position: sticky; top: 0;">
                         <th colspan="5">
                             <div class="inline">{{$waiter->name}} </div>
-                            <div class="inline2">Total : <span id="total"></span></div>
+                            <div class="inline2">Total共计 : <span id="total"></span></div>
                         </th>
                     </tr>
                     <tr>
                         <th>#</th>
-                        <th>OrderID</th>
-                        <th>Cash</th>
-                        <th>Touch 'n Go</th>
-                        <th>Created Date</th>
+                        <th>OrderID 订单编号</th>
+                        <th>Cash 现金</th>
+                        <th>Touch 'n Go 线上付款</th>
+                        <th>Created Date 添加时间</th>
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($orders ->where("is_paid",1) as $order)
+                @foreach($orders ->where("status",1) as $order)
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td><a href="{{ url('waiter/viewFoodList',['orderID' => $order -> orderID]) }}" id="orderID">{{$order -> orderID}} </a></td>
@@ -105,8 +88,8 @@
                 @endforeach 
                 <tr>
                     <td colspan="2"></td>
-                    <td><b><span id="cashTotal"></span></b></td>
-                    <td><b><span id="touchTotal"></span></b></td>
+                    <td><b>Total共计 : <span id="cashTotal"></span></b></td>
+                    <td><b>Total共计 : <span id="touchTotal"></span></b></td>
                     <td></td>
                 </tr>
                 </tbody>

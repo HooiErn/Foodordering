@@ -3,10 +3,10 @@
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="fas fa-laugh-wink"></i>
+        <div class="sidebar-brand-icon">
+            <img src="https://cdn-icons-png.flaticon.com/512/1/1819.png" style="width:30px;height:30px;">
         </div>
-        <div class="sidebar-brand-text mx-3">Admin</div>
+        <div class="sidebar-brand-text mx-3">Admin 管理人</div>
     </a>
 
     <!-- Divider -->
@@ -16,7 +16,7 @@
     <li class="nav-item active">
         <a class="nav-link" href="{{ url('admin/dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard</span>
+            <span>Dashboard主页</span>
         </a>
     </li>
 
@@ -27,7 +27,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/food') }}">
             <i class="fas fa-fw fa-chart-area"></i>
-            <span>Food</span>
+            <span>Food食物</span>
         </a>
     </li>
 
@@ -35,7 +35,23 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/table') }}">
             <i class="fas fa-fw fa-table"></i>
-            <span>Table</span>
+            <span>Table桌子</span>
+        </a>
+    </li>
+    
+    <!-- Nav Item - Action List -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/action-list') }}">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Action List行动表</span>
+        </a>
+    </li>
+    
+    <!-- Nav Item - Action List -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/takenOrder') }}">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Confirmed Orders已确认订单</span>
         </a>
     </li>
 
@@ -43,7 +59,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/waiter') }}">
            <i class="fas fa-fw fa-user"></i>
-            <span>Waiters</span>
+            <span>Waiters服务员</span>
         </a>
     </li>
     
@@ -51,7 +67,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/setup') }}">
             <i class="fas fa-fw fa-money"></i>
-            <span>Touch n Go</span>
+            <span>Touch n Go 线上付款</span>
         </a>
     </li>
 
@@ -59,7 +75,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/logout') }}">
             <i class="fa fa-sign-out"></i>
-            <span>Logout</span>
+            <span>Logout登出</span>
         </a>
     </li>
 

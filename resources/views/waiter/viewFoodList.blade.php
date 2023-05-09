@@ -13,10 +13,10 @@
                     </tr>
                     <tr>
                         <th>#</th>
-                        <th>Food Name</th>
-                        <th>Quantity</th>
-                        <th>Price(RM per unit)</th>
-                        <th>Subtotal(RM)</th>
+                        <th>Food Name 食物名字</th>
+                        <th>Quantity 数量</th>
+                        <th>Price价钱 (RM per unit)</th>
+                        <th>Subtotal共计 (RM)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -30,7 +30,7 @@
                     </tr>
                 @endforeach
                 <tr>
-                    <td colspan="4" class="text-right">Total :</td>
+                    <td colspan="4" class="text-right">Total共计 :</td>
                     <td><span id="total"></span></td>
                 </tr>
                 </tbody>

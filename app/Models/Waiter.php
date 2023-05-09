@@ -12,6 +12,7 @@ class Waiter extends Model
     protected $fillable =[
         'name',
         'password',
+        'count'
     ];
     
     public function order(){

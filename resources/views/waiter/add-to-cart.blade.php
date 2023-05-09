@@ -2,19 +2,20 @@
 @section('content')
 
 <link href="{{ asset('css/searchBar.css') }}" rel="stylesheet">
+<h3>Place Order 下单</h3>
 
 <div class="row">
     <div class="col-md-6">
         <div class="form-group">
-            <input type="text" class="search form-control" placeholder="Search Food">
+            <input type="text" class="search form-control" placeholder="Search Food 搜索食物">
         </div> 
         <div class="table-responsive">
             <table class="table table-border results">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Name</th>
-                        <th>Available</th>
+                        <th>ID 编号</th>
+                        <th>Name 名字</th>
+                        <th>Available </th>
                     </tr>
                     <tr class="waring no-result">
                         <th colspan="3"><i class="fa fa-warning">No Result</i></th>
@@ -29,14 +30,14 @@
                                 <td><input type="text" class="form-control form-control-plaintext" name="food_id" value="{{$food -> id}}"></td>
                                 <td>{{$food -> name}}</td>
                                 @if($food -> available == 0)
-                                    <td><span class="text-danger">Not Available</span></td>
+                                    <td><span class="text-danger">Not Available 暂时不可行</span></td>
                                 @elseif($food -> available == 1)
-                                    <td><a class="btn btn-sm btn-success" style="color: white;" data-toggle="modal" data-target=".food{{$food -> id}}">Add To Cart</a></td>
+                                    <td><a class="btn btn-sm btn-success" style="color: white;" data-toggle="modal" data-target=".food{{$food -> id}}">Add To Cart 加入购物车</a></td>
                                     <div class="modal fade food{{$food -> id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-sm">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h3 class="card-title">Select Quantity</h3>
+                                                    <h3 class="card-title">Select Quantity 选择数量</h3>
                                                 </div>
                                                 <div class="input-group quantity">
                                                     <div class="input-group-prepend decrement-btn changeQuantity">
@@ -48,7 +49,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
-                                                    <button type="submit" class="btn btn-primary">Confirm</button>
+                                                    <button type="submit" class="btn btn-primary">Confirm 确定</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -72,9 +73,9 @@
                         <thead>
                             <tr>
                                 <td>No.</td>
-                                <td>Food Name</td>
-                                <td>Quantity</td>
-                                <td>Price</td>
+                                <td>Food Name 食物名字</td>
+                                <td>Quantity 数量</td>
+                                <td>Price 价钱</td>
                                 <td></td>
                             </tr>
                         </thead>
@@ -89,14 +90,23 @@
                                 </tr>
                             @endforeach
                                 <tr>
-                                    <td colspan="3" class="text-right">Total :</td>
+                                    <td colspan="3" class="text-right">Total共计 :</td>
                                     <td><span id="total2" name="total2"></span></td>
                                     <input type="hidden" class="form-control form-control-plaintext" id="total" name="total">
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-right">Pay By付款 :</td>
+                                    <td>
+                                        <select class="form-control form-control-line" id="payment" name="payment">
+                                            <option value="1">Cash 现金</option>
+                                            <option value="2">Tng 线上付款</option>
+                                        </select>
+                                    </td>
                                 </tr>
                         </tbody>
                     </table>
                 </div>
-                <button type="submit" class="btn btn-primary float-right" onclick="return confirm('Are you sure to place order now?')">Confirm Order</button>
+                <button type="submit" class="btn btn-primary float-right" onclick="return confirm('Are you sure to place order now? 您确定现在要下单吗?')">Confirm Order 确定订单</button>
             </form>
         </div>
     </div>

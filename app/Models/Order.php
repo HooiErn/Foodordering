@@ -10,14 +10,14 @@ class Order extends Model
     use HasFactory;
 
     protected $fillable =[
-        'id',
         'orderID',
         'table_id',
         'amount',
-        'addon',
-        'is_paid',
+        'status',
         'waiter',
         'payment_method',
+        'done_prepare_at',
+        'serve_time',
     ];
 
 }

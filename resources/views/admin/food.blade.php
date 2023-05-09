@@ -4,8 +4,8 @@
 <title>Food</title>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Food</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#categoryModal">Create Category</a>
+    <h1 class="h3 mb-0 text-gray-800">Food 食物</h1>
+    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#categoryModal">Create Category添加种类</a>
 </div>
 
 <div class="row">
@@ -16,22 +16,22 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th colspan="5">Category : {{ $category -> name }}</th>
+                                <th colspan="5">Category 种类 : {{ $category -> name }}</th>
                                 <th class="text-end">
                                     <div>
-                                    <a href="#" type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#{{$category -> name}}"><i class="fas fa-plus"></i></a>
-                                    <a href="#" type="button" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm" data-toggle="modal" data-target="#{{$category -> name}}{{$category -> id}}"><i class="fas fa-pen" style="color: white;"></i></a>
-                                    <a href="{{ url('admin/deleteCategory',['id' => $category -> id]) }}" type="button" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm" onclick="return confirm('Are you sure to delete this category?<br>It will also delete the food related to this category')"><i class="fas fa-trash"></i></a>
+                                    <a type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#food{{$category -> id}}"><i class="fas fa-plus text-white"></i></a>
+                                    <a type="button" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm" data-toggle="modal" data-target="#editCategory{{$category -> id}}"><i class="fas fa-pen text-white"></i></a>
+                                    <a href="{{ url('admin/deleteCategory',['id' => $category -> id]) }}" type="button" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm" onclick="return confirm('Are you sure to delete this category? It will also delete the food related to this category 您确定要删除该种类吗? 这样会将该种类里面的食物全部都删除')"><i class="fas fa-trash"></i></a>
                                     </div>
                                 </th>
                             </tr>
                             <tr>
-                                <th>No</th>
-                                <th>Image</th>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Action</th>
+                                <th>No.</th>
+                                <th>Image 图片</th>
+                                <th>Name 名字</th>
+                                <th>Price 价钱</th>
+                                <th>Status 状态</th>
+                                <th>Action 行动</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -56,7 +56,7 @@
                                     @endif
                                     <td>
                                         <a href="#" data-toggle="modal" data-target="#food{{$food -> id}}"><i class="fas fa-pen"></i></a>
-                                        <a href="{{ url('admin/deleteFood',['id' => $food -> id])}}" onclick="return confirm('Are you sure to delete this food?')"><i class="fas fa-trash"></i></a>
+                                        <a href="{{ url('admin/deleteFood',['id' => $food -> id])}}" onclick="return confirm('Are you sure to delete this food? 您确定要删除该食物吗?')"><i class="fas fa-trash"></i></a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -76,59 +76,87 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="categoryTitle">Create Category</h5>
+                    <h5 class="modal-title" id="categoryTitle">Create Category 添加种类</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="categoryName">Category Name</label>
-                        <input type="text" id="name" name="name" class="form-control form-control-line">
+                        <label for="c_name">Category Name 种类名字</label>
+                        <input type="text" name="c_name" class="form-control form-control-line @error('c_name') is-invalid @enderror" value="{{ old('c_name') }}" required>
+                        @error('c_name')
+                            @if($message == "The c name has already been taken.")
+                                <span class="text-danger">Duplicate name is used.</span>
+                            @else
+                                <span class="text-danger">{{$message}}</span>
+                            @endif
+                        @enderror
                     </div>
-                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="submit" class="btn btn-primary">Create 添加</button>
                 </div>
             </div>
         </div>
     </div>
 </form>
+@if($errors -> has('c_name'))
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $('#categoryModal').modal('toggle')
+        });
+    </script>
+@endif
 
 <!-- Edit Category Modal -->
 @foreach($categories as $category)
     <form action="{{ url('admin/updateCategory') }}" method="POST" class="form-horizontal form-material">
         @csrf
-        <div class="modal fade" id="{{$category -> name}}{{$category -> id}}" tabindex="-1" role="dialog" aria-labelledby="categoryTitle" aria-hidden="true">
+        <div class="modal fade" id="editCategory{{$category->id}}" tabindex="-1" role="dialog" aria-labelledby="categoryTitle" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="categoryTitle">Edit Category</h5>
+                        <h5 class="modal-title" id="categoryTitle">Edit Category 修改种类</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                        <input type="hidden" class="form-control form-control-line" id="catID" name="catID" value="{{$category -> id}}">
-                            <label for="categoryName">Category Name</label>
-                            <input type="text" id="name" name="name" class="form-control form-control-line" placeholder="{{$category -> name}}">
+                            <input type="hidden" class="form-control form-control-line" id="catID" name="catID" value="{{$category->id}}">
+                            <label for="categoryName">Category Name 种类名字</label>
+                            <input type="text" id="name" name="name" class="form-control form-control-line @error('edit_c_name.'.$category->id) is-invalid @enderror" placeholder="{{$category->name}}" value="{{ old('edit_c_name.'.$category->id) }}">
+                            @error('edit_c_name.'.$category->id)
+                                <span class="text-danger">{{ $message }}</span>
+                            @enderror
                         </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary">Save 保存</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 @endforeach
+@if ($errors->has('edit_c_name'))
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            var id = {{ old('catID')}};
+            $('#editCategory' + id).modal('toggle');
+        });
+    </script>
+@endif
+
 
 <!-- Food Modal -->
 @foreach($categories as $category)
     <form action="{{ url('admin/addFood') }}" method="POST" class="form-horizontal form-material" enctype="multipart/form-data">
         @csrf
-        <div class="modal fade" id="{{$category -> name}}" tabindex="-1" role="dialog" aria-labelledby="{{$category -> name}}Title" aria-hidden="true">
+        <div class="modal fade" id="food{{$category -> id}}" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="{{$category -> name}}Title">Create Food</h5>
+                        <h5 class="modal-title" id="{{$category -> name}}Title">Create Food 添加食物</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -136,30 +164,31 @@
                     <div class="modal-body">
                         <input type="hidden" class="form-control form-control-line" id="available" name="available" value="1">
                         <div class="form-group">
-                            <label for="name">Food Name</label>
-                            <input type="text" class="form-control form-control-line" id="name" name="name">
-                        </div>
-                        <div class="form-group">
-                            <label for="description">Food Description</label>
-                            <input type="text" class="form-control form-control-line" id="description" name="description">
-                        </div>
-                        <div class="form-group">
-                            <label for="price">Food Price</label>
-                            <input type="number" class="form-control form-control-line" id="price" name="price" step=".01">
-                        </div>
-                        <div class="form-group">
-                            <label for="foodImage">Food Image</label>
+                            <label for="foodImage">Food Image 食物图片</label>
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="validatedCustomFile" name="foodImage" id="foodImage">
+                                <input type="file" class="custom-file-input" id="validatedCustomFile" name="foodImage" id="foodImage" required>
                                 <label class="custom-file-label" for="validatedCustomFile">Choose file</label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="categoryID">Food Category</label>
+                            <label for="name">Food Name 食物名字</label>
+                            <input type="text" class="form-control form-control-line" id="name" name="name" value="{{ old('name') }}" required>
+                        </div>  
+                        <div class="form-group">
+                            <label for="price">Food Price 食物价钱</label>
+                            <input type="number" class="form-control form-control-line" id="price" name="price" step=".01" required>
+                        </div>
+                        <div id="select-options-container">
+                            <!--  -->
+                        </div>
+                        <a type="button" class="btn btn-success btn-sm mb-1 text-white" id="add-select-option"><i class="fa fa-plus text-white"></i> Add New</a>
+
+                        <div class="form-group">
+                            <label for="categoryID">Food Category 食物种类</label>
                             <input type="text" class="form-control form-control-line" placeholder="{{$category -> name}}" readonly>
                             <input type="hidden" class="form-control form-control-line" id="categoryID" name="categoryID" value="{{$category -> id}}">
                         </div>
-                        <button type="submit" class="btn btn-primary">Create</button>
+                        <button type="submit" class="btn btn-primary">Create 添加</button>
                     </div>
                 </div>
             </div>
@@ -175,7 +204,7 @@
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="{{$food -> name}}Title">Edit Food</h5>
+                        <h5 class="modal-title" id="{{$food -> name}}Title">Edit Food 修改食物</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -184,38 +213,87 @@
                         <input type="hidden" class="form-control form-control-line" id="foodID" name="foodID" value="{{$food->id}}">
                         <input type="hidden" class="form-control form-control-line" id="available" name="available" value="1">
                         <div class="form-group">
-                            <label for="name">Food Name</label>
+                            <label for="name">Food Name 食物名字</label>
                             <input type="text" class="form-control form-control-line" id="name" name="name" value="{{$food -> name}}">
                         </div>
-                        <div class="form-group">
-                            <label for="description">Food Description</label>
+                        <!-- <div class="form-group">
+                            <label for="description">Food Description 食物介绍</label>
                             <input type="text" class="form-control form-control-line" id="description" name="description" value="{{$food -> description}}">
-                        </div>
+                        </div> -->
                         <div class="form-group">
-                            <label for="price">Food Price</label>
+                            <label for="price">Food Price 食物价钱</label>
                             <input type="number" class="form-control form-control-line" id="price" name="price" step=".01" value="{{$food -> price}}">
                         </div>
                         <div class="form-group">
-                            <label for="foodImage">Food Image</label>
+                            <label for="foodImage">Food Image 食物照片</label>
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input" id="validatedCustomFile" name="foodImage" id="foodImage">
-                                <label class="custom-file-label" for="validatedCustomFile">Choose file</label>
+                                <label class="custom-file-label" for="validatedCustomFile">Choose file 选择照片</label>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="">Category</label>
+                            <label for="">Category 种类</label>
                             <select name="categoryID" id="categoryID" class="form-control">
                                 @foreach($categories as $category)
                                     <option value="{{$category -> id}}" @if($food -> categoryID == $category -> id) selected @endif>{{$category -> name}}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-primary">Save 保存</button>
                     </div>
                 </div>
             </div>
         </div>
     </form>
 @endforeach
+<script>
+$(document).ready(function() {
+    var selectOptionsContainer = $('#select-options-container');
+    var selectOptionTemplate = `
+    <div class="select-options" style="margin-bottom:10px;">
+        <div class="form-group">
+            <input type="text" class="form-control select-option-name" name="select-option-name[]" placeholder="Option Name">
+        </div>
+        <div class="option-value-list">
+            <div class="form-group position-relative option-value-container">
+                <input type="text" name="option-value-name[]" class="form-control form-control-inline option-value" placeholder="Option">
+                <button type="button" class="btn btn-danger delete-option-value" style="position: absolute; right: 0; top:1%;"><i class="fa fa-trash"></i></button>
+            </div>
+        </div>
+        <a type="button" class="btn btn-success btn-sm mb-1 text-white add-option-value" id="add-option-value"><i class="fa fa-plus text-white"></i> Add New Value</a>
+        <button type="button" class="btn btn-danger btn-sm mb-1 delete-select-option" style="right: 0; bottom:0;"><i class="fa fa-trash"></i> Delete Option</button>
+    </div>
+    `;
 
+    var optionValueTemplate = `
+    <div class="form-group position-relative option-value-container">
+        <input type="text" name="option-value-name[]" class="form-control form-control-inline option-value" placeholder="Option">
+        <button type="button" class="btn btn-danger delete-option-value" style="position: absolute; right: 0; top:1%;"><i class="fa fa-trash"></i></button>
+    </div>
+    `;
+
+    $('#add-select-option').click(function() {
+        selectOptionsContainer.append(selectOptionTemplate);
+    });
+
+    selectOptionsContainer.on('click', '.add-option-value', function() {
+        var optionValueList = $(this).closest('.select-options').find('.option-value-list');
+        var optionValueContainer = optionValueList.find('.option-value-container').last();
+        optionValueContainer.after(optionValueTemplate);
+    });
+
+    selectOptionsContainer.on('click', '.delete-option-value', function() {
+        var optionValueContainer = $(this).closest('.option-value-container');
+        if (optionValueContainer.siblings('.option-value-container').length > 0) {
+            optionValueContainer.remove();
+        } else {
+            $(this).closest('.option-value-list').remove();
+        }
+    });
+
+    selectOptionsContainer.on('click', '.delete-select-option', function() {
+        $(this).closest('.select-options').remove();
+    });
+});
+</script>
 @endsection

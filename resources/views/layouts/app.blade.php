@@ -3,8 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -30,23 +29,89 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
         <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
+        <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+        <script>
 
+            // Enable pusher logging - don't include this in production
+            Pusher.logToConsole = true;
+        
+            var pusher = new Pusher('472896e216249f1fefdb', {
+                cluster: 'ap1'
+            });
+        
+            var channel = pusher.subscribe('refresh-channel');
+            channel.bind('refresh', function(data) {
+                var table = document.getElementById("table_id").value;
+                if(data.table == table){
+                    window.location.reload();
+                }
+                else{
+                    console.log(data.table, table);
+                }
+            });
+            
+            var channel2 = pusher.subscribe('placeOrder-channel');
+            channel2.bind('place-order', function(data) {
+                var table = document.getElementById("table_id").value;
+                if(data.table == table){
+                    window.location.href() = window.location.href();
+                }
+                else{
+                    console.log(data.table, table);
+                }
+            });
+
+            var channel3 = pusher.subscribe('refresh2-channel');
+            channel3.bind('refresh2', function(data) {
+                window.location.reload();
+            });
+        </script>
 </head>
 <body>
+    @if($table -> payment == null)
+        <script>
+            window.location.href = "/method/" + {{$table -> table_id}};
+        </script>
+    @endif
     <div id="app">
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container">
-                 <a href="{{ url('home',['id' => $table -> table_id,'payment' => $table -> payment]) }}"><i class="fa fa-arrow-left" aria-hidden="true" style="color: white;"></i></a>
+                 <a href="#" onclick="home({{$table -> table_id}})"><i class="fa fa-arrow-left" aria-hidden="true" style="color: white;"></i></a>
                 <a class="navbar-brand" href="">
                    Table {{str_pad($table -> table_id,3,'0',STR_PAD_LEFT)}}
                 </a>
-               
             </div>
         </nav>
 
-        <main class="py-4">
+        <div class="container">
             @yield('content')
-        </main>
+        </div>
     </div>
+    <script>
+        function home(id){
+            window.location.href = "/home/" + id;
+        }
+    </script>
+    <script>
+        $(document).ready(function() {
+            var table_id = {{$table -> table_id}};
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url: '{{ route('onUnload') }}',
+                type: 'POST',
+                data: {table_id: table_id},
+                success: function(response) {
+                    console.log(response);
+                }
+            });
+        });
+    </script>
+    <script>
+        
+    </script>
 </body>
 </html>

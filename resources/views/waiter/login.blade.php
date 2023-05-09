@@ -27,24 +27,24 @@
                                 <form method="POST" action="{{ url('waiter/login')}}">
                                     @csrf
                                     <div class="card-body p-5 text-center">
-                                        <h3 class="mb-5">Sign in</h3>
+                                        <h3 class="mb-5">Sign in 登录</h3>
                                         <div class="form-outline mb-4 form-group">
-                                            <label class="form-label" for="name">Name</label>
-                                            <input type="text" id="name" name="name" class="form-control form-control-lg" />
+                                            <label class="form-label" for="name">Name 名字 :</label>
+                                            <input type="text" name="name" class="form-control form-control-lg" value="{{ old('name') }}" />
                                         </div>
 
                                         <div class="form-outline mb-4 form-group">
-                                            <label class="form-label" for="password">Password</label>
-                                            <input type="password" id="password" name="password" class="form-control form-control-lg" />
+                                            <label class="form-label" for="password">Password 密码 : </label>
+                                            <input type="password" name="password" class="form-control form-control-lg" />
                                         </div>
 
                                         <!-- Checkbox -->
                                         <div class="form-check d-flex justify-content-start mb-4">
                                             <input class="form-check-input" type="checkbox" value="" id="rememberme" name="rememberme" />
-                                            <label class="form-check-label" for="form1Example3">Remember password</label>
+                                            <label class="form-check-label" for="form1Example3">Remember me 记得我</label>
                                         </div>
 
-                                        <button class="btn btn-primary btn-lg btn-block" type="submit">Login</button>
+                                        <button class="btn btn-primary btn-lg btn-block" type="submit">Login 登录</button>
                                     </div>
                                 </form>
                             </div>
@@ -53,5 +53,20 @@
                 </div>
             </section>
         </div>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+        <script>
+            $(document).ready(function(){
+                $.get('{{ route('auth.check') }}', function (response) {
+                    if (response.authenticated) {
+                        if (response.role === 1) {
+                            window.location.href = '/admin/takenOrder';
+                        } else if (response.role === 2) {
+                            window.location.href = '/waiter/work';
+                        }
+                    }
+                });
+            })
+        </script>
     </body>
 </html>

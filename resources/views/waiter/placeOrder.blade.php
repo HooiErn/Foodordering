@@ -1,6 +1,7 @@
 @extends('layouts.waiter')
 @section('content')
 
+<h3>Place Order 下单</h3>
 <div class="row">
     @foreach($tables as $table)
     <div class="col-sm-3 card m-4">
