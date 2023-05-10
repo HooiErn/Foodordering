@@ -1,4 +1,3 @@
-
 <!DOCTYPE html> 
 <html>
   <head>
@@ -156,46 +155,45 @@
                                     </div>
                                 </div>
                                  <input type="hidden" value="" name="select">
-        <div class="row">
-            <div class="col-md-6">
-                <center>
-                <div class="form-group">
-                    <b><label class="control-label" style="font-size: 16px;">Sugar Level:</label></b>
-                    <div class="radio">
-                        <label style="font-size: 14px;">
-                            <input type="radio" name="sugar_level" value="no_sugar"> No sugar
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label style="font-size: 14px;">
-                            <input type="radio" name="sugar_level" value="less_sugar"> Less sugar
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label style="font-size: 14px;">
-                            <input type="radio" name="sugar_level" value="standard"> Standard
-                        </label>
-                    </div>
-                  </center>
-                </div>
-            </div>
-            <div class="col-md-6 ml-auto">
-                <center>
-                <div class="form-group">
-                    <b><label class="control-label" style="font-size: 16px;">Ice Level:</label></b>
-                    <div class="radio">
-                        <label style="font-size: 14px;">
-                            <input type="radio" name="ice_level" value="no_ice"> No ice
-                        </label>
-                    </div>
-                    <div class="radio">
-                        <label style="font-size: 14px;">
-                            <input type="radio" name="ice_level" value="ice"> Ice
-                        </label>
-                    </div>
-                </div>
-                </center>
-            </div>
+                                 
+                      <div class="row text-center p-3">
+                            <div class="col-md-5" style="width:50%;">
+                                <div class="form-group">
+                                    <b><label class="control-label" style="font-size: 16px;">Sugar Level:</label></b>
+                                    <div class="radio">
+                                        <label style="font-size: 14px;">
+                                            <input type="radio" name="sugar_level" value="no_sugar"> No sugar
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label style="font-size: 14px;">
+                                            <input type="radio" name="sugar_level" value="less_sugar"> Less sugar
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label style="font-size: 14px;">
+                                            <input type="radio" name="sugar_level" value="standard"> Standard
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6" style="width:50%;">
+                                <div class="form-group">
+                                    <b><label class="control-label" style="font-size: 16px;">Ice Level:</label></b>
+                                    <div class="radio">
+                                        <label style="font-size: 14px;">
+                                            <input type="radio" name="ice_level" value="no_ice"> No ice
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label style="font-size: 14px;">
+                                            <input type="radio" name="ice_level" value="ice"> Ice
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
       
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">Confirm 确定</button>
@@ -258,7 +256,7 @@
             if (target.length) {
                 event.preventDefault();
                 $('html, body').stop().animate({
-                    scrollTop: target.offset().top - 100
+                    scrollTop: target.offset().top - 50
                 }, 1000);
             }
         });

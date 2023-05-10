@@ -9,14 +9,14 @@ use App\Models\FoodSelect;
 class FoodOption extends Model
 {
     use HasFactory;
-    protected $fillable =[
-        'food_id',
-        'name',
+    protected $fillable = [
+        'food_select_id', 
+        'name'
     ];
 
-    public function food()
+    public function foodSelect()
     {
-        return $this->belongsTo(Food::class);
+        return $this->belongsTo(FoodSelect::class);
     }
 }
 

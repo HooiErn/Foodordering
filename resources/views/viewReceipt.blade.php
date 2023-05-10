@@ -61,10 +61,14 @@
                                                                                                 <td>{{$cart -> name}} <span class="text-info">x{{$cart -> quantity}}</span>
                                                                                                     @if(!empty($cart->addon))
                                                                                                         @php
-                                                                                                            $addon = json_decode($cart->addon, true);
+                                                                                                            $addons = json_decode($cart->addon, true);
                                                                                                         @endphp
                                                                                                         <ul style="list-style-type: none; margin: 0; padding: 0;">
-                                                                                                            <li>- {{$addon}}</li>
+                                                                                                            @foreach($addons as $title => $addon)
+                                                                                                                @if($addon !== null)
+                                                                                                                    <li>{{$title}} - {{$addon}}</li>
+                                                                                                                @endif
+                                                                                                            @endforeach
                                                                                                         </ul>   
                                                                                                     @endif
                                                                                                 </td>
@@ -99,8 +103,7 @@
                     </tr>
                 </tbody>
             </table>
-        <style type="text/css">
-/*<![CDATA[*//* -------------------------------------
+        <style type="text/css">/*<![CDATA[*//* -------------------------------------
     GLOBAL
     A very basic CSS reset
 ------------------------------------- */
@@ -364,5 +367,5 @@ a {
         width: 100% !important;
     }
 }/*]]>*/</style>
-    </body>
+    </body>
 </html>

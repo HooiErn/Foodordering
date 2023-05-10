@@ -11,6 +11,9 @@ use App\Models\Table;
 use App\Models\Food;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\FoodOption;
+use App\Models\FoodSelect;
+use App\Models\WaiterCart;
 use App\Events\Refresh2;
 use Carbon\Carbon;
 use Session;
@@ -20,22 +23,44 @@ class CartController extends Controller
 {
     //Add to Cart
     public function addCart(Request $request){
-        
-        $cart = new Cart();
-        $cart->food_id = $request->food_id;
-        $cart->table_id = $request->table_id;
-        $cart->quantity = $request->quantity;
-        $cart->save();
-        
+
         Table::where('table_id', $request->table_id)->update(['last_active_at' => Carbon::now()]);
 
-        event(new Refresh($request -> table_id));
-        if(session()->has('waiterData')){
+        if(Auth::check() && Auth::user()->isWaiter()){
+            $cart = new WaiterCart();
+            $cart->food_id = $request->food_id;
+            $cart->table_id = $request->table_id;
+            $cart->quantity = $request->quantity;
+            $cart->save();
+
             return redirect()->back();
         }
         else{
+            $cart = new Cart();
+            $cart->food_id = $request->food_id;
+            $cart->table_id = $request->table_id;
+            $cart->quantity = $request->quantity;
+
+
+            if($request -> has('select') && $request -> has('option')){
+                $selects = $request->select;
+                $options = $request->option;
+
+                $selectOptionArray = [];
+                foreach ($selects as $selectId => $selectName) {
+                    $optionName = isset($options[$selectId]) ? $options[$selectId] : null;
+                    $selectOptionArray[$selectName] = $optionName;
+                }
+                $jsonSelectOptions = json_encode($selectOptionArray);
+                $cart->addon = $jsonSelectOptions;
+            }
+            $cart->save();
+
+            event(new Refresh($request -> table_id));
             return redirect()->route('home', ['id' => $request -> table_id]);
         }
+        
+        
     }
     
     public function onUnload(Request $request)
@@ -83,70 +108,70 @@ class CartController extends Controller
 
     //Confirm Order
     public function confirmOrder(Request $request){
-
         $orderID = $this->generateOrderID();
-        $waiterData = Session::get('waiterData');
-
-        //If session waiterData exists, automatically add waiter name to the order
-        if(Session::has('waiterData'))
-        {
-            $waiterName = $waiterData[0] -> name;
-
-            $addOrder = Order::create([
-                'orderID' => $orderID,
-                'table_id' => $request -> tableID,
-                'amount' => $request -> total,
-                'addon' => $request -> addon,
-                'status' => 0,
-                'waiter' => $waiterName,
-                'done_prepare_at' => Carbon::now(),
-                'serve_time' => Carbon::now(),
-                'payment_method' => $request -> paymentMethod,
-            ]);
-        }
-        else
-        {
-            $addOrder = Order::create([
-                'orderID' => $orderID,
-                'table_id' => $request -> tableID,
-                'amount' => $request -> total,
-                'addon' => $request -> addon,
-                'status' => 0,
-                'waiter' => null,
-                'done_prepare_at' => Carbon::now(),
-                'serve_time' => Carbon::now(),
-                'payment_method' => $request -> paymentMethod,
-            ]);
-        }
-
+        $waiter = Auth::check() && Auth::user()->isWaiter() ? Auth::user()->name : null;
+        $addOrder = $this->createOrder($orderID, $request->tableID, $request->total, $request->addon, $waiter, $request->payment_method);
+    
         if($addOrder){
-            $carts = Cart::where('table_id',$request -> tableID)->where('orderID',null)->get();
-            $table = Table::where('table_id',$request -> tableID)-> first();
-            $table -> payment = null;
-            $table -> save();
-
-            foreach($carts as $cart){
-                $cart -> orderID = $orderID;
-                $cart -> save();
-            }
-
-            if(Session::has('waiterData')){
-                event(new Refresh2());
-                return back();
-            }
-            else{
-                event(new PlaceOrder($table -> id, $orderID));
-                return redirect()->route('viewReceipt', ['id' => $orderID]);
-            }
-        
+            $table = Table::where('table_id',$request->tableID)->first();
+            $table->payment = null;
+            $table->save();
+            
+            $cartModel = $waiter ? WaiterCart::class : Cart::class;
+            $carts = $cartModel::where('table_id', $request->tableID)->where('orderID', null)->get();
+            $this->updateCartItems($carts, $orderID, $cartModel);
+    
+            event(new PlaceOrder($table->id, $orderID));
         }
-
+    
+        if ($waiter) {
+            return redirect()->back();
+        } else {
+            return redirect()->route('viewReceipt', ['id' => $orderID]);
+        }
     }
+    
+    private function createOrder($orderID, $tableID, $total, $addon, $waiter, $paymentMethod) {
+        return Order::create([
+            'orderID' => $orderID,
+            'table_id' => $tableID,
+            'amount' => $total,
+            'addon' => $addon,
+            'status' => 0,
+            'waiter' => $waiter,
+            'done_prepare_at' => Carbon::now(),
+            'serve_time' => Carbon::now(),
+            'payment_method' => $paymentMethod,
+        ]);
+    }
+    
+    private function updateCartItems($carts, $orderID, $cartModel) {
+        foreach ($carts as $cart) {
+            $cart->orderID = $orderID;
+            $cart->save();
+    
+            // Create WaiterCart if user is a waiter
+            if ($cartModel == WaiterCart::class) {
+                WaiterCart::create([
+                    'table_id' => $cart->table_id,
+                    'food_id' => $cart->food_id,
+                    'quantity' => $cart->quantity,
+                    'addons' => $cart->addons,
+                    'orderID' => $orderID,
+                ]);
+            }
+        }
+    }
+    
     
     public function food_detail($id, $table_id){
         $food = Food::where('id', $id)->first();
         $table = Table::where('table_id', $table_id)->first();
         
+        if(!($food && $table)){
+            return view('404');
+        }
+
         return view('food-detail', compact('food', 'table'));
     }
 

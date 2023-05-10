@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\HomeController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
@@ -43,18 +42,29 @@ class HomeController extends Controller
     }
 
     public function method($id){
+ 
         $table = Table::where('table_id',$id)->first();
+
+        if(!$table){
+            return view('404');
+        }
+
         $work = Work::where('table_id',$id)->where('waiter', null)->get();
         $table -> last_active_at = Carbon::now();
         $table -> save();
-        return view('method',compact('table', 'work'));
+
+        $exists = Qrcode::where('id',1)->exists();
+        $value = $exists ? 1 : 2;
+
+
+        return view('method',compact('table', 'work', 'value'));
     }
      
     public function index(Request $request, $id)
     {
         $table = Table::where('table_id',$id)->first();
         if (!$table) {
-            abort(404, "Table not found.");
+            return view('404');
         }
     
         if ($request->filled('payment')) {
@@ -82,6 +92,10 @@ class HomeController extends Controller
     public function view($id){
         $table = Table::where('table_id',$id)->first();
 
+        if(!$table){
+            return view('404');
+        }
+
         $details = Cart::leftjoin('food','carts.food_id','=','food.id')
         ->select('carts.*','food.name as name','food.price as price',
         'food.image as image','food.id as foodID')
@@ -95,6 +109,11 @@ class HomeController extends Controller
     public function receipt($id){
         $qrcode = DB::table('qrcodes')->first();
         $order = Order::where('orderID',$id)->first();
+
+        if(!$order){
+            return view('404');
+        }
+
         $carts = \DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
         ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
         ->where('orders.orderID',$id)->get(); //if use Cart model, it somehow pass all food in there, regardless if you choose it or not
@@ -105,6 +124,10 @@ class HomeController extends Controller
     public function viewReceipt($id){
         $order = Order::where('orderID', $id)->first();
         
+        if(!$order){
+            return view('404');
+        }
+
         $carts = DB::table('carts')
                 ->join('food as detail','carts.food_id','detail.id')
                 ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')

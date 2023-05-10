@@ -97,7 +97,7 @@
                                 <tr>
                                     <td colspan="3" class="text-right">Pay By付款 :</td>
                                     <td>
-                                        <select class="form-control form-control-line" id="payment" name="payment">
+                                        <select class="form-control form-control-line" id="payment" name="payment_method">
                                             <option value="1">Cash 现金</option>
                                             <option value="2">Tng 线上付款</option>
                                         </select>

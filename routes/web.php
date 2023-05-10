@@ -149,3 +149,7 @@ Route::get('/auth/check', function () {
 // Auto Logout
 Route::get('unload/logout',[HomeController::class, 'unloadLogout'])->name('unload.logout');
 
+// 404 Error
+Route::fallback(function () {
+    return view('404');
+});

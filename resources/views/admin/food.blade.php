@@ -19,7 +19,7 @@
                                 <th colspan="5">Category 种类 : {{ $category -> name }}</th>
                                 <th class="text-end">
                                     <div>
-                                    <a type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#food{{$category -> id}}"><i class="fas fa-plus text-white"></i></a>
+                                    <a type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addFood{{$category -> id}}"><i class="fas fa-plus text-white"></i></a>
                                     <a type="button" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm" data-toggle="modal" data-target="#editCategory{{$category -> id}}"><i class="fas fa-pen text-white"></i></a>
                                     <a href="{{ url('admin/deleteCategory',['id' => $category -> id]) }}" type="button" class="d-none d-sm-inline-block btn btn-sm btn-danger shadow-sm" onclick="return confirm('Are you sure to delete this category? It will also delete the food related to this category 您确定要删除该种类吗? 这样会将该种类里面的食物全部都删除')"><i class="fas fa-trash"></i></a>
                                     </div>
@@ -152,8 +152,8 @@
 @foreach($categories as $category)
     <form action="{{ url('admin/addFood') }}" method="POST" class="form-horizontal form-material" enctype="multipart/form-data">
         @csrf
-        <div class="modal fade" id="food{{$category -> id}}" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal fade" id="addFood{{$category -> id}}" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="{{$category -> name}}Title">Create Food 添加食物</h5>
@@ -164,10 +164,10 @@
                     <div class="modal-body">
                         <input type="hidden" class="form-control form-control-line" id="available" name="available" value="1">
                         <div class="form-group">
-                            <label for="foodImage">Food Image 食物图片</label>
+                            <label>Food Image 食物图片</label>
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="validatedCustomFile" name="foodImage" id="foodImage" required>
-                                <label class="custom-file-label" for="validatedCustomFile">Choose file</label>
+                                <input type="file" class="custom-file-input" id="foodImage" name="foodImage" required>
+                                <label class="custom-file-label" id="foodImageLabel">Choose file</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -179,6 +179,7 @@
                             <input type="number" class="form-control form-control-line" id="price" name="price" step=".01" required>
                         </div>
                         <div id="select-options-container">
+                            <label for="food-select-option">Food Select Option 食物选项</label>
                             <!--  -->
                         </div>
                         <a type="button" class="btn btn-success btn-sm mb-1 text-white" id="add-select-option"><i class="fa fa-plus text-white"></i> Add New</a>
@@ -247,53 +248,71 @@
     </form>
 @endforeach
 <script>
-$(document).ready(function() {
-    var selectOptionsContainer = $('#select-options-container');
-    var selectOptionTemplate = `
-    <div class="select-options" style="margin-bottom:10px;">
-        <div class="form-group">
-            <input type="text" class="form-control select-option-name" name="select-option-name[]" placeholder="Option Name">
-        </div>
-        <div class="option-value-list">
-            <div class="form-group position-relative option-value-container">
-                <input type="text" name="option-value-name[]" class="form-control form-control-inline option-value" placeholder="Option">
-                <button type="button" class="btn btn-danger delete-option-value" style="position: absolute; right: 0; top:1%;"><i class="fa fa-trash"></i></button>
+    $(document).ready(function() {
+        var selectOptionsContainer = $('#select-options-container');
+        var selectOptionTemplate = `
+        <div class="select-options" style="margin-bottom:10px;">
+            <div class="form-group">
+                <input type="text" class="form-control select-option-name" name="select_option_name[]" placeholder="Option Name">
             </div>
+            <div class="option-value-list">
+                <div class="form-group position-relative option-value-container">
+                    <input type="text" name="option_value_name[{optionValueIndex}][]" class="form-control form-control-inline option-value" placeholder="Option {optionValueIndex}">
+                    <button type="button" class="btn btn-danger delete-option-value" style="position: absolute; right: 0; top:1%;"><i class="fa fa-trash"></i></button>
+                </div>
+            </div>
+            <a type="button" class="btn btn-success btn-sm mb-1 text-white add-option-value" id="add-option-value"><i class="fa fa-plus text-white"></i> Add New Value</a>
+            <button type="button" class="btn btn-danger btn-sm mb-1 delete-select-option" style="right: 0; bottom:0;"><i class="fa fa-trash"></i> Delete Option</button>
         </div>
-        <a type="button" class="btn btn-success btn-sm mb-1 text-white add-option-value" id="add-option-value"><i class="fa fa-plus text-white"></i> Add New Value</a>
-        <button type="button" class="btn btn-danger btn-sm mb-1 delete-select-option" style="right: 0; bottom:0;"><i class="fa fa-trash"></i> Delete Option</button>
-    </div>
-    `;
+        `;
 
-    var optionValueTemplate = `
-    <div class="form-group position-relative option-value-container">
-        <input type="text" name="option-value-name[]" class="form-control form-control-inline option-value" placeholder="Option">
-        <button type="button" class="btn btn-danger delete-option-value" style="position: absolute; right: 0; top:1%;"><i class="fa fa-trash"></i></button>
-    </div>
-    `;
+        var optionValueTemplate = `
+        <div class="form-group position-relative option-value-container">
+            <input type="text" name="option_value_name[{optionValueIndex}][]" class="form-control form-control-inline option-value" placeholder="Option {optionValueIndex}">
+            <button type="button" class="btn btn-danger delete-option-value" style="position: absolute; right: 0; top:1%;"><i class="fa fa-trash"></i></button>
+        </div>
+        `;
 
-    $('#add-select-option').click(function() {
-        selectOptionsContainer.append(selectOptionTemplate);
+        var value = 0;
+        
+        $('#add-select-option').click(function() {
+            var newSelectOption = $(selectOptionTemplate.replace(/\{optionValueIndex\}/g, value));
+            selectOptionsContainer.append(newSelectOption);
+            value++;
+        });
+
+        selectOptionsContainer.on('click', '.add-option-value', function() {
+            var optionValueList = $(this).closest('.select-options').find('.option-value-list');
+            var optionValueContainer = optionValueList.find('.option-value-container').last();
+            var optionValueIndex = optionValueContainer.find('input').attr('name').match(/\[(\d+)\]/)[1];
+            var newOptionValue = $(optionValueTemplate.replace(/\{optionValueIndex\}/g, optionValueIndex));
+            optionValueContainer.after(newOptionValue);
+        });
+
+        selectOptionsContainer.on('click', '.delete-option-value', function() {
+            var optionValueContainer = $(this).closest('.option-value-container');
+            if (optionValueContainer.siblings('.option-value-container').length > 0) {
+                optionValueContainer.remove();
+            } else {
+                $(this).closest('.option-value-list').remove();
+            }
+        });
+
+        selectOptionsContainer.on('click', '.delete-select-option', function() {
+            $(this).closest('.select-options').remove();
+        });
     });
+</script>
 
-    selectOptionsContainer.on('click', '.add-option-value', function() {
-        var optionValueList = $(this).closest('.select-options').find('.option-value-list');
-        var optionValueContainer = optionValueList.find('.option-value-container').last();
-        optionValueContainer.after(optionValueTemplate);
-    });
+<script>
+    // Get the file input element and its label
+    const input = document.getElementById('foodImage');
+    const label = document.getElementById('foodImageLabel');
 
-    selectOptionsContainer.on('click', '.delete-option-value', function() {
-        var optionValueContainer = $(this).closest('.option-value-container');
-        if (optionValueContainer.siblings('.option-value-container').length > 0) {
-            optionValueContainer.remove();
-        } else {
-            $(this).closest('.option-value-list').remove();
-        }
+    // Add an event listener to update the label text
+    input.addEventListener('change', function() {
+        const fileName = input.value.split('\\').pop();  // Get the file name
+        label.innerText = fileName;  // Set the label text
     });
-
-    selectOptionsContainer.on('click', '.delete-select-option', function() {
-        $(this).closest('.select-options').remove();
-    });
-});
 </script>
 @endsection

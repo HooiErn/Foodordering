@@ -77,7 +77,7 @@
                             <tr>
                                 <td class="text-left" colspan="3">Pay By 付款 :
                                 <span id="paymentName"></span>
-                                <input type="hidden" name="paymentMethod" id="paymentMethod" class="form-control" value="{{$table -> payment}}"></td>
+                                <input type="hidden" name="payment_method" id="paymentMethod" class="form-control" value="{{$table -> payment}}"></td>
                             </tr>
                         </tbody>
                     </table>

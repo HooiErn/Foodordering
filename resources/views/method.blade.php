@@ -58,15 +58,17 @@
                 </form>
             </div>
         </div>
-        <div class="center">
-            <div class="d-flex justify-content-center align-items-center text-align-center">
-                <form action="{{ route('home',['id' => $table -> table_id]) }}" method="GET">
-                    @csrf
-                    <input type="hidden" class="form-control" value="2" name="payment">
-                    <button class="button button2">Touch 'n Go 线上付款 &nbsp;&nbsp; <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSexKLDtXeIwF9mdCt_befE61MAFvBNyQxH_xLzUdY&s" style="width:50px;height:50px;"></button>
-                </form>
+        @if($value == 1)
+            <div class="center">
+                <div class="d-flex justify-content-center align-items-center text-align-center">
+                    <form action="{{ route('home',['id' => $table -> table_id]) }}" method="GET">
+                        @csrf
+                        <input type="hidden" class="form-control" value="2" name="payment">
+                        <button class="button button2">Touch 'n Go 线上付款 &nbsp;&nbsp; <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSexKLDtXeIwF9mdCt_befE61MAFvBNyQxH_xLzUdY&s" style="width:50px;height:50px;"></button>
+                    </form>
+                </div>
             </div>
-        </div>
+        @endif
          <br><br><br>
         @if(!count($work))
         <div class="bottom">

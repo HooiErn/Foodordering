@@ -213,45 +213,41 @@ class AdminController extends Controller
         if($validator -> fails()){
             Toastr::error('Something went wrong. <br> Please try again', 'Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
             return redirect('admin/food'); 
+        
         }
-        else{
-            $image=$request->file('foodImage');        
-            $image->move('images',$image->getClientOriginalName());               
-            $imageName=$image->getClientOriginalName(); 
-            $addFood=Food::create([
-                'name'=>$request->name,
-                'available'=>$request->available,
-                'price'=>$request->price,
-                'categoryID'=>$request->categoryID,
-                'image'=>$imageName,
-            ]);
-            
-               // create a new FoodSelect instance
-                $foodSelect = new FoodSelect();
-                $foodSelect->name = $request->input('food_select_name');
-                $foodSelect->food_id = $addFood->id;
-                $foodSelect->save();
 
-                // create an array to hold the options
-                $options = [];
+        $image=$request->file('foodImage');        
+        $image->move('images',$image->getClientOriginalName());               
+        $imageName=$image->getClientOriginalName();
 
-                // loop through each option and add it to the array
-                $optionValues = $request->input('option-value-name');
-                for ($i = 0; $i < count($optionValues); $i++) {
-                    $option = new FoodOption();
-                    $option->name = $optionValues[$i];
-                    $option->food_id = $foodSelect->id;
-                    $option->save();
-                    $options[] = $option;
+        $food = new Food;
+        $food -> name = $request -> name;
+        $food -> available = $request -> available;
+        $food -> price = $request -> price;
+        $food -> categoryID = $request -> categoryID;
+        $food -> image = $imageName;
+        $food -> save();
+
+        if($request -> has('select_option_name') && $request -> has('option_value_name')){
+            $selectNames = $request -> select_option_name;
+            foreach($selectNames as $i => $selectName){
+                $newSelect = new FoodSelect;
+                $newSelect -> name = $selectName;
+                $newSelect -> food_id = $food -> id;
+                $newSelect -> save();
+
+                $optionValues = $request -> option_value_name;
+                foreach ($optionValues[$i] as $optionValue) {
+                    $newOptionValue = new FoodOption;
+                    $newOptionValue->name = $optionValue;
+                    $newOptionValue->food_select_id = $newSelect->id; // associate with the current select
+                    $newOptionValue->save();
                 }
-
-                // attach the options to the food select
-                $foodSelect->options()->saveMany($options);
-
-
-            Toastr::success('You Successfully created food', 'Food Created', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect('admin/food');
+            }
         }
+
+        Toastr::success('You Successfully created food', 'Food Created', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+        return redirect('admin/food');
     }
 
     //Update Food
@@ -341,7 +337,7 @@ class AdminController extends Controller
         ]);
     
         if ($addTable) {
-            Toastr::success('You Successfully Created a Table', 'Table Created', [
+            Toastr::success('You Successfully Created a Table '.$request -> table_id, 'Table Created', [
                 "progressBar" => true,
                 "debug" => true,
                 "newestOnTop" => true,
@@ -359,20 +355,13 @@ class AdminController extends Controller
         }
     }
 
-    public function generateTableId(){
-        $tableID = '';
-        $count = Table::all()->count();
-        $tableID = $count + 1;
-        return $tableID;
-    }
-
     //Delete Table
     public function deleteTable($id){
         $table = Table::where('id',$id)->first();
         $table -> delete();
 
         if($table){
-            Session::flash('success','Successfully delete table');
+            Session::flash('success','Successfully delete table '.$table -> table_id);
             return redirect('admin/table');
         }
         else{
@@ -383,10 +372,17 @@ class AdminController extends Controller
     
     public function takenOrder(){
         $orders = Order::all();
-        $carts = DB::table('carts')
+        $item1 = DB::table('carts')
         ->join('food as detail','carts.food_id','detail.id')
         ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
         ->get();
+
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $carts = $item1 -> merge($item2);
         
         return view('admin/takenOrder', compact('orders', 'carts'));
         
@@ -440,15 +436,14 @@ class AdminController extends Controller
     
      //Delete Waiter
     public function deleteWaiter($id){
-        $waiter = Table::where('id',$id)->first();
+        $waiter = User::where('id',$id)->first();
         $waiter -> delete();
 
         if($waiter){
-            Session::flash('success','Successfully delete waiter');
+            
             return redirect('admin/waiter');
         }
         else{
-            Session::flash('error','Something went wrong!');
             return redirect('admin/waiter');
         }
     }
@@ -465,6 +460,10 @@ class AdminController extends Controller
         $waiter = User::where('name',$name)->first();
         $orders = Order::where('waiter',$name)->where('status',"1")->get();
 
+        if(!($waiter && $orders)){
+            return view('404');
+        }
+
         return view('admin.viewOrder',compact('waiter','orders'));
     }
     
@@ -478,6 +477,11 @@ class AdminController extends Controller
     public function viewFoodlist($orderID)
     {
         $order = Order::where('orderID',$orderID)->first();
+
+        if(!$order){
+            return view('404');
+        }
+
         $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
         ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
         ->where('orders.orderID',$orderID)->get();
@@ -486,11 +490,10 @@ class AdminController extends Controller
     }
     
     public function setup(){
-        $qrcodes = Qrcode::all();
+        $qrcode = DB::table('qrcodes')->first();
         
-        return view('admin.setup', compact('qrcodes'));
+        return view('admin.setup', compact('qrcode'));
     }
-
     
     public function addQrcode(Request $request){
         $image=$request->file('qrcode');        

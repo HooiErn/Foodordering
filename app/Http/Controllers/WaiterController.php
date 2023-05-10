@@ -3,18 +3,20 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 use Brian2694\Toastr\Facades\Toastr;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Admin;
 use App\Models\Category;
 use App\Models\Food;
 use App\Models\Table;
-use App\Models\Waiter;
 use App\Models\Order;
+use App\Models\WaiterCart;
 use App\Models\Cart;
 use App\Models\Work;
 use App\Models\Qrcode;
+use App\Models\User;
 use App\Events\Refresh2;
 use Carbon\Carbon;
 use Session;
@@ -23,6 +25,16 @@ use DB;
 
 class WaiterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(function ($request, $next) {
+            if (!auth()->check()) {
+                return redirect()->route('waiter.login');
+            }
+            return $next($request);
+        })->except(['check_login','login']);
+    }
+
     //Login
     public function login(){
         return view('waiter/login');
@@ -30,34 +42,50 @@ class WaiterController extends Controller
 
     //Check Login
     public function check_login(Request $request){
-
-        $request->validate([
+        $validator = $request->validate([
             'name' => 'required',
             'password' => 'required',
         ]);
+    
+        $credentials = $request->only('name', 'password');
+    
+        if(Auth::attempt($credentials)){
+            $user = Auth::user();
 
-        $waiter = Waiter::where(['name' => $request->name, 'password' => sha1($request->password)])->count();
+            // Allow 1 account login onlu (but got bug)
+            // if ($user->session_id !== null && $user->session_id !== session()->getId()) {
+            //     Toastr::error('You are already logged in on another device.', 'Login Failed');
+            //     Auth::logout();
+            //     return redirect('admin/login');
+            // }
 
-        if($request->has('rememberme')){
-            Cookie::queue('name',$request->name,1440); //1440 means it stays for 24 hours
-            Cookie::queue('password',$request->password,1440);
+            $user -> session_id == session()->getId();
+            $user -> save();
+
+            if($user -> isAdmin()){
+                Auth::logout();
+                Toastr::info('That page is for waiter.', 'Login Wrong Page', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+                return redirect('admin/login');
+            }
+            else if($user -> isWaiter()){
+                Toastr::success('Welcome back '.$request->name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+                return redirect('waiter/work');
+            }
+
+            return redirect()->back();            
         }
 
-        if($waiter > 0){
-            $waiterData = Waiter::where(['name' => $request->name, 'password' => sha1($request->password)])->first();
-            session(['waiterData' => $waiterData]);
-            Toastr::success('Welcome back '.$request -> name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect('waiter/work');
-        }
-        else{
-            Toastr::error('Please try again', 'Invalid name / password', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect('waiter/login');
-        }
+        Toastr::error('Invalid name or password', 'Error');
+        return redirect()->back()->withErrors($validator)->withInput();
     }
 
     //Logout
     public function logout(){
-        session()->forget(['waiterData']);
+        $user = Auth::user();
+        $user -> session_id == null;
+        $user ->save();
+
+        Auth::logout();
         Toastr::info('You have logout your account', 'Logout Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
         return redirect('waiter/login');
     }
@@ -66,35 +94,14 @@ class WaiterController extends Controller
     public function scan(){
         return view('waiter/scan');
     }
-
-    // public function takeOrder(Request $request){
-    //     $order = Order::where('orderID', $request -> orderID)->first();
-    //     if ($order->waiter != null) {
-    //         Toastr::info('This order has been taken by another waiter', 'Failed To Take Order', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
-    //         return redirect()->back();
-    //     }
-        
-    //     $order->waiter = session('waiterData')['name'];
-    //     $order->serve_time = Carbon::now();
-    //     $order->save();
-        
-    //     // Load carts using Eloquent relationships
-    //     $carts = DB::table('carts')
-    //             ->join('food as detail','carts.food_id','detail.id')
-    //             ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
-    //             ->where('carts.orderID', $order -> orderID)
-    //             ->get();
-        
-    //     // Broadcast event to update kitchen page
-    //     event(new Refresh2());
-        
-    //     Toastr::success('Successfully Take Order', 'Success To Take Order', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
-    //     return view('waiter/orderDetail')->with(['order' => $order, 'carts' => $carts]);
-    // }
     
     public function orderDetail($id){
         $order = Order::where('orderID', $id)->first();
         
+        if(!$order){
+            return view('404');
+        }
+
         // Load carts using Eloquent relationships
         $carts = DB::table('carts')
                 ->join('food as detail','carts.food_id','detail.id')
@@ -105,7 +112,7 @@ class WaiterController extends Controller
         $qrcode = DB::table('qrcodes')->first();
         
         if($order -> waiter == null){
-            $order->waiter = session('waiterData')['name'];
+            $order->waiter = Auth::user()->name;
             $order->serve_time = Carbon::now();
             $order->save();
     
@@ -121,16 +128,14 @@ class WaiterController extends Controller
     
     public function viewTakenOrder(Request $request)
     {
-        $waiterName = session('waiterData')['name'];
-        $waiter = Waiter::where('name',$waiterName)->first();
-        $orders = Order::where('waiter',$waiterName)->get();
+        $waiter = User::where('name',Auth::user()->name)->first();
+        $orders = Order::where('waiter',Auth::user()->name)->get();
 
         return view('waiter.viewOrder',compact('waiter','orders'));
     }
     
     public function searchDate(Request $request){
-        $waiterName = session('waiterData')['name'];
-        $waiter = Waiter::where('name',$waiterName)->first();
+        $waiter = User::where('name',Auth::user()->name)->first();
         $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->where('waiter',$waiterName)->get();
         
         return view('waiter.viewOrder',compact('waiter','orders'));
@@ -139,9 +144,20 @@ class WaiterController extends Controller
     public function viewFoodlist($orderID)
     {
         $order = Order::where('orderID',$orderID)->first();
-        $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
+        
+        if(!$order){
+            return view('404');
+        }
+
+        $item1 = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
         ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
         ->where('orders.orderID',$orderID)->get();
+
+        $item2 = DB::table('waiter_carts')->join('orders','waiter_carts.orderID','=','orders.orderID')
+        ->join('food','waiter_carts.food_id','=','food.id')->select('waiter_carts.*','food.name as fName','food.price as fPrice')
+        ->where('orders.orderID',$orderID)->get();
+
+        $carts = $item1 -> merge($item2);
 
         return view('waiter.viewFoodList',compact('order','carts'));
     }
@@ -154,8 +170,8 @@ class WaiterController extends Controller
     public function addToCart($id){
         $table = Table::where('table_id',$id)->first();
         $foods = Food::all();
-        $carts = Cart::leftjoin('food','carts.food_id','=','food.id')
-        ->select('carts.*','food.name as fName', 'food.price as fPrice', 'food.image as fImage', 'food.description as fDescription')
+        $carts = WaiterCart::leftjoin('food','waiter_carts.food_id','=','food.id')
+        ->select('waiter_carts.*','food.name as fName', 'food.price as fPrice', 'food.image as fImage')
         ->where('table_id',$id)->where('orderID',null)->get();
 
         return view('waiter/add-to-cart', compact('table','foods','carts'));
@@ -164,19 +180,25 @@ class WaiterController extends Controller
     public function work(){
         $works = Work::all();
         $orders = Order::where('status', 1)->get();
-        $carts = DB::table('carts')
+        $item1 = DB::table('carts')
         ->join('food as detail','carts.food_id','detail.id')
         ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
         ->get();
+
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $carts = $item1 -> merge($item2);
         return view('waiter/work',compact('works', 'orders', 'carts'));
     }
     
     public function acceptWork($id){
-        $waiterName = session('waiterData')['name'];
-        $waiter = Waiter::where('name', $waiterName)->first();
+        $waiter = User::where('name', Auth::user()->name)->first();
         $waiter -> count += 1;
         $work = Work::where('id',$id)->first();
-        $work -> waiter = $waiterName;
+        $work -> waiter = Auth::user()->name;
         $work -> save();
         
         event(new Refresh2());
@@ -185,9 +207,8 @@ class WaiterController extends Controller
     }
     
     public function showWork(){
-        $waiterName = session('waiterData')['name'];
         $tables = Table::all();
-        $works = Work::where('waiter', $waiterName)->get();
+        $works = Work::where('waiter', Auth::user()->name)->get();
         
         return view('waiter/showWork',compact('works','tables'));
     }
