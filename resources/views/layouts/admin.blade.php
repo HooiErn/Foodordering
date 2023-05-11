@@ -27,8 +27,7 @@
 
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
-        
-        var audio = new Audio('/sound/notification.mp3');
+
         var pusher = new Pusher('472896e216249f1fefdb', {
             cluster: 'ap1'
         });
@@ -37,7 +36,8 @@
         channel.bind('refresh2', function() {
             window.location.reload();
         });
-
+        
+        var audio = new Audio('/sound/notification.mp3');
         var channel2 = pusher.subscribe('placeOrder-channel');
         channel2.bind('place-order', function(data) {
             toastr.info("Table " + data.table + " has confirm order");

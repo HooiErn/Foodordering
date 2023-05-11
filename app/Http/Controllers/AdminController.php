@@ -20,6 +20,7 @@ use App\Models\FoodSelect;
 use App\Events\AddToCart;
 use App\Events\AdminRefresh;
 use App\Events\WaiterRefresh;
+use App\Events\MenuRefresh;
 use App\Events\DonePrepare;
 use App\Events\Refresh2;
 use Illuminate\Http\Request;
@@ -246,6 +247,7 @@ class AdminController extends Controller
             }
         }
 
+        event(new MenuRefresh());
         Toastr::success('You Successfully created food', 'Food Created', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
         return redirect('admin/food');
     }
@@ -357,15 +359,13 @@ class AdminController extends Controller
 
     //Delete Table
     public function deleteTable($id){
-        $table = Table::where('id',$id)->first();
+        $table = Table::where('table_id',$id)->first();
         $table -> delete();
 
         if($table){
-            Session::flash('success','Successfully delete table '.$table -> table_id);
             return redirect('admin/table');
         }
         else{
-            Session::flash('error','Something went wrong!');
             return redirect('admin/table');
         }
     }

@@ -63,11 +63,11 @@
                 }
             });
 
-            var channel3 = pusher.subscribe('refresh2-channel');
-            channel3.bind('refresh2', function(data) {
+            var channel3 = pusher.subscribe('menuRefresh-channel');
+            channel3.bind('menu-refresh', function() {
                 window.location.reload();
             });
-
+            
         </script>
   </head>
 
@@ -140,9 +140,9 @@
                     <input type="hidden" name="amount" value="{{$food->price}}" class="form-control">
                     <div class="modal fade food{{$food -> id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-sm">
-                            <div class="modal-content">
+                            <div class="modal-content" style="padding:10px;">
                                 <div class="modal-header">
-                                    <h3 class="title">Select Quantity 选择数量</h3>
+                                   <h3 class="title" style="font-size: 20px; font-weight: bold;">Select Quantity 选择数量</h3>
                                 </div>
                                 <div class="input-group quantity">
                                     <div class="input-group-prepend decrement-btn changeQuantity">
@@ -154,47 +154,24 @@
                                         <span class="input-group-text">+</span>
                                     </div>
                                 </div>
-                                 <input type="hidden" value="" name="select">
-                                 
-                      <div class="row text-center p-3">
-                            <div class="col-md-5" style="width:50%;">
-                                <div class="form-group">
-                                    <b><label class="control-label" style="font-size: 16px;">Sugar Level:</label></b>
-                                    <div class="radio">
-                                        <label style="font-size: 14px;">
-                                            <input type="radio" name="sugar_level" value="no_sugar"> No sugar
-                                        </label>
-                                    </div>
-                                    <div class="radio">
-                                        <label style="font-size: 14px;">
-                                            <input type="radio" name="sugar_level" value="less_sugar"> Less sugar
-                                        </label>
-                                    </div>
-                                    <div class="radio">
-                                        <label style="font-size: 14px;">
-                                            <input type="radio" name="sugar_level" value="standard"> Standard
-                                        </label>
-                                    </div>
+                                
+                                <div class="row text-center pt-3 pl-3">
+                                    @foreach($food->foodSelect as $foodSelect)
+                                        <input type="hidden" value="{{ $foodSelect->name }}" name="select[{{$foodSelect->id}}]">
+                                        <div class="col-md-5" style="width:50%;">
+                                            <strong>{{ $foodSelect->name }}</strong>
+                                            @foreach($foodSelect->foodOption as $foodOption)
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}">
+                                                    <label class="form-check-label">
+                                                        {{ $foodOption->name }}
+                                                    </label>
+                                                </div>
+                                            @endforeach
+                                        </div>
+                                    @endforeach
                                 </div>
-                            </div>
-                            <div class="col-md-6" style="width:50%;">
-                                <div class="form-group">
-                                    <b><label class="control-label" style="font-size: 16px;">Ice Level:</label></b>
-                                    <div class="radio">
-                                        <label style="font-size: 14px;">
-                                            <input type="radio" name="ice_level" value="no_ice"> No ice
-                                        </label>
-                                    </div>
-                                    <div class="radio">
-                                        <label style="font-size: 14px;">
-                                            <input type="radio" name="ice_level" value="ice"> Ice
-                                        </label>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-      
+                                
                                 <div class="modal-footer">
                                     <button type="submit" class="btn btn-primary">Confirm 确定</button>
                                 </div>
@@ -261,6 +238,39 @@
             }
         });
     });
+</script>
+<script>
+    $(document).ready(function () {
+
+        $('.increment-btn').click(function (e) {
+            e.preventDefault();
+            var incre_value = $(this).parents('.quantity').find('.qty-input').val();
+            var value = parseInt(incre_value, 10);
+            value = isNaN(value) ? 0 : value;
+            if(value<10){
+                value++;
+                $(this).parents('.quantity').find('.qty-input').val(value);
+            }
+
+        });
+
+        $('.decrement-btn').click(function (e) {
+            e.preventDefault();
+            var decre_value = $(this).parents('.quantity').find('.qty-input').val();
+            var value = parseInt(decre_value, 10);
+            value = isNaN(value) ? 0 : value;
+            if(value>1){
+                value--;
+                $(this).parents('.quantity').find('.qty-input').val(value);
+            }
+        });
+        
+        var table = document.getElementById("table_id").value;
+        if (window.location.href.indexOf('_token=') !== -1) {
+            window.location.href = "/home/" + table;
+        }
+    });
+
 </script>
 </body>
 </html>

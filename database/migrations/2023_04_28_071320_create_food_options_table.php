@@ -16,7 +16,7 @@ class CreateFoodOptionsTable extends Migration
         Schema::create('food_options', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('food_select_id');
-            $table->foreign('food_select_id')->references('id')->on('food_selects');
+            $table->foreign('food_select_id')->references('id')->on('food_selects')->onDelete('cascade');;
             $table->string('name');
             $table->timestamps();
         });

@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class DonePrepare
+class DonePrepare implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $table_id;
@@ -19,7 +19,7 @@ class DonePrepare
      *
      * @return void
      */
-    public function __construct($table_id)
+    public function __construct($table_id = null)
     {
         $this -> table_id = $table_id;
     }

@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
     <script>
 
@@ -33,29 +34,28 @@
             cluster: 'ap1'
         });
         
-        var channel2 = pusher.subscribe('refresh2-channel');
-        channel2.bind('refresh2', function(){
+        var channel = pusher.subscribe('refresh2-channel');
+        channel.bind('refresh2', function(){
             window.location.reload();
         });
         
-        var channel3 = pusher.subscribe('callWaiter-channel');
-        channel3.bind('call-waiter', function(data){
+        var channel2 = pusher.subscribe('callWaiter-channel');
+        channel2.bind('call-waiter', function(data){
             window.location.reload();
             alert("Table " + data.table + " is calling waiter");
         });
 
-        var channel3 = pusher.subscribe('callWaiter-channel');
-        channel3.bind('call-waiter', function(data){
-            window.location.reload();
-            alert("Table " + data.table + " is calling waiter");
-        });
-
-        var channel4 = pusher.subscribe('donePrepare-channel');
-        channel4.bind('done-prepare', function(data) {
-            toastr.info("Table " + data.table + " has done preparing. Please serve it.");
-            console.log("Success");
+        var channel3 = pusher.subscribe('donePrepare-channel');
+        channel3.bind('done-prepare', function(data) {
+            toastr.info("Table " + data.table_id + " has done preparing. Please serve it.");
+            audio.play();
+            setTimeout(function() {
+                window.location.href = "{{ url('waiter/work') }}";
+            }, 2000);
         });
     </script>
+
+
 </head>
 
 <body id="page-top">

@@ -145,7 +145,12 @@
     </div>
 </form>
 @if($errors -> has('w_name') || $errors -> has('w_password') || $errors->has('w_confirm_password'))
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#waiterModal').modal('show');
+        });
+    </script>
 @endif
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -172,6 +177,13 @@
         console.log(name);
         window.location.href = "/viewOrder/" + name;
     }
+</script>
+<script>
+    $(document).ready(function() {
+        $('.close').on('click', function() {
+            $(this).closest('.modal').modal('hide');
+        });
+    });
 </script>
 
 @endsection

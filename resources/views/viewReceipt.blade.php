@@ -2,7 +2,7 @@
 <html lang="en">
     <head itemscope itemtype="http://schema.org/WebSite">
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title itemprop="name">Order Detail</title>
+        <title itemprop="name">Receipt</title>
         <meta name="description" itemprop="description">
         <meta name="keywords" content="html, css, javascript, themes, templates, code snippets, ui examples, react js, react-native, plagraounds, cards, front-end, profile, invoice, back-end, web-designers, web-developers">
         <link itemprop="sameAs" href="https://www.facebook.com/bootdey"><link itemprop="sameAs" href="https://twitter.com/bootdey">
@@ -43,14 +43,14 @@
                                                 <table width="100%" cellpadding="0" cellspacing="0">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="content-block"><h2>Successfully Confirm order</h2></td>
+                                                            <td class="content-block"><h2>Successfully Confirmed order !</h2></td>
                                                         </tr>
                                                         <tr>
                                                             <td class="content-block">
                                                                 <table class="invoice">
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td>Order ID #{{$order -> orderID}}<br>{{ \Carbon\Carbon::parse($order -> created_at)->format('F d Y') }}<br>Table {{$order -> table_id}}</td>
+                                                                            <td>Table {{$order -> table_id}}<br>Order ID #{{$order -> orderID}}<br>{{ \Carbon\Carbon::parse($order -> created_at)->format(' j  F  Y , g:i a') }}<br></td>
                                                                         </tr>
                                                                         <tr>
                                                                             <td>
@@ -76,7 +76,7 @@
                                                                                             </tr>
                                                                                         @endforeach
                                                                                         <tr class="total">
-                                                                                            <td class="alignright" width="80%">Total</td>
+                                                                                            <td class="alignright" width="80%">Total:</td>
                                                                                             <td class="alignright">RM {{number_format($order -> amount,2)}}</td>
                                                                                         </tr>
                                                                                         <tr class="pay_by">

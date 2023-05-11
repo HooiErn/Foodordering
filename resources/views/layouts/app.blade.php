@@ -60,9 +60,9 @@
                     console.log(data.table, table);
                 }
             });
-
-            var channel3 = pusher.subscribe('refresh2-channel');
-            channel3.bind('refresh2', function(data) {
+            
+            var channel3 = pusher.subscribe('menuRefresh-channel');
+            channel3.bind('menu-refresh', function() {
                 window.location.reload();
             });
         </script>
@@ -109,9 +109,6 @@
                 }
             });
         });
-    </script>
-    <script>
-        
     </script>
 </body>
 </html>

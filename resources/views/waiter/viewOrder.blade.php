@@ -72,7 +72,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($orders ->where("status",1) as $order)
+                @foreach($orders ->where("is_paid",1) as $order)
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td><a href="{{ url('waiter/viewFoodList',['orderID' => $order -> orderID]) }}" id="orderID">{{$order -> orderID}} </a></td>
