@@ -52,6 +52,7 @@
                                 <td>Image 图片</td>
                                 <td>Name 名字</td>
                                 <td>Quantity 数量</td>
+                                <td>Addon</td>
                                 <td>Grand Price 共计</td>
                                 <td></td>
                             </tr>
@@ -63,6 +64,13 @@
                                 <td><img src="{{ asset('images')}}/{{$detail->image}}" alt="" width="50px" height="50px"></td>
                                 <td>{{$detail -> name}}</td>
                                 <td>{{$detail -> quantity}}</td>
+                                @if ($detail->foodSelect)
+                                    <td>Food Select Name: {{ $detail->foodSelect->name }}</td>
+                                @endif
+
+                                @foreach ($detail->foodOption as $option)
+                                    <td>Food Option Name: {{ $option->name }}</td>
+                                @endforeach
                                 <td>
                                     <span>{{number_format($detail -> quantity * $detail -> price,2)}}</span>
                                     <input type="hidden" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/>

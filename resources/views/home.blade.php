@@ -14,23 +14,52 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu.css') }}">
-<style>
-      nav a {
-        color: #fff;
-        text-decoration: none;
-        margin: 0 10px;
-      }
-
-      /* Style for each section */
-      section {
-        height: 500px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 3em;
-      }
-
-</style>
+   <style>
+   .navbar{
+       padding: 0.2rem 0.2rem !important;
+       max-height:80px;
+       overflow-x: auto;
+   }
+    .nav {
+      display: flex;
+      flex-wrap: nowrap;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    
+    .nav-item {
+      margin-right: 10px;
+      min-width:110px;
+      height:50px;
+    }
+    
+    .nav-link {
+      color: #fff !important;
+      text-decoration: none;
+      padding: 6px !important;
+      display: block;
+      border: 2px solid transparent;
+      border-radius: 20px;
+      transition: background-color 0.3s ease;
+    }
+    
+    .nav-link.active {
+      background-color: #fff;
+      color: #000 !important;
+    }
+    
+    .category {
+      margin-bottom: 20px;
+      scroll-margin-top: 60px; /* Adjust the scroll margin to provide space for the fixed navbar */
+    }
+    
+    /* Apply padding to the body to offset the fixed navbar */
+    body {
+      padding-top: 60px; /* Adjust the padding-top value to match the height of the fixed navbar */
+    }
+    
+  </style>
      <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
         <script>
 
@@ -78,29 +107,34 @@
         </script>
     @endif
     <input type="hidden" id="table_id" value="{{$table -> table_id}}">
-    <!--Navbar-->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container">
-    <a class="navbar-brand" href="#">Menu 菜单</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
-        @foreach ($categories as $category)
-          <li class="nav-item">
-            <a class="nav-link" href="#{{ $category->name }}">{{ $category->name }}</a>
-          </li>
-        @endforeach
-      </ul>
-    </div>
-  </div>
-</nav>
 
-    
-    <div class="container">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <div class="nav-container">
+          <div class="overflow-auto">
+            <ul class="nav flex-nowrap">
+              <li class="nav-item">
+                <div class="d-flex flex-row">
+                  @foreach ($categories as $category)
+                    <div class="p-1">
+                      <a class="nav-link" data-category="{{ $category->name }}" style="white-space: nowrap;">{{ $category->name }}</a>
+                    </div>
+                  @endforeach
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+
+
+        
+    <div class="container mb-5">
         <div class="row mt-1 mb-1">
-            <div class="col-12 d-flex justify-content-center">
+            <div class="col-12 d-flex justify-content-center" style="margin-top:10px;">
                 <form action="{{ url('changePayment')}}" method="POST">
                     @csrf
                     <input type="hidden" name="table_id" value="{{$table -> table_id}}">
@@ -112,7 +146,7 @@
         @foreach($menu as $categoryName => $foods)
                 <div class="col-lg-12 col-md-12">
                     <br>
-                    <div class="section" id="{{ $categoryName }}">
+                    <div class="category" id="{{ $categoryName }}">
                        <h2>{{ $categoryName }}</h2>
                     </div>
                   @foreach($foods as $food)
@@ -127,58 +161,59 @@
                                 <div class="h6 mb-0 font-weight-bold text-gray-800">RM {{ number_format($food -> price,2) }}</div>
                             </div>
                             <div class="col-auto mr-2">
-                               <a href="{{ url('food-detail', ['id' => $food -> id, 'table_id' => $table -> table_id]) }}" data-toggle="modal" data-target=".food{{$food -> id}}" class="btn btn-success rounded-10">Add To Cart<br>加入购物车</a>
+                               <a href="" data-toggle="modal" data-target="#food{{$food -> id}}" class="btn btn-success rounded-10">Add To Cart<br>加入购物车</a>
                             </div>
                         </div>
                     </div>
-                    @endforeach
-                </div>
-                <form action="{{ url('/add-to-cart') }}" method="POST">
-                    @csrf
-                    <input type="hidden" name="food_id" value="{{$food->id}}" class="form-control">
-                    <input type="hidden" name="table_id" value="{{$table -> table_id}}" class="form-control">
-                    <input type="hidden" name="amount" value="{{$food->price}}" class="form-control">
-                    <div class="modal fade food{{$food -> id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-sm">
-                            <div class="modal-content" style="padding:10px;">
-                                <div class="modal-header">
-                                   <h3 class="title" style="font-size: 20px; font-weight: bold;">Select Quantity 选择数量</h3>
-                                </div>
-                                <div class="input-group quantity">
-                                    <div class="input-group-prepend decrement-btn changeQuantity">
-                                        <span class="input-group-text">-</span>
+                    <form action="{{ url('/add-to-cart') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="food_id" value="{{$food->id}}" class="form-control">
+                        <input type="hidden" name="table_id" value="{{$table -> table_id}}" class="form-control">
+                        <input type="hidden" name="amount" value="{{$food->price}}" class="form-control">
+                        <div class="modal fade" id="food{{$food ->id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-sm">
+                                <div class="modal-content" style="padding:10px;">
+                                    <div class="modal-header">
+                                       <h3 class="title" style="font-size: 20px; font-weight: bold;">Select Quantity 选择数量</h3>
                                     </div>
-                                    <input type="hidden" class="price-input form-control" name="price" id="price" value="{{$food -> price}}">
-                                    <input type="number" class="qty-input form-control text-center" name="quantity" id="quantity" value="1">
-                                    <div class="input-group-append increment-btn changeQuantity">
-                                        <span class="input-group-text">+</span>
+                                    <div class="input-group quantity">
+                                        <div class="input-group-prepend decrement-btn changeQuantity">
+                                            <span class="input-group-text">-</span>
+                                        </div>
+                                        <input type="hidden" class="price-input form-control" name="price" id="price" value="{{$food -> price}}">
+                                        <input type="number" class="qty-input form-control text-center" name="quantity" id="quantity" value="1">
+                                        <div class="input-group-append increment-btn changeQuantity">
+                                            <span class="input-group-text">+</span>
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <div class="row text-center pt-3 pl-3">
-                                    @foreach($food->foodSelect as $foodSelect)
-                                        <input type="hidden" value="{{ $foodSelect->name }}" name="select[{{$foodSelect->id}}]">
-                                        <div class="col-md-5" style="width:50%;">
-                                            <strong>{{ $foodSelect->name }}</strong>
-                                            @foreach($foodSelect->foodOption as $foodOption)
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}">
-                                                    <label class="form-check-label">
-                                                        {{ $foodOption->name }}
-                                                    </label>
+                                    
+                                    @if(count($food -> foodSelect))
+                                        <div class="row text-center pt-3 pl-3">
+                                            @foreach($food->foodSelect as $foodSelect)
+                                                <input type="hidden" value="{{ $foodSelect->name }}" name="select[{{$foodSelect->id}}]">
+                                                <div class="col-md-5" style="width:50%;">
+                                                    <strong>{{ $foodSelect->name }}</strong>
+                                                    @foreach($foodSelect->foodOption as $foodOption)
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}">
+                                                            <label class="form-check-label">
+                                                                {{ $foodOption->name }}
+                                                            </label>
+                                                        </div>
+                                                    @endforeach
                                                 </div>
                                             @endforeach
                                         </div>
-                                    @endforeach
-                                </div>
-                                
-                                <div class="modal-footer">
-                                    <button type="submit" class="btn btn-primary">Confirm 确定</button>
+                                    @endif
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary">Confirm 确定</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                    @endforeach
+                </div>
             @endforeach
         </div>
     </div>
@@ -272,6 +307,29 @@
     });
 
 </script>
+
+ <script>
+    var navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', function(event) {
+        event.preventDefault();
+        
+        var targetCategory = link.getAttribute('data-category');
+        var targetElement = document.getElementById(targetCategory);
+        
+        // Calculate the offset to account for the fixed navbar height
+        var navbarHeight = document.querySelector('.navbar').offsetHeight;
+        var targetOffset = targetElement.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+        
+        window.scrollTo({ top: targetOffset, behavior: 'smooth' });
+        
+        navLinks.forEach(function(navLink) {
+          navLink.classList.remove('active');
+        });
+        link.classList.add('active');
+      });
+    });
+  </script>
 </body>
 </html>
 @include('auth.money')

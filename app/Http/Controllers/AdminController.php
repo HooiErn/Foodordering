@@ -293,6 +293,28 @@ class AdminController extends Controller
             return redirect('admin/food'); 
         }
     }
+    
+    // Delete Food Select
+    public function deleteSelect($id){
+        $foodSelect = FoodSelect::where('id',$id)->first();
+        $foodSelect -> delete();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Item deleted successfully'
+        ]);
+    }
+    
+    // Delete Food Option
+    public function deleteSelectOption($id){
+        $foodOption = FoodOption::where('id',$id)->first();
+        $foodOption -> delete();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Item deleted successfully'
+        ]);
+    }
 
     //Change Food Status
     public function changeStatus($id){

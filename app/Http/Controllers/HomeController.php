@@ -8,6 +8,8 @@ use Brian2694\Toastr\Facades\Toastr;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Food;
+use App\Models\FoodSelect;
+use App\Models\FoodOption;
 use App\Models\Cart;
 use App\Models\Table;
 use App\Models\Qrcode;
@@ -96,12 +98,34 @@ class HomeController extends Controller
             return view('404');
         }
 
-        $details = Cart::leftjoin('food','carts.food_id','=','food.id')
-        ->select('carts.*','food.name as name','food.price as price',
-        'food.image as image','food.id as foodID')
-        ->where('table_id',$id)
+        $details = Cart::leftJoin('food', 'carts.food_id', '=', 'food.id')
+        ->leftJoin('food_selects', 'food_selects.food_id', '=', 'food.id')
+        ->leftJoin('food_options', 'food_options.food_select_id', '=', 'food_selects.id')
+        ->select(
+            'carts.*', 
+            'food.name as food_name',
+            'food.price as food_price',
+            'food.image as food_image',
+            'food.id as food_id',
+            'food_selects.name as food_select_name',
+            'food_options.name as food_option_name'
+        )
+        ->where('table_id', $id)
         ->get();
 
+        foreach ($details as $detail) {
+            // Access the food details
+            $food_name = $detail->food_name;
+            $food_price = $detail->food_price;
+            $food_image = $detail->food_image;
+            $food_id = $detail->food_id;
+
+            // Access the food select details
+            $food_select_name = $detail->food_select_name;
+
+            // Access the food option details
+            $food_option_name = $detail->food_option_name;
+        }
         return view('view',compact('details','table'));
 
     }
