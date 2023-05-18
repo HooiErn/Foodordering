@@ -52,7 +52,7 @@
                                 <td>Image 图片</td>
                                 <td>Name 名字</td>
                                 <td>Quantity 数量</td>
-                                <td>Addon</td>
+                                <td>Addon 附加</td>
                                 <td>Grand Price 共计</td>
                                 <td></td>
                             </tr>
@@ -62,30 +62,25 @@
                             <input type="hidden" name="cartID" id="cartID" value="{{$detail -> id}}">
                             <tr>
                                 <td><img src="{{ asset('images')}}/{{$detail->image}}" alt="" width="50px" height="50px"></td>
-                                <td>{{$detail -> name}}</td>
-                                <td>{{$detail -> quantity}}</td>
-                                @if ($detail->foodSelect)
-                                    <td>Food Select Name: {{ $detail->foodSelect->name }}</td>
-                                @endif
-
-                                @foreach ($detail->foodOption as $option)
-                                    <td>Food Option Name: {{ $option->name }}</td>
-                                @endforeach
-                                <td>
-                                    <span>{{number_format($detail -> quantity * $detail -> price,2)}}</span>
-                                    <input type="hidden" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/>
-                                </td>
+                
+                                 <td>{{$detail -> name}}</td>
+                                 <td>{{$detail -> quantity}}</td>
+                                 <td>{{$detail -> addon}}</td>
+                                 <td><span>{{number_format($detail -> quantity * $detail -> price,2)}}</span>
+                                    <input type="hidden" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/></td>
                                 <td><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food? 您确定要删除该食物吗?')"><i class="fa fa-trash"></i></a></td>
                                
                             </tr>
                             @endforeach
+                            
                             <tr>
-                                <td class="text-right" colspan="3"><b>Sub Total 共计 :</b></td>
+                                 <td class="text-right" colspan="5"><b>Sub Total 共计 :</b></td>
                                 <td><b><span name="total2" id="total2"></span></b></td>
                                <input type="hidden" name="total" id="total" readonly class="form-control-plaintext">
                             </tr>
+                          
                             <tr>
-                                <td class="text-left" colspan="3">Pay By 付款 :
+                                <td class="text-left" colspan="5">Pay By 付款 :
                                 <span id="paymentName"></span>
                                 <input type="hidden" name="payment_method" id="paymentMethod" class="form-control" value="{{$table -> payment}}"></td>
                             </tr>

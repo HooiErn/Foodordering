@@ -21,9 +21,9 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
-    <script>
+<script>
 
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
@@ -47,6 +47,13 @@
             }, 2000);
         });
     </script>
+    
+    
+    @if(Auth::user()->isWaiter())
+        <script>
+            window.location.href = "{{ url('waiter/work') }}";
+        </script>
+    @endif
 </head>
 
 <body id="page-top">
@@ -60,12 +67,8 @@
         <div id="content-wrapper" class="d-flex flex-column">
             <!-- Main Content -->
             <div id="content">
-                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-2 static-top shadow">
-                    <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
-                    </button>
-                </nav>
+                @include('functions.topbar')
+                
                 <div class="container-fluid">
                     @yield('content')
                 </div>

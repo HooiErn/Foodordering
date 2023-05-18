@@ -79,8 +79,12 @@ class CartController extends Controller
             Cart::where('table_id', $table_id)->where('orderID', null)->delete();
             $table = Table::where('table_id',$table_id)->first();
             $table -> payment = null;
+            $table -> last_active_at = null;
             $table -> save();
             event(new Refresh($table_id));
+            return response()->json([
+                'message' => "Unload Function Success",
+            ]);
         }
     }
 
@@ -97,69 +101,69 @@ class CartController extends Controller
 
     //Delete Cart
     public function deleteCart($id){
-        $deleteFood=Cart::find($id); //binding record
+        if(Auth::check() && Auth::user()->isWaiter()){
+            $deleteFood=WaiterCart::find($id); //binding record
+            $deleteFood -> delete();
+            
+            return back();
+        }
+        
+        $deleteFood=Cart::find($id);
         event(new Refresh($deleteFood -> table_id));
         $deleteFood->delete();//delete record
-        if($deleteFood){
-        Session::flash('success','Item was remove successfully!');
         return back();
-        }
     }
 
     //Confirm Order
     public function confirmOrder(Request $request){
         $orderID = $this->generateOrderID();
-        $waiter = Auth::check() && Auth::user()->isWaiter() ? Auth::user()->name : null;
-        $addOrder = $this->createOrder($orderID, $request->tableID, $request->total, $request->addon, $waiter, $request->payment_method);
+        
+        if(Auth::check() && Auth::user()->isWaiter()){
+            $addOrder = Order::create([
+                'orderID' => $orderID,
+                'table_id' => $request -> tableID,
+                'amount' => $request -> total,
+                'waiter' => Auth::user()->name,
+                'status' => 0,
+                'payment_method' => $request -> payment_method,
+            ]);
+            
+            if($addOrder){
+                $carts = WaiterCart::where('table_id', $request -> tableID)->where('orderID',null)->get();
+                foreach($carts as $cart){
+                    $cart -> orderID = $orderID;
+                    $cart -> save();
+                }
+        
+                event(new PlaceOrder($request -> tableID, $orderID));
+                
+                return redirect()->back();
+            }
+        }
+        
+        $addOrder = Order::create([
+            'orderID' => $orderID,
+            'table_id' => $request -> tableID,
+            'amount' => $request -> total,
+            'waiter' => null,
+            'status' => 0,
+            'payment_method' => $request -> payment_method,
+        ]);
     
         if($addOrder){
             $table = Table::where('table_id',$request->tableID)->first();
             $table->payment = null;
             $table->save();
             
-            $cartModel = $waiter ? WaiterCart::class : Cart::class;
-            $carts = $cartModel::where('table_id', $request->tableID)->where('orderID', null)->get();
-            $this->updateCartItems($carts, $orderID, $cartModel);
+            $carts = Cart::where('table_id', $request -> tableID)->where('orderID',null)->get();
+            foreach($carts as $cart){
+                $cart -> orderID = $orderID;
+                $cart -> save();
+            }
     
             event(new PlaceOrder($table->id, $orderID));
-        }
-    
-        if ($waiter) {
-            return redirect()->back();
-        } else {
+            
             return redirect()->route('viewReceipt', ['id' => $orderID]);
-        }
-    }
-    
-    private function createOrder($orderID, $tableID, $total, $addon, $waiter, $paymentMethod) {
-        return Order::create([
-            'orderID' => $orderID,
-            'table_id' => $tableID,
-            'amount' => $total,
-            'addon' => $addon,
-            'status' => 0,
-            'waiter' => $waiter,
-            'done_prepare_at' => Carbon::now(),
-            'serve_time' => Carbon::now(),
-            'payment_method' => $paymentMethod,
-        ]);
-    }
-    
-    private function updateCartItems($carts, $orderID, $cartModel) {
-        foreach ($carts as $cart) {
-            $cart->orderID = $orderID;
-            $cart->save();
-    
-            // Create WaiterCart if user is a waiter
-            if ($cartModel == WaiterCart::class) {
-                WaiterCart::create([
-                    'table_id' => $cart->table_id,
-                    'food_id' => $cart->food_id,
-                    'quantity' => $cart->quantity,
-                    'addons' => $cart->addons,
-                    'orderID' => $orderID,
-                ]);
-            }
         }
     }
     
@@ -177,7 +181,26 @@ class CartController extends Controller
 
     public function generateOrderID(){
         $orderID = '';
-        for($i = 0; $i < 9; $i++){ $orderID .= mt_rand(0, 9); }
+        $isUnique = false;
+        
+        while (!$isUnique) {
+            // Generate a new order ID
+            for ($i = 0; $i < 9; $i++) {
+                $orderID .= mt_rand(0, 9);
+            }
+            
+            // Check if the order ID already exists in the database
+            $existingOrder = Order::where('orderID', $orderID)->first();
+            
+            if (!$existingOrder) {
+                // The order ID is unique, break out of the loop
+                $isUnique = true;
+            } else {
+                // The order ID already exists, regenerate a new one
+                $orderID = '';
+            }
+        }
+        
         return $orderID;
     }
 }

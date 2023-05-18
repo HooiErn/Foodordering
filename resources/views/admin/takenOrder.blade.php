@@ -10,7 +10,7 @@
 <div class="row">
     @foreach($orders->where('status', 0)->sortBy('created_at') as $order)
         <div class="col-md-4 mb-2">
-            <div class="card">
+            <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between p-1 m-1">
                     <h5 class="card-title">Table {{$order->table_id}}</h5>
                     <a class="btn btn-success btn-sm" href="{{ url('admin/donePreparing', ['id' => $order->id]) }}"><i class="fas fa-check m-0 p-0"></i></a>
@@ -31,9 +31,9 @@
 <div class="row">
     @foreach($orders -> where('status', 1)->sortByDesc('done_prepare_at')->take(6) as $order)
         <div class="col-md-4 mb-2">
-            <div class="card">
+            <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between p-1 m-1">
-                    <h5 class="card-title">Table {{$order->table_id}}</h5>
+                    <h5 class="card-title">Table {{$order->table_id}}  {{$order -> orderID}}</h5>
                     <p class="card-text">Waiter :
                         @if($order->waiter != null)
                             {{$order->waiter}}

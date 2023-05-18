@@ -58,7 +58,7 @@
                 </form>
             </div>
         </div>
-        @if($value == 1)
+        @if($value == 2)
             <div class="center">
                 <div class="d-flex justify-content-center align-items-center text-align-center">
                     <form action="{{ route('home',['id' => $table -> table_id]) }}" method="GET">

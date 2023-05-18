@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -16,9 +18,15 @@
                     The page you’re looking for doesn’t exist.
                   </p>
                   <button class="btn btn-primary" onclick="backWindow()">Back</button>
+ 
             </div>
+       
         </div>
+
     </body>
+    
+
+    
     <script>
         function backWindow() {
             history.back();

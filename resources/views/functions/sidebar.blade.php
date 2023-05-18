@@ -4,9 +4,9 @@
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
         <div class="sidebar-brand-icon">
+            Admin's Page
             <img src="https://cdn-icons-png.flaticon.com/512/1/1819.png" style="width:30px;height:30px;">
         </div>
-        <div class="sidebar-brand-text mx-3">Admin 管理人</div>
     </a>
 
     <!-- Divider -->

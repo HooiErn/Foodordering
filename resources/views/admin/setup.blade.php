@@ -59,7 +59,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <label>Qr Code Name 二维码名字</label>
+                                        <label for="name">Qr Code Name 二维码名字</label>
                                         <input class="form-control form-control-line" name="name" id="name" type="text">
                                     </div>
                                 </div>
@@ -67,8 +67,8 @@
                                     <div class="form-group">
                                         <label>Qr Code Image 二维码图片</label>
                                         <div class="custom-file">
-                                            <input class="custom-file-input form-control" name="qrcode" id="add_qrcode" type="file" onchange="loadFile(event)" accept="image/*">
-                                            <label class="custom-file-label">Choose file 选择图片</label>
+                                            <input class="custom-file-input form-control" name="qrcode" id="qrcode" type="file" onchange="loadFile(event)" accept="image/*">
+                                            <label class="qrcode">Choose file 选择图片</label>
                                         </div>
                                     </div>
                                 </div>
@@ -89,6 +89,7 @@
 <!-- Update Qr Code -->
 <form action="{{ url('admin/updateQrcode') }}" method="POST" enctype="multipart/form-data">
     @csrf
+    <input type="hidden" value="{{$qrcode -> id}}" name="id" class="form-control form-control-line">
     <div class="modal fade" id="updateQr" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -104,7 +105,7 @@
                             <div class="row">
                                 <div class="col-sm-12">
                                     <div class="form-group">
-                                        <label>Qr Code Name 二维码名字</label>
+                                        <label for="name">Qr Code Name 二维码名字</label>
                                         <input class="form-control form-control-line" name="name" id="name" type="text" value="{{$qrcode -> name}}">
                                     </div>
                                 </div>
@@ -136,7 +137,7 @@
 var loadFile = function(event) {
 	var image = document.getElementById('output');
 	image.src = URL.createObjectURL(event.target.files[0]);
-    var fileInput = document.querySelector('input[id="add_qrcode"]');
+    var fileInput = document.querySelector('input[id="qrcode"]');
     if (fileInput.files && fileInput.files[0]) {
       document.getElementById("img-section").style.display = "block";
     }

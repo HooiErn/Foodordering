@@ -24,8 +24,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
     
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
-    <script>
-
+<script>
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
@@ -55,7 +54,11 @@
         });
     </script>
 
-
+    @if(Auth::user()->isAdmin())
+        <script>
+            window.location.href = "{{ url('admin/takenOrder') }}";
+        </script>
+    @endif
 </head>
 
 <body id="page-top">
@@ -73,7 +76,8 @@
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
                 <div class="sidebar-brand-icon">
-                   <img src="https://cdn-icons-png.flaticon.com/512/3462/3462049.png" style="width:50px;height:50px;">
+                    Waiter's Page
+                    <img src="https://cdn-icons-png.flaticon.com/512/3462/3462049.png" style="width:25px;height:25px;">
                 </div>
             </a>
 
@@ -133,11 +137,16 @@
                     <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
+                
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-                        <!-- Nav Item - Alerts -->
-                        <li class="nav-item dropdown no-arrow mx-1">
-
+                
+                        <!-- Nav Item - User Information -->
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link" href="#" id="userDropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{Auth::user()->name}}</span>
+                                <img class="img-profile rounded-circle" src="{{ asset('images/undraw_profile.svg')}}">
+                            </a>
                         </li>
                     </ul>
                 </nav>

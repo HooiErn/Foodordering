@@ -13,9 +13,9 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card">
-            <div class="table table-responsive">
-                <table class="table">
+        <div class="card border border-dark">
+            <div class="table-responsive">
+                <table class="table table-hover">
                     <thead>
                         <tr>
                             <td>No.</td>
@@ -96,9 +96,9 @@
 
     <div class="row">
         <div class="col-md-12">
-            <div class="card">
-                <div class="table table-responsive">
-                    <table class="table">
+            <div class="card border border-dark">
+                <div class="table-responsive">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <td>Name</td>

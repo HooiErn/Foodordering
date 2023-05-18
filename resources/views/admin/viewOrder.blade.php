@@ -76,7 +76,7 @@
                 @foreach($orders ->where("status",1) as $order)
                     <tr>
                         <td>{{$loop->iteration}}</td>
-                        <td><a href="#" id="orderID">{{$order -> orderID}} </a></td>
+                        <td><a href="{{ url('admin/viewFoodList',['orderID' => $order -> orderID]) }}" id="orderID">{{$order -> orderID}} </a></td>
                         @if($order -> payment_method == 1)
                             <td><span id="amount" name="cashAmount">{{number_format($order -> amount,2)}}</span></td>
                             <td><span>-</span></td>

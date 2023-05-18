@@ -14,20 +14,69 @@
 <!-- Data -->
 @php
     use App\Models\Order;
+    use Illuminate\Support\Facades\Storage;
+
     $orders = DB::table('orders')->get();
-    $cash = $orders -> where("status", 1) -> where("payment_method", 1) ->count();
-    $tng = $orders -> where("status", 1) -> where("payment_method", 2) ->count();
+    $cash = $orders->where("status", 1)->where("payment_method", 1)->count();
+    $tng = $orders->where("status", 1)->where("payment_method", 2)->count();
     
     $orders = Order::selectRaw('COUNT(*) as count, MONTHNAME(serve_time) as month_name')
             ->whereYear('serve_time', date('Y'))
             ->groupBy('month_name')
             ->pluck('count', 'month_name');
 
+    $diskPath = storage_path('app'); // Update the path if necessary
+    $diskTotalSpace = disk_total_space($diskPath);
+    $diskFreeSpace = disk_free_space($diskPath);
+    $diskUsedSpace = $diskTotalSpace - $diskFreeSpace;
+    
+    function formatBytes($bytes, $precision = 2) {
+        $units = ['B', 'KB', 'MB', 'GB', 'TB'];
+        $unitIndex = 0;
+        
+        while ($bytes >= 1024 && $unitIndex < count($units) - 1) {
+            $bytes /= 1024;
+            $unitIndex++;
+        }
+        
+        return round($bytes, $precision) . ' ' . $units[$unitIndex];
+    }
+    
+    $formattedTotalSpace = formatBytes($diskTotalSpace);
+    $formattedFreeSpace = formatBytes($diskFreeSpace);
+    $formattedUsedSpace = formatBytes($diskUsedSpace);
+    
 @endphp
 <input type="hidden" id="cash" value="{{$cash}}">
 <input type="hidden" id="tng" value="{{$tng}}">
 
 <div class="row">
+    <div class="col-xl-12 col-md-12 mb-4">
+        <div class="card border-left-success shadow h-100 py-2">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Total Space</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{$formattedTotalSpace}}</div>
+                    </div>
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Free Space</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{$formattedFreeSpace}}</div>
+                    </div>
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                            Used Space</div>
+                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{$formattedUsedSpace}}</div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-hdd fa-2x text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="col-xl-6 col-md-6 mb-4">
         <div class="card border-left-success shadow h-100 py-2">
             <div class="card-body">

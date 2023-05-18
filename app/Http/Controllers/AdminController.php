@@ -213,7 +213,7 @@ class AdminController extends Controller
 
         if($validator -> fails()){
             Toastr::error('Something went wrong. <br> Please try again', 'Error', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect('admin/food'); 
+            return redirect('admin/food')->withInput()->withErrors($validator); 
         
         }
 
@@ -441,9 +441,10 @@ class AdminController extends Controller
         ]);
 
         if($validator -> fails()){
-            Toastr::error('Invalid input <br> Please try again','Validate Error',["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect('admin/waiter');
+            Toastr::error('Invalid input please try again.', 'Validate Fail', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect('admin/waiter')->withInput()->withErrors($validator);
         }
+        
         $addWaiter = User::create([
             'name' => $request -> w_name,
             'role' => 2,
@@ -504,9 +505,17 @@ class AdminController extends Controller
             return view('404');
         }
 
-        $carts = DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
-        ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
-        ->where('orders.orderID',$orderID)->get();
+        $item1 = DB::table('carts')
+        ->join('food as detail','carts.food_id','detail.id')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $carts = $item1 -> merge($item2);
 
         return view('admin.viewFoodList',compact('order','carts'));
     }
@@ -529,17 +538,20 @@ class AdminController extends Controller
     }
     
     public function updateQrcode(Request $request){
-        $qrcode = Qrcode::where('name',$request -> name)->first();
-        if($request -> file('qrcode')!=''){
+        $qrcode = Qrcode::find($request -> id);
+        
+        if($request -> has('name')){
+            $qrcode -> name = $request -> name;
+        }
+        
+        if($request -> has('qrcode')){
             $image=$request->file('qrcode');        
             $image->move('images',$image->getClientOriginalName());               
             $imageName=$image->getClientOriginalName(); 
             $qrcode-> qrcode = $imageName;
         }
         
-        $qrcode -> name = $request -> name;
         $qrcode -> save();
-        
         return back();
     }
 

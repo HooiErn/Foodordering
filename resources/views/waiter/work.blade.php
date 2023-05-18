@@ -4,7 +4,7 @@
 
 <h3 class="mb-2">Work 工作</h3>
 <div class="row">
-    <div class="table-responsive ml-1 mr-1">
+    <div class="table-responsive ml-1 mr-1 border border-dark">
         <table class="table table-hover table-bordered">
            
                 <tr style="background-color:blue; color:white;">
@@ -29,7 +29,7 @@
 <div class="row">
     @foreach($orders ->where('waiter', null)->sortByDesc('done_prepare_at') as $order)
         <div class="col-md-4 mb-2">
-            <div class="card">
+            <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between m-1 p-1">
                     <h5 class="card-title">Table {{$order->table_id}}</h5>
                     <a class="btn btn-success btn-sm" href="{{ url('waiter/orderDetail', ['id' => $order -> orderID]) }}"><i class="fas fa-check"></i></a>
@@ -51,7 +51,7 @@
 <div class="row">
     @foreach($orders->where('waiter','!=', null)->sortByDesc('serve_time')->take(6) as $order)
         <div class="col-md-4 mb-2">
-            <div class="card">
+            <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between m-1 p-1">
                     <h5 class="card-title">Table {{$order->table_id}}</h5>
                     <p class="card-text">Waiter : {{$order -> waiter}}</p>

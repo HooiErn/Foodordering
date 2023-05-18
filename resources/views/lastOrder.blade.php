@@ -24,6 +24,7 @@
         <meta property="og:description" content="Preview Bootstrap snippets. simple invoice receipt email template. Copy and paste the html, css and js code for save time, build your app faster and responsive">
         <meta name="msvalidate.01" content="23285BE3183727A550D31CAE95A790AB" /> 
         <script src="/cache-js/cache-1635427806-97135bbb13d92c11d6b2a92f6a36685a.js" type="text/javascript"></script> 
+    </head>
     <body>
         <div id="snippetContent">
             <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -102,6 +103,30 @@
                     </tr>
                 </tbody>
             </table>
+            
+            
+            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+            
         <style type="text/css">/*<![CDATA[*//* -------------------------------------
     GLOBAL
     A very basic CSS reset

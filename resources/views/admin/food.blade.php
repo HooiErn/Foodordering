@@ -12,7 +12,7 @@
     <div class="col-md-12">
         @foreach($categories as $category)
             <div class="card">
-                <div class="table-responsive">
+                <div class="table-responsive border border-dark">
                     <table class="table table-hover">
                         <thead>
                             <tr>
@@ -84,7 +84,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="c_name">Category Name 种类名字</label>
-                        <input type="text" name="c_name" class="form-control form-control-line @error('c_name') is-invalid @enderror" value="{{ old('c_name') }}" required>
+                        <input type="text" id="c_name" name="c_name" class="form-control form-control-line @error('c_name') is-invalid @enderror" value="{{ old('c_name') }}" required>
                         @error('c_name')
                             @if($message == "The c name has already been taken.")
                                 <span class="text-danger">Duplicate name is used.</span>
@@ -124,7 +124,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <input type="hidden" class="form-control form-control-line" id="catID" name="catID" value="{{$category->id}}">
-                            <label for="categoryName">Category Name 种类名字</label>
+                            <label for="name">Category Name 种类名字</label>
                             <input type="text" id="name" name="name" class="form-control form-control-line @error('edit_c_name.'.$category->id) is-invalid @enderror" placeholder="{{$category->name}}" value="{{ old('edit_c_name.'.$category->id) }}">
                             @error('edit_c_name.'.$category->id)
                                 <span class="text-danger">{{ $message }}</span>
@@ -164,10 +164,10 @@
                     <div class="modal-body">
                         <input type="hidden" class="form-control form-control-line" id="available" name="available" value="1">
                         <div class="form-group">
-                            <label>Food Image 食物图片</label>
+                            <label for="foodImage">Food Image 食物图片</label>
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="foodImage{{$category -> id}}" name="foodImage" required>
-                                <label class="custom-file-label" id="foodImageLabel{{$category -> id}}">Choose file</label>
+                                <input type="file" class="custom-file-input" id="foodImage" name="foodImage" onchange="changeFileName(this)" required>
+                                <label class="custom-file-label" id="foodImageLabel" for="foodImage">Choose file</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -179,7 +179,7 @@
                             <input type="number" class="form-control form-control-line" id="price" name="price" step=".01" required>
                         </div>
                         <div id="select-options-container-{{$category->id}}">
-                            <label for="food-select-option">Food Select Option 食物选项</label>
+                            <label for="food_select_option">Food Select Option 食物选项</label>
                             
                         </div>
                         <a type="button" class="btn btn-success btn-sm mb-1 text-white add-select-option" id="add-select-option-{{$category->id}}"><i class="fa fa-plus text-white"></i> Add New Option</a>
@@ -214,6 +214,13 @@
                         <input type="hidden" class="form-control form-control-line" id="foodID" name="foodID" value="{{$food->id}}">
                         <input type="hidden" class="form-control form-control-line" id="available" name="available" value="1">
                         <div class="form-group">
+                            <label for="foodImage">Food Image 食物照片</label>
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="foodImage" name="foodImage" id="foodImage">
+                                <label class="custom-file-label" for="foodImage">Choose file 选择照片</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <label for="name">Food Name 食物名字</label>
                             <input type="text" class="form-control form-control-line" id="name" name="name" value="{{$food -> name}}">
                         </div>
@@ -221,29 +228,21 @@
                             <label for="price">Food Price 食物价钱</label>
                             <input type="number" class="form-control form-control-line" id="price" name="price" step=".01" value="{{$food -> price}}">
                         </div>
-                        <div class="form-group">
-                            <label for="foodImage">Food Image 食物照片</label>
-                            <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="validatedCustomFile" name="foodImage" id="foodImage">
-                                <label class="custom-file-label" for="validatedCustomFile">Choose file 选择照片</label>
-                            </div>
-                        </div>
                         @if(count($food -> foodSelect))
                             @foreach($food -> foodSelect as $foodSelect)
                                 <div class="form-group">
-                                    <label for="">Food Select Option 食物选项</label>
-                                    <input type="text" class="form-control form-control-line" name="edit-select-name[]" value="{{$foodSelect -> name}}">
+                                    <label for="edit_select_name">Food Select Option 食物选项</label>
+                                    <input type="text" class="form-control form-control-line" id="edit_select_name[]" name="edit_select_name[]" value="{{$foodSelect -> name}}">
                                 </div>
                                 @foreach($foodSelect -> foodOption as $foodOption)
-                                    <div class="form-group position-relative option-value-container">
-                                        <input type="text" name="option[]" class="form-control form-control-inline delete-item" value="{{$foodOption -> name}}">
-                                        <a type="button" class="btn btn-danger" data-id="{{$foodOption -> id}}" style="position: absolute; right: 0; top:1%;"><i class="fa fa-trash text-white"></i></a>
+                                    <div class="form-group option-value-container">
+                                        <input type="text" name="option[]" class="form-control form-control-inline" value="{{$foodOption -> name}}">
                                     </div>
                                 @endforeach
                             @endforeach
                         @endif
                         <div class="form-group">
-                            <label for="">Category 种类</label>
+                            <label for="categoryID">Category 种类</label>
                             <select name="categoryID" id="categoryID" class="form-control">
                                 @foreach($categories as $category)
                                     <option value="{{$category -> id}}" @if($food -> categoryID == $category -> id) selected @endif>{{$category -> name}}</option>
@@ -327,35 +326,53 @@
 
 
     <script>
-        $(document).ready(function() {
-            $('#foodImage{{$category -> id}}').on('change', function() {
-                var fileName = $(this).val().split('\\').pop();
-                $(this).siblings('#foodImageLabel{{$category -> id}}').addClass('selected').html(fileName);
-            });
-        });
+        function changeFileName(input) {
+            var fileName = input.value.split('\\').pop();
+            var label = document.getElementById('foodImageLabel');
+            label.innerHTML = fileName;
+        }
     </script>
 
 @endforeach
 
 <script>
-    $(document).on('click', '.delete-item', function(e) {
+    $(document).on('click', '.delete-option', function(e) {
         e.preventDefault();
         var id = $(this).data('id');
-        var url = '{{ url("deleteItem") }}' + '/' + id;
+        var food_id = $(this).data('food_id');
+        var url = '{{ url("admin/deleteSelectOption") }}' + '/' + id;
         $.ajax({
-            type: 'DELETE',
+            type: 'get',
             url: url,
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(data) {
-                // Handle the successful response here
-                console.log(data);
+                window.location.reload();
+                $(document).on('shown.bs.modal', '#food'+food_id, function () {
+                    $('#food'+food_id).modal('toggle');
+                });
             },
-            error: function(xhr, status, error) {
-                // Handle the error response here
-                console.log(xhr.responseText);
-            }
+        });
+    });
+    
+    $(document).on('click', '.delete-select', function(e) {
+        e.preventDefault();
+        var id = $(this).data('id');
+        var food_id = $(this).data('food_id');
+        var url = '{{ url("admin/deleteSelect") }}' + '/' + id;
+        $.ajax({
+            type: 'get',
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                window.location.reload();
+                $(document).on('shown.bs.modal', '#food'+food_id, function () {
+                    $('#food'+food_id).modal('toggle');
+                });
+            },
         });
     });
 </script>

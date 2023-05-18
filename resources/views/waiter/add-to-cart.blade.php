@@ -35,19 +35,39 @@
                                     <td><a class="btn btn-sm btn-success" style="color: white;" data-toggle="modal" data-target=".food{{$food -> id}}">Add To Cart 加入购物车</a></td>
                                     <div class="modal fade food{{$food -> id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-sm">
-                                            <div class="modal-content">
+                                            <div class="modal-content" style="padding:10px;">
                                                 <div class="modal-header">
-                                                    <h3 class="card-title">Select Quantity 选择数量</h3>
+                                                   <h3 class="title" style="font-size: 20px; font-weight: bold;">Select Quantity 选择数量</h3>
                                                 </div>
                                                 <div class="input-group quantity">
                                                     <div class="input-group-prepend decrement-btn changeQuantity">
                                                         <span class="input-group-text">-</span>
                                                     </div>
+                                                    <input type="hidden" class="price-input form-control" name="price" id="price" value="{{$food -> price}}">
                                                     <input type="number" class="qty-input form-control text-center" name="quantity" id="quantity" value="1">
                                                     <div class="input-group-append increment-btn changeQuantity">
                                                         <span class="input-group-text">+</span>
                                                     </div>
                                                 </div>
+                                                
+                                                @if(count($food -> foodSelect))
+                                                    <div class="row text-center pt-3 pl-3">
+                                                        @foreach($food->foodSelect as $foodSelect)
+                                                            <input type="hidden" value="{{ $foodSelect->name }}" name="select[{{$foodSelect->id}}]">
+                                                            <div class="col-md-5" style="width:50%;">
+                                                                <strong>{{ $foodSelect->name }}</strong>
+                                                                @foreach($foodSelect->foodOption as $foodOption)
+                                                                    <div class="form-check">
+                                                                        <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}">
+                                                                        <label class="form-check-label">
+                                                                            {{ $foodOption->name }}
+                                                                        </label>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        @endforeach
+                                                    </div>
+                                                @endif
                                                 <div class="modal-footer">
                                                     <button type="submit" class="btn btn-primary">Confirm 确定</button>
                                                 </div>

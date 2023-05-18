@@ -118,21 +118,21 @@
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="name">Waiter Name 服务员名称</label>
+                        <label for="w_name">Waiter Name 服务员名称</label>
                         <input type="text" class="form-control form-control-line" name="w_name" value="{{ old('w_name') }}" required>
                         @error('w_name')
                             <span class="text-danger">{{$message}}</span>
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="password">Password 密码</label>
+                        <label for="w_password">Password 密码</label>
                         <input type="password" class="form-control form-control-line" name="w_password"  value="{{ old('w_password') }}" required>
                         @error('w_password')
                             <span class="text-danger">{{$message}}</span>
                         @enderror
                     </div>
                     <div class="form-group">
-                        <label for="password">Confirm Password 确认密码</label>
+                        <label for="w_confirm_password">Confirm Password 确认密码</label>
                         <input type="password" class="form-control form-control-line" name="w_confirm_password"  value="{{ old('w_confirm_password') }}" required>
                         @error('w_confirm_password')
                             <span class="text-danger">{{$message}}</span>

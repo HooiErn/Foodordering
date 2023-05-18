@@ -96,8 +96,7 @@
             channel3.bind('menu-refresh', function() {
                 window.location.reload();
             });
-            
-        </script>
+
   </head>
 
   <body id="page-top">
