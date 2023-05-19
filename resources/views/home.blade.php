@@ -96,6 +96,7 @@
             channel3.bind('menu-refresh', function() {
                 window.location.reload();
             });
+            </script>
 
   </head>
 
@@ -139,6 +140,8 @@
                     <input type="hidden" name="table_id" value="{{$table -> table_id}}">
                     <button type="submit" class="btn btn-primary rounded-pill">Change payment method&nbsp;更换付款方式</button>
                 </form>
+                 &nbsp;&nbsp;
+                 <a href="{{ url('lastOrder', ['id' => $table -> table_id]) }}" class="btn btn-primary rounded-pill ml-2">View Previous Order 查看上个订单</a>
             </div>
         </div>
         <div class="row">

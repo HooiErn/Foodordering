@@ -1,87 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head itemscope itemtype="http://schema.org/WebSite">
+    <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title itemprop="name">Receipt</title>
-        <meta name="description" itemprop="description">
-        <meta name="keywords" content="html, css, javascript, themes, templates, code snippets, ui examples, react js, react-native, plagraounds, cards, front-end, profile, invoice, back-end, web-designers, web-developers">
-        <link itemprop="sameAs" href="https://www.facebook.com/bootdey"><link itemprop="sameAs" href="https://twitter.com/bootdey">
-        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
-        <meta name="viewport" content="width=device-width"><link rel="shortcut icon" type="image/x-icon" href="/img/bootdey_favicon.ico">
-        <link rel="apple-touch-icon" sizes="135x140" href="/img/bootdey_135x140.png"><link rel="apple-touch-icon" sizes="76x76" href="/img/bootdey_76x76.png">
-        <link rel="canonical" href="https://www.bootdey.com/snippets/view/simple-invoice-receipt-email-template" itemprop="url">
-        <meta property="twitter:account_id" content="2433978487" />
-        <meta name="twitter:card" content="summary"
-        ><meta name="twitter:card" content="summary_large_image">
-        <meta name="twitter:site" content="@bootdey"><meta name="twitter:creator" content="@bootdey">
-        <meta name="twitter:title" content="Preview Bootstrap  snippets. simple invoice receipt email template">
-        <meta name="twitter:description" content="Preview Bootstrap snippets. simple invoice receipt email template. Copy and paste the html, css and js code for save time, build your app faster and responsive">
-        <meta name="twitter:image" content="https://www.bootdey.com/files/SnippetsImages/bootstrap-snippets-527.png">
-        <meta name="twitter:url" content="https://www.bootdey.com/snippets/preview/simple-invoice-receipt-email-template">
-        <meta property="og:title" content="Preview Bootstrap  snippets. simple invoice receipt email template">
-        <meta property="og:url" content="https://www.bootdey.com/snippets/preview/simple-invoice-receipt-email-template">
-        <meta property="og:image" content="https://www.bootdey.com/files/SnippetsImages/bootstrap-snippets-527.png">
-        <meta property="og:description" content="Preview Bootstrap snippets. simple invoice receipt email template. Copy and paste the html, css and js code for save time, build your app faster and responsive">
-        <meta name="msvalidate.01" content="23285BE3183727A550D31CAE95A790AB" /> 
-        <script src="/cache-js/cache-1635427806-97135bbb13d92c11d6b2a92f6a36685a.js" type="text/javascript"></script> 
+        <title itemprop="name">Last Order</title>
+        <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        
     </head>
     <body>
         <div id="snippetContent">
-            <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-            <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script> 
-            <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script> 
-            <table class="body-wrap">
-                <tbody>
-                    <tr>
-                        <td></td>
-                        <td class="container" width="600">
-                            <div class="content">
-                                <table class="main" width="100%" cellpadding="0" cellspacing="0">
-                                    <tbody>
-                                        <tr>
-                                            <td class="content-wrap aligncenter">
-                                                <table width="100%" cellpadding="0" cellspacing="0">
+            <div id="orderCarousel" class="carousel slide" data-ride="carousel">
+                <div class="carousel-inner">
+                    @foreach($orderData as $index => $data)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                            <table class="body-wrap">
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td class="container" width="600">
+                                            <div class="content">
+                                                <table class="main" width="100%" cellpadding="0" cellspacing="0">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="content-block"><h2>Successfully Confirmed order !</h2></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="content-block">
-                                                                <table class="invoice">
+                                                            <td class="content-wrap aligncenter">
+                                                                <table width="100%" cellpadding="0" cellspacing="0">
                                                                     <tbody>
                                                                         <tr>
-                                                                            <td>Table {{$order -> table_id}}<br>Order ID #{{$order -> orderID}}<br>{{ \Carbon\Carbon::parse($order -> created_at)->format(' j  F  Y , g:i a') }}<br></td>
+                                                                            <td class="content-block">
+                                                                                @php
+                                                                                    $numberWords = ['One', 'Second', 'Third', 'Fourth', 'Fifth']; // Add more values as needed
+                                                                                    $index = $loop->index;
+                                                                                    $numberWord = isset($numberWords[$index]) ? $numberWords[$index] : ($index + 1) . 'th';
+                                                                                @endphp
+                                                                                <h2>Last {{ $numberWord }} Order</h2>
+                                                                            </td>
                                                                         </tr>
                                                                         <tr>
-                                                                            <td>
-                                                                                <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                                                            <td class="content-block">
+                                                                                <table class="invoice">
                                                                                     <tbody>
-                                                                                        @foreach($carts as $cart)
-                                                                                            <tr>
-                                                                                                <td>{{$cart -> name}} <span class="text-info">x{{$cart -> quantity}}</span>
-                                                                                                    @if(!empty($cart->addon))
-                                                                                                        @php
-                                                                                                            $addons = json_decode($cart->addon, true);
-                                                                                                        @endphp
-                                                                                                        <ul style="list-style-type: none; margin: 0; padding: 0;">
-                                                                                                            @foreach($addons as $title => $addon)
-                                                                                                                @if($addon !== null)
-                                                                                                                    <li>{{$title}} - {{$addon}}</li>
-                                                                                                                @endif
-                                                                                                            @endforeach
-                                                                                                        </ul>   
-                                                                                                    @endif
-                                                                                                </td>
-                                                                                                <td class="alignright">RM {{number_format($cart -> price * $cart -> quantity,2)}}</td>
-                                                                                            </tr>
-                                                                                        @endforeach
-                                                                                        <tr class="total">
-                                                                                            <td class="alignright" width="80%">Total:</td>
-                                                                                            <td class="alignright">RM {{number_format($order -> amount,2)}}</td>
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                Table {{ $data['order']->table_id }}<br>
+                                                                                                Order ID #{{ $data['order']->orderID }}<br>
+                                                                                                {{ \Carbon\Carbon::parse($data['order']->created_at)->format(' j  F  Y , g:i a') }}<br>
+                                                                                            </td>
                                                                                         </tr>
-                                                                                        <tr class="pay_by">
-                                                                                            <td>Pay By: </td>
-                                                                                            <td class="alignright">{{ $order->payment_method == 1 ? 'Cash' : 'Touch n Go' }}</td>
+                                                                                        <tr>
+                                                                                            <td>
+                                                                                                <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                                                                                    <!-- Display carts -->
+                                                                                                    @foreach($data['carts'] as $cart)
+                                                                                                        <tr>
+                                                                                                            <td>
+                                                                                                                {{ $cart->name }} <span class="text-info">x{{ $cart->quantity }}</span>
+                                                                                                                <!-- Display addons if available -->
+                                                                                                                @if(!empty($cart->addon))
+                                                                                                                    @php
+                                                                                                                        $addons = json_decode($cart->addon, true);
+                                                                                                                    @endphp
+                                                                                                                    <ul style="list-style-type: none; margin: 0; padding: 0;">
+                                                                                                                        @foreach($addons as $title => $addon)
+                                                                                                                            @if($addon !== null)
+                                                                                                                                <li>{{ $title }} - {{ $addon }}</li>
+                                                                                                                            @endif
+                                                                                                                        @endforeach
+                                                                                                                    </ul>
+                                                                                                                @endif
+                                                                                                            </td>
+                                                                                                            <td class="alignright">RM {{ number_format($cart->price * $cart->quantity, 2) }}</td>
+                                                                                                        </tr>
+                                                                                                    @endforeach
+        
+                                                                                                    <!-- Display waiter_carts -->
+                                                                                                    @foreach($data['waiterCarts'] as $cart)
+                                                                                                        <tr>
+                                                                                                            <td>
+                                                                                                                {{ $cart->name }} <span class="text-info">x{{ $cart->quantity }}</span>
+                                                                                                                <!-- Display addons if available -->
+                                                                                                                @if(!empty($cart->addon))
+                                                                                                                @php
+                                                                                                                $addons = json_decode($cart->addon, true);
+                                                                                                                @endphp
+                                                                                                                                 <ul style="list-style-type: none; margin: 0; padding: 0;">
+                                                                                                                    @foreach($addons as $title => $addon)
+                                                                                                                    @if($addon !== null)
+                                                                                                                    <li>{{ $title }} - {{ $addon }}</li>
+                                                                                                                    @endif
+                                                                                                                    @endforeach
+                                                                                                                </ul>
+                                                                                                                @endif
+                                                                                                            </td>
+                                                                                                            <td class="alignright">RM {{ number_format($cart->price * $cart->quantity, 2) }}</td>
+                                                                                                        </tr>
+                                                                                                    @endforeach
+                                                                                                    <tr class="total">
+                                                                                                        <td class="alignright" width="80%">Total:</td>
+                                                                                                        <td class="alignright">RM {{ number_format($data['order']->amount, 2) }}</td>
+                                                                                                    </tr>
+                                                                                                    <tr class="pay_by">
+                                                                                                        <td>Pay By: </td>
+                                                                                                        <td class="alignright">{{ $data['order']->payment_method == 1 ? 'Cash' : 'Touch n Go' }}</td>
+                                                                                                    </tr>
+                                                                                                </table>
+                                                                                            </td>
                                                                                         </tr>
                                                                                     </tbody>
                                                                                 </table>
@@ -93,39 +114,61 @@
                                                         </tr>
                                                     </tbody>
                                                 </table>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                        <td></td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            
-            <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="..." class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="..." class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="..." class="d-block w-100" alt="...">
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        @endforeach
+                    </div>
+                
+                    <a class="carousel-control-prev" href="#orderCarousel" role="button" data-slide="prev" id="btnPrevious">
+                        <span class="carousel-control-prev-icon text-dark" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#orderCarousel" role="button" data-slide="next" id="btnNext">
+                        <span class="carousel-control-next-icon text-dark" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                    
+                    <div class="text-center mb-2">
+                        <a href="{{ url('home',['id' => $data['order']->table_id]) }}" class="btn btn-primary btn-sm">Back</a>
+                    </div>
+                </div>
+        </div>
+        
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+        <script src="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                var orderCarousel = $("#orderCarousel");
+                var carouselItems = orderCarousel.find(".carousel-item");
+                var currentSlide = 0;
+        
+                function showSlide(slideIndex) {
+                    carouselItems.removeClass("active");
+                    carouselItems.eq(slideIndex).addClass("active");
+                }
+        
+                $("#btnNext").click(function() {
+                    currentSlide++;
+                    if (currentSlide >= carouselItems.length) {
+                        currentSlide = 0;
+                    }
+                    showSlide(currentSlide);
+                });
+        
+                $("#btnPrevious").click(function() {
+                    currentSlide--;
+                    if (currentSlide < 0) {
+                        currentSlide = carouselItems.length - 1;
+                    }
+                    showSlide(currentSlide);
+                });
+            });
+        </script>
             
         <style type="text/css">/*<![CDATA[*//* -------------------------------------
     GLOBAL

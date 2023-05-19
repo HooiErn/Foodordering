@@ -90,6 +90,9 @@
                                                                 </table>
                                                             </td>
                                                         </tr>
+                                                        <tr>
+                                                            <td><a href="{{ url('method',['id' => $order -> table_id]) }}" class="btn btn-primary btn-sm">Main Page</a></td>
+                                                        </tr>
                                                     </tbody>
                                                 </table>
                                             </td>

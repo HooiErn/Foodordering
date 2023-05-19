@@ -139,27 +139,40 @@ class HomeController extends Controller
     
     public function last_order($id)
     {
-        $order = Order::where('table_id', $id)->latest()->first();
+        $orders = Order::where('table_id', $id)->latest()->take(3)->get();
     
-        if (!$order) {
+        if ($orders->isEmpty()) {
             return view('404');
         }
     
-        $carts = DB::table('carts')
-            ->join('food as detail', 'carts.food_id', 'detail.id')
-            ->select('carts.*', 'detail.name as name', 'detail.image as image', 'detail.price as price')
-            ->where('carts.orderID', $order->orderID);
+        $orderIds = $orders->pluck('orderID');
     
-        $waiterCarts = DB::table('waiter_carts')
-            ->join('food as detail', 'waiter_carts.food_id', 'detail.id')
-            ->select('waiter_carts.*', 'detail.name as name', 'detail.image as image', 'detail.price as price')
-            ->where('waiter_carts.orderID', $order->orderID);
+        $orderData = [];
     
-        $carts = $carts->union($waiterCarts)->get();
+        foreach ($orderIds as $orderId) {
+            $order = Order::where('orderID', $orderId)->first();
     
-        return view('lastOrder', compact('order', 'carts'));
+            $carts = DB::table('carts')
+                ->join('food as detail', 'carts.food_id', 'detail.id')
+                ->select('carts.*', 'detail.name as name', 'detail.image as image', 'detail.price as price')
+                ->where('carts.orderID', $orderId)
+                ->get();
+    
+            $waiterCarts = DB::table('waiter_carts')
+                ->join('food as detail', 'waiter_carts.food_id', 'detail.id')
+                ->select('waiter_carts.*', 'detail.name as name', 'detail.image as image', 'detail.price as price')
+                ->where('waiter_carts.orderID', $orderId)
+                ->get();
+    
+            $orderData[] = [
+                'order' => $order,
+                'carts' => $carts,
+                'waiterCarts' => $waiterCarts,
+            ];
+        }
+    
+        return view('lastOrder', compact('orderData'));
     }
-
     
     public function scanTouchnGo(){
         $qrcode = DB::table('qrcodes')->first();
