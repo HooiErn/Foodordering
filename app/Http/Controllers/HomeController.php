@@ -35,10 +35,52 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-
-     //Admin Login
-    public function login(){
-        return view('admin/login');
+    public function login_form()
+    {
+        return view('login-form');
+    }
+    
+    // Check Login
+    public function check_login(Request $request)
+    {
+        $validator = $request->validate([
+            'name' => 'required',
+            'password' => 'required',
+        ]);
+    
+        $credentials = $request->only('name', 'password');
+    
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+    
+            if ($user->isAdmin()) {
+                Toastr::success('Welcome back '.$request->name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
+                return redirect('admin/food');
+            } elseif ($user->isWaiter()) {
+                Toastr::success('Welcome back '.$request->name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
+                return redirect('waiter/work');
+            } elseif ($user->isKitchen()) {
+                Toastr::success('Welcome back '.$request->name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
+                return redirect('kitchen/takenOrder');
+            }
+    
+            return redirect()->back();
+        }
+    
+        Toastr::error('Invalid name or password', 'Error');
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+    
+    // Logout
+    public function logout()
+    {
+        $user = Auth::user();
+        $user->session_id = null;
+        $user->save();
+    
+        Auth::logout();
+        Toastr::info('You have logged out of your account', 'Logout Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
+        return redirect('/');
     }
 
     public function method($id){

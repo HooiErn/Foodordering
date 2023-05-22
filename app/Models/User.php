@@ -14,6 +14,7 @@ class User extends Authenticatable
 
     const ADMIN = 1;
     const WAITER = 2;
+    const KITCHEN = 3;
 
     const TABLE = 'users';
 
@@ -54,5 +55,10 @@ class User extends Authenticatable
     public function isWaiter(): bool
     {
         return $this->role() === self::WAITER;
+    }
+
+    public function isKitchen(): bool
+    {
+        return $this->role() === self::KITCHEN;
     }
 }

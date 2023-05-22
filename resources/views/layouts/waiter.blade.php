@@ -56,7 +56,11 @@
 
     @if(Auth::user()->isAdmin())
         <script>
-            window.location.href = "{{ url('admin/takenOrder') }}";
+            window.location.href = "{{ url('admin/food') }}";
+        </script>
+    @elseif(Auth::user()->isKitchen())
+        <script>
+            window.location.href= "{{ url('kitchen/takenOrder') }}";
         </script>
     @endif
 </head>
@@ -118,7 +122,7 @@
             </li>
             
                <li class="nav-item">
-                <a class="nav-link" href="{{ url('waiter/logout') }}">
+                <a class="nav-link" href="{{ url('/logout') }}">
                     <i class="fas fa-fw fa-sign-out-alt "></i>
                     <span>Logout 登出</span>
                 </a>

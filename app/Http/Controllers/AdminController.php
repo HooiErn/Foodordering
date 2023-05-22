@@ -21,7 +21,6 @@ use App\Events\AddToCart;
 use App\Events\AdminRefresh;
 use App\Events\WaiterRefresh;
 use App\Events\MenuRefresh;
-use App\Events\DonePrepare;
 use App\Events\Refresh2;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -38,67 +37,27 @@ class AdminController extends Controller
     {
         $this->middleware(function ($request, $next) {
             if (!auth()->check()) {
-                return redirect()->route('admin.login');
+                return redirect()->route('login.form');
             }
             return $next($request);
-        })->except(['check_login']);
-    }
-
-    //Check Login
-    public function check_login(Request $request){
-        $validator = $request->validate([
-            'name' => 'required',
-            'password' => 'required',
-        ]);
-    
-        $credentials = $request->only('name', 'password');
-    
-        if(Auth::attempt($credentials)){
-            $user = Auth::user();
-            
-            // Allow 1 account login only (but got bug)
-            // if ($user->session_id !== null && $user->session_id !== session()->getId()) {
-            //     Toastr::error('You are already logged in on another device.', 'Login Failed');
-            //     Auth::logout();
-            //     return redirect('admin/login');
-            // }
-    
-            // Update the user's session ID in the database
-            $user->session_id = session()->getId();
-            $user->save();
-
-            if($user -> isAdmin()){
-                Toastr::success('Welcome back '.$request->name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-                return redirect('admin/takenOrder');
-            }
-            else if($user -> isWaiter()){
-                Auth::logout();
-                Toastr::info('That page is for admin.', 'Login Wrong Page', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-                return redirect('waiter/login');
-            }
-
-            return redirect()->back();            
-        }
-
-        Toastr::error('Invalid name or password', 'Error');
-        return redirect()->back()->withErrors($validator)->withInput();
-    }
-
-    //Logout
-    public function logout(){
-        $user = Auth::user();
-        $user -> session_id == null;
-        $user ->save();
-        
-        Auth::logout();
-        Toastr::info('You have logout your account', 'Logout Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-        return redirect('admin/login');
+        });
     }
 
     //Dashboard
     public function index(){
         $data = Order::all();
-        return view('admin/dashboard',compact("data"));
+        
+        
+        $todayDate = Carbon::now()->format('d-m-Y');
+        $thisMonth = Carbon::now()->format('m');
+        $thisYear = Carbon::now()->format('Y');
+        
+        $totalOrder = Order::count();
+        $todayOrder = Order::whereDate('created_at', $todayDate)->count();
+        $thisMonthOrder = Order::whereMonth('created_at', $thisMonth)->count();
+        $thisYearOrder = Order::whereYear('created_at', $thisYear)->count();
+        
+        return view('admin/dashboard',compact('data', 'totalOrder', 'todayOrder', 'thisMonthOrder', 'thisYearOrder'));
     }
     
     // Action List
@@ -252,16 +211,15 @@ class AdminController extends Controller
         return redirect('admin/food');
     }
 
-    //Update Food
+    // Update Food
     public function updateFood(Request $request){
-
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'price' => 'required',
         ]);
-
-        $food = Food::all()->find($request->foodID);
-
+    
+        $food = Food::find($request->foodID);
+    
         if($validator -> fails()){
             return redirect('admin/food')->withErrors($validator)->withInput();
         }
@@ -270,18 +228,46 @@ class AdminController extends Controller
                 $image=$request->file('foodImage');        
                 $image->move('images',$image->getClientOriginalName());               
                 $imageName=$image->getClientOriginalName(); 
-                $food-> image = $imageName;
+                $food->image = $imageName;
             }
             
-            $food -> name = $request -> name;
-            $food -> price = $request ->price;
-            $food -> categoryID = $request->categoryID;
-            $food -> save();
-
-            Toastr::success('You Successfully updated Food.', 'Food Updated', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            $food->name = $request->name;
+            $food->price = $request->price;
+            $food->categoryID = $request->categoryID;
+            
+            $food->save();
+    
+            if($request -> has('edit_select_name') && $request -> has('edit_option')){
+                $selectNames = $request->input('edit_select_name', []);
+                $options = $request->input('edit_option', []);
+    
+                $existingSelects = $food->foodSelect;
+    
+                foreach ($existingSelects as $index => $existingSelect) {
+                    $existingSelect->name = $selectNames[$index];
+                    $existingSelect->save();
+        
+                    $existingOptions = $existingSelect->foodOption;
+                    $existingOptionCount = count($existingOptions);
+                    $newOptionCount = count($options[$index]);
+        
+                    // Update existing options
+                    for ($i = 0; $i < $existingOptionCount; $i++) {
+                        if ($i < $newOptionCount) {
+                            $existingOptions[$i]->name = $options[$index][$i];
+                            $existingOptions[$i]->save();
+                        } else {
+                            $existingOptions[$i]->delete(); // Remove extra options
+                        }
+                    }
+                }
+            }
+    
+            Toastr::success('You Successfully updated Food.', 'Food Updated', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
             return redirect('admin/food');
         }
     }
+
 
     //Delete Food
     public function deleteFood($id){
@@ -314,21 +300,6 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'Item deleted successfully'
         ]);
-    }
-
-    //Change Food Status
-    public function changeStatus($id){
-        $food = Food::where('id',$id)->first();
-        if($food -> available > 0){
-            $food -> available = 0;
-            $food -> save();
-            return redirect('admin/food');
-        }
-        else{
-            $food -> available = 1;
-            $food -> save();
-            return redirect('admin/food');
-        }
     }
 
     //Table
@@ -392,33 +363,6 @@ class AdminController extends Controller
         }
     }
     
-    public function takenOrder(){
-        $orders = Order::all();
-        $item1 = DB::table('carts')
-        ->join('food as detail','carts.food_id','detail.id')
-        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
-        ->get();
-
-        $item2 = DB::table('waiter_carts')
-        ->join('food as detail','waiter_carts.food_id','detail.id')
-        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
-        ->get();
-
-        $carts = $item1 -> merge($item2);
-        
-        return view('admin/takenOrder', compact('orders', 'carts'));
-        
-    }
-    
-    public function donePreparing($id){
-        $order = Order::where('id', $id)->first();
-        event(new DonePrepare($order -> table_id));
-        $order -> done_prepare_at = Carbon::now();
-        $order -> status = 1;
-        $order -> save();
-        
-        return redirect()->back();
-    }
 
     //Waiter
     public function waiter(){
@@ -476,8 +420,8 @@ class AdminController extends Controller
     //     $tables = Table::where('id',$id)->first();
     //     return view('QrCode',compact('tables'));
     // }
-    
 
+    
     public function viewTakenOrder($name)
     {
         $waiter = User::where('name',$name)->first();
@@ -518,6 +462,24 @@ class AdminController extends Controller
         $carts = $item1 -> merge($item2);
 
         return view('admin.viewFoodList',compact('order','carts'));
+    }
+    
+    public function takenOrder(){
+        $orders = Order::all();
+        $item1 = DB::table('carts')
+        ->join('food as detail','carts.food_id','detail.id')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $carts = $item1 -> merge($item2);
+        
+        return view('admin/takenOrder', compact('orders', 'carts'));
+        
     }
     
     public function setup(){

@@ -16,7 +16,7 @@
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th colspan="5">Category 种类 : {{ $category -> name }}</th>
+                                <th colspan="4">Category 种类 : {{ $category -> name }}</th>
                                 <th class="text-end">
                                     <div>
                                     <a type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addFood{{$category -> id}}"><i class="fas fa-plus text-white"></i></a>
@@ -30,7 +30,6 @@
                                 <th>Image 图片</th>
                                 <th>Name 名字</th>
                                 <th>Price 价钱</th>
-                                <th>Status 状态</th>
                                 <th>Action 行动</th>
                             </tr>
                         </thead>
@@ -41,19 +40,6 @@
                                     <td><img src="{{ asset('images') }}/{{$food -> image}}" alt="" width="50px" height="50px"></td>
                                     <td>{{ $food -> name }}</td>
                                     <td>{{ number_format($food -> price,2) }}</td>
-                                    @if($food -> available > 0)
-                                        <td>
-                                            <a href="{{ url('changeStatus',['id' => $food -> id]) }}" class="btn btn-success">
-                                                <i class="fas fa-check"></i>
-                                            </a>    
-                                        </td>
-                                    @else
-                                        <td>
-                                            <a href="{{ url('changeStatus',['id' => $food -> id]) }}" class="btn btn-danger">
-                                                <i class="fas fa-times"></i>
-                                            </a>
-                                        </td>
-                                    @endif
                                     <td>
                                         <a href="#" data-toggle="modal" data-target="#food{{$food -> id}}"><i class="fas fa-pen"></i></a>
                                         <a href="{{ url('admin/deleteFood',['id' => $food -> id])}}" onclick="return confirm('Are you sure to delete this food? 您确定要删除该食物吗?')"><i class="fas fa-trash"></i></a>
@@ -229,14 +215,14 @@
                             <input type="number" class="form-control form-control-line" id="price" name="price" step=".01" value="{{$food -> price}}">
                         </div>
                         @if(count($food -> foodSelect))
-                            @foreach($food -> foodSelect as $foodSelect)
+                            @foreach($food->foodSelect as $index => $foodSelect)
                                 <div class="form-group">
                                     <label for="edit_select_name">Food Select Option 食物选项</label>
-                                    <input type="text" class="form-control form-control-line" id="edit_select_name[]" name="edit_select_name[]" value="{{$foodSelect -> name}}">
+                                    <input type="text" class="form-control form-control-line" id="edit_select_name[]" name="edit_select_name[]" value="{{$foodSelect->name}}">
                                 </div>
-                                @foreach($foodSelect -> foodOption as $foodOption)
+                                @foreach($foodSelect->foodOption as $foodOption)
                                     <div class="form-group option-value-container">
-                                        <input type="text" name="option[]" class="form-control form-control-inline" value="{{$foodOption -> name}}">
+                                        <input type="text" name="edit_option[{{$index}}][]" class="form-control form-control-inline" value="{{$foodOption->name}}">
                                     </div>
                                 @endforeach
                             @endforeach

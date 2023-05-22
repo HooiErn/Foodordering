@@ -4,16 +4,18 @@
 <title>Taken Order</title>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Confirmed Order</h1>
+    <h1 class="h3 mb-0 text-gray-800">Kitchen - Orders</h1>
 </div>
 
-<div class="row">
+<div class="row mb-2">
+    <div class="col-12">
+        <h2 class="text-center">Orders Yet to be Prepared</h2>
+    </div>
     @foreach($orders->where('status', 0)->sortBy('created_at') as $order)
         <div class="col-md-4 mb-2">
             <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between p-1 m-1">
                     <h5 class="card-title">Table {{$order->table_id}}</h5>
-                    <a class="btn btn-success btn-sm" href="{{ url('admin/donePreparing', ['id' => $order->id]) }}"><i class="fas fa-check m-0 p-0"></i></a>
                 </div>
                 <ul class="list-group list-group-flush">
                     @foreach($carts->where('orderID', $order->orderID) as $cart)
@@ -28,8 +30,11 @@
     @endforeach
 </div>
 
-<div class="row">
-    @foreach($orders -> where('status', 1)->sortByDesc('done_prepare_at')->take(6) as $order)
+<div class="row ">
+    <div class="col-12">
+        <h2 class="text-center">Orders Already Prepared</h2>
+    </div>
+    @foreach($orders->where('status', 1)->sortByDesc('done_prepare_at')->take(6) as $order)
         <div class="col-md-4 mb-2">
             <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between p-1 m-1">
@@ -50,7 +55,7 @@
                 <div class="card-body p-1 m-1">
                     <p class="card-text p-0 m-0">Order Time: {{ date('g:i A', strtotime($order->created_at)) }}</p>
                     <p class="card-text p-0 m-0">Done Preparing Time: {{ date('g:i A', strtotime($order->done_prepare_at)) }}</p>
-                    @if($order -> waiter != null)
+                    @if($order->waiter != null)
                         <p class="card-text p-0 m-0">Serve Time: {{ date('g:i A', strtotime($order->serve_time)) }}</p>
                     @endif
                 </div>
@@ -58,5 +63,6 @@
         </div>
     @endforeach
 </div>
+
 
 @endsection

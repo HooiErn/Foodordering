@@ -17,6 +17,7 @@ use App\Models\Cart;
 use App\Models\Work;
 use App\Models\Qrcode;
 use App\Models\User;
+use App\Events\AdminRefresh;
 use App\Events\Refresh2;
 use Carbon\Carbon;
 use Session;
@@ -29,65 +30,10 @@ class WaiterController extends Controller
     {
         $this->middleware(function ($request, $next) {
             if (!auth()->check()) {
-                return redirect()->route('waiter.login');
+                return redirect()->route('login.form');
             }
             return $next($request);
-        })->except(['check_login','login']);
-    }
-
-    //Login
-    public function login(){
-        return view('waiter/login');
-    }
-
-    //Check Login
-    public function check_login(Request $request){
-        $validator = $request->validate([
-            'name' => 'required',
-            'password' => 'required',
-        ]);
-    
-        $credentials = $request->only('name', 'password');
-    
-        if(Auth::attempt($credentials)){
-            $user = Auth::user();
-
-            // Allow 1 account login onlu (but got bug)
-            // if ($user->session_id !== null && $user->session_id !== session()->getId()) {
-            //     Toastr::error('You are already logged in on another device.', 'Login Failed');
-            //     Auth::logout();
-            //     return redirect('admin/login');
-            // }
-
-            $user -> session_id == session()->getId();
-            $user -> save();
-
-            if($user -> isAdmin()){
-                Auth::logout();
-                Toastr::info('That page is for waiter.', 'Login Wrong Page', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-                return redirect('admin/login');
-            }
-            else if($user -> isWaiter()){
-                Toastr::success('Welcome back '.$request->name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-                return redirect('waiter/work');
-            }
-
-            return redirect()->back();            
-        }
-
-        Toastr::error('Invalid name or password', 'Error');
-        return redirect()->back()->withErrors($validator)->withInput();
-    }
-
-    //Logout
-    public function logout(){
-        $user = Auth::user();
-        $user -> session_id == null;
-        $user ->save();
-
-        Auth::logout();
-        Toastr::info('You have logout your account', 'Logout Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-        return redirect('waiter/login');
+        });
     }
 
     //Scan
@@ -117,6 +63,7 @@ class WaiterController extends Controller
             $order->save();
     
             $msg = "Successfully Take Order";
+            event(new AdminRefresh());
             return view('waiter/orderDetail', compact('order', 'carts', 'qrcode'))->with('msg', $msg); 
         }
         else{

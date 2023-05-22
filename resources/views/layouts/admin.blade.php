@@ -37,15 +37,11 @@
             window.location.reload();
         });
         
-        var audio = new Audio('/sound/notification.mp3');
-        var channel2 = pusher.subscribe('placeOrder-channel');
-        channel2.bind('place-order', function(data) {
-            toastr.info("Table " + data.table + " has confirm order");
-            audio.play();
-            setTimeout(function() {
-                window.location.href = "{{ url('admin/takenOrder') }}";
-            }, 2000);
+        var channel2 = pusher.subscribe('adminRefresh-channel');
+        channel2.bind('admin-refresh', function() {
+            window.location.reload();
         });
+        
     </script>
     
     
@@ -53,7 +49,12 @@
         <script>
             window.location.href = "{{ url('waiter/work') }}";
         </script>
+    @elseif(Auth::user()->isKitchen())
+        <script>
+            window.location.href= "{{ url('kitchen/takenOrder') }}";
+        </script>
     @endif
+
 </head>
 
 <body id="page-top">

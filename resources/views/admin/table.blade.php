@@ -52,94 +52,91 @@
     </script>
 @endif
 
-
-
 <div class="row">
-    @foreach($tables->sortBy('table_id') as $table)
-        <div class="col-sm-6 col-md-4 tableFixHead" style="margin-bottom: 20px;">
-            <div class="card border-dark">
-                <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
-                    <h5 class="card-title">Table {{$table -> table_id}}</h5>
+    @foreach($tables as $table)
+    <div class="col-sm-3 mb-4">
+        <div class="card border border-dark">
+            <div class="card-content">
+                <div class="card-body d-flex align-items-center justify-content-between">
+                    <h4 class="text-center">Table {{str_pad($table -> table_id,3,"0",STR_PAD_LEFT)}}</h4>
                     <div>
                         <a href="#" data-toggle="modal" data-target="#tableQR{{$table->table_id}}" class="btn btn-primary btn-sm mr-1"><i class="fa fa-qrcode text-white" aria-hidden="true" style="color:black;"></i></a>
                         <a href="{{ url('admin/deleteTable', ['id' => $table -> table_id]) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete this table?')"><i class="fas fa-trash"></i></a>
                     </div>
-                    
-                </div>
-                <div class="modal fade" id="tableQR{{$table -> table_id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                        <div class="modal-content">
-                            <div class="modal-body text-center">
-                                {{QrCode::size(250)->generate('https://foodorderapp.ctosweb.com/method/'.$table->table_id);}}
-                            </div>
-                            <div class="modal-footer justify-content-center">
-                                <button type="button" class="btn btn-primary btn-sm btn-rounded">Print</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>No.</th>
-                                <th>Order ID 订单编号</th>
-                                <th>Responsible 负责人</th>
-                                <th>Amount 共计</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($orders->where('table_id',$table -> table_id)->where('status',"0") as $order)   
-                                <tr>
-                                    <td>{{$loop -> iteration}}.</td>
-                                    <td><a href="" data-toggle="modal" data-target="#order{{$order->orderID}}" style="text-decoration: none;">{{$order -> orderID}}</a></td>
-                                    @if($order -> waiter == null)
-                                        <td><span class="text-danger">No person in charge</span></td>
-                                    @else
-                                        <td>{{$order -> waiter}}</td>
-                                    @endif
-                                    <td>RM {{number_format($order -> amount,2)}}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    @endforeach
-</div>
-
-@foreach($orders as $order) 
-    <div class="modal fade" id="order{{$order->orderID}}" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Included Cart</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <table class="table">
-                        <tbody>
-                            @foreach($carts -> where('orderID', $order -> orderID) as $cart)
-                            <tr>
-                                <td colspan="2">{{$cart -> name}}</td>
-                                <td>{{$cart -> quantity}}</td>
-                                <td><span name="amount">{{number_format($cart->quantity * $cart->price,2)}}</span></td>
-                            </tr>
-                            @endforeach
-                            <tr>
-                                <td colspan="2" class="text-right">Total:</td>
-                                <td><span id="total"></span></td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
     </div>
-@endforeach
+    <div class="modal fade" id="tableQR{{$table -> table_id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    {{QrCode::size(250)->generate('https://foodorderapp.ctosweb.com/method/'.$table->table_id);}}
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-primary btn-sm btn-rounded">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    @endforeach
+</div>
+
+<!-- Old Version -->
+<!--<div class="row">-->
+<!--    @foreach($tables->sortBy('table_id') as $table)-->
+<!--        <div class="col-md-3 tableFixHead" style="margin-bottom: 20px;">-->
+<!--            <div class="card border-dark">-->
+<!--                <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">-->
+<!--                    <h5 class="card-title">Table {{$table -> table_id}}</h5>-->
+<!--                    <div>-->
+<!--                        <a href="#" data-toggle="modal" data-target="#tableQR{{$table->table_id}}" class="btn btn-primary btn-sm mr-1"><i class="fa fa-qrcode text-white" aria-hidden="true" style="color:black;"></i></a>-->
+<!--                        <a href="{{ url('admin/deleteTable', ['id' => $table -> table_id]) }}" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure to delete this table?')"><i class="fas fa-trash"></i></a>-->
+<!--                    </div>-->
+                    
+<!--                </div>-->
+<!--                <div class="modal fade" id="tableQR{{$table -> table_id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">-->
+<!--                    <div class="modal-dialog modal-dialog-centered" role="document">-->
+<!--                        <div class="modal-content">-->
+<!--                            <div class="modal-body text-center">-->
+<!--                                {{QrCode::size(250)->generate('https://foodorderapp.ctosweb.com/method/'.$table->table_id);}}-->
+<!--                            </div>-->
+<!--                            <div class="modal-footer justify-content-center">-->
+<!--                                <button type="button" class="btn btn-primary btn-sm btn-rounded">Print</button>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="card-body">-->
+<!--                    <table class="table table-hover">-->
+<!--                        <thead>-->
+<!--                            <tr>-->
+<!--                                <th>No.</th>-->
+<!--                                <th>Order ID 订单编号</th>-->
+<!--                                <th>Responsible 负责人</th>-->
+<!--                                <th>Amount 共计</th>-->
+<!--                            </tr>-->
+<!--                        </thead>-->
+<!--                        <tbody>-->
+<!--                            @foreach($orders->where('table_id',$table -> table_id)->where('status',"0") as $order)   -->
+<!--                                <tr>-->
+<!--                                    <td>{{$loop -> iteration}}.</td>-->
+<!--                                    <td><a href="" data-toggle="modal" data-target="#order{{$order->orderID}}" style="text-decoration: none;">{{$order -> orderID}}</a></td>-->
+<!--                                    @if($order -> waiter == null)-->
+<!--                                        <td><span class="text-danger">No person in charge</span></td>-->
+<!--                                    @else-->
+<!--                                        <td>{{$order -> waiter}}</td>-->
+<!--                                    @endif-->
+<!--                                    <td>RM {{number_format($order -> amount,2)}}</td>-->
+<!--                                </tr>-->
+<!--                            @endforeach-->
+<!--                        </tbody>-->
+<!--                    </table>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    @endforeach-->
+<!--</div>-->
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script scr="text/javascript">

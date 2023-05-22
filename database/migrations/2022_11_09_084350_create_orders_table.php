@@ -21,8 +21,8 @@ class CreateOrdersTable extends Migration
             $table->double('amount',8,2);
             $table->string('waiter')->nullable();
             $table->integer('payment_method')->default(1);
-            $table->datetime('done_prepare_at');
-            $table->datetime('serve_time');
+            $table->datetime('done_prepare_at')->nullable();
+            $table->datetime('serve_time')->nullable();
             $table->timestamps();
         });
     }

@@ -46,12 +46,12 @@
             <span>Action List行动表</span>
         </a>
     </li>
-    
-    <!-- Nav Item - Action List -->
+
+    <!-- Nav Item - Taken Order -->
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/takenOrder') }}">
             <i class="fas fa-fw fa-list"></i>
-            <span>Confirmed Orders已确认订单</span>
+            <span>Current Order List</span>
         </a>
     </li>
 
@@ -73,7 +73,7 @@
 
     <!-- Nav Item - LogOut -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ url('admin/logout') }}">
+        <a class="nav-link" href="{{ url('/logout') }}">
             <i class="fa fa-sign-out"></i>
             <span>Logout登出</span>
         </a>

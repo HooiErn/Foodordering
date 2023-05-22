@@ -128,20 +128,19 @@
         </div>
       </div>
     </nav>
-
-
-
         
     <div class="container mb-5">
         <div class="row mt-1 mb-1">
-            <div class="col-12 d-flex justify-content-center" style="margin-top:10px;">
+            <div class="col-12 d-flex justify-content-center" style="margin-top:5px;">
                 <form action="{{ url('changePayment')}}" method="POST">
                     @csrf
                     <input type="hidden" name="table_id" value="{{$table -> table_id}}">
-                    <button type="submit" class="btn btn-primary rounded-pill">Change payment method&nbsp;更换付款方式</button>
+                    <button type="submit" class="btn btn-primary rounded-pill" style="font-size:small;">Change payment method&nbsp;更换付款方式</button>
                 </form>
-                 &nbsp;&nbsp;
-                 <a href="{{ url('lastOrder', ['id' => $table -> table_id]) }}" class="btn btn-primary rounded-pill ml-2">View Previous Order 查看上个订单</a>
+            </div>
+             <br>
+             <div class="col-12 d-flex justify-content-center" style="margin-top:5px;">
+                <a href="{{ url('lastOrder', ['id' => $table -> table_id]) }}" class="btn btn-primary rounded-pill ml-2" style="font-size:small;">View Previous Order 查看上个订单</a>
             </div>
         </div>
         <div class="row">
@@ -163,7 +162,11 @@
                                 <div class="h6 mb-0 font-weight-bold text-gray-800">RM {{ number_format($food -> price,2) }}</div>
                             </div>
                             <div class="col-auto mr-2">
-                               <a href="" data-toggle="modal" data-target="#food{{$food -> id}}" class="btn btn-success rounded-10">Add To Cart<br>加入购物车</a>
+                                @if($food -> available == 0)
+                                    <a class="btn btn-danger rounded-10 text-white" disabled>Out of stock<br>缺货</a>
+                                @elseif($food -> available == 1)
+                                    <a href="" data-toggle="modal" data-target="#food{{$food -> id}}" class="btn btn-success rounded-10">Add To Cart<br>加入购物车</a>
+                                @endif
                             </div>
                         </div>
                     </div>
@@ -172,9 +175,9 @@
                         <input type="hidden" name="food_id" value="{{$food->id}}" class="form-control">
                         <input type="hidden" name="table_id" value="{{$table -> table_id}}" class="form-control">
                         <input type="hidden" name="amount" value="{{$food->price}}" class="form-control">
-                        <div class="modal fade" id="food{{$food ->id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-sm">
-                                <div class="modal-content" style="padding:10px;">
+                        <div class="modal fade-sm" id="food{{$food ->id}}" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
                                     <div class="modal-header">
                                        <h3 class="title" style="font-size: 20px; font-weight: bold;">Select Quantity 选择数量</h3>
                                     </div>
@@ -193,8 +196,9 @@
                                         <div class="row text-center pt-3 pl-3">
                                             @foreach($food->foodSelect as $foodSelect)
                                                 <input type="hidden" value="{{ $foodSelect->name }}" name="select[{{$foodSelect->id}}]">
-                                                <div class="col-md-5" style="width:50%;">
-                                                    <strong>{{ $foodSelect->name }}</strong>
+                                                <div class="col-md-11">
+                                                    
+                                                   <center> <strong>{{ $foodSelect->name }}</strong> </center>
                                                     @foreach($foodSelect->foodOption as $foodOption)
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}">
@@ -203,11 +207,13 @@
                                                             </label>
                                                         </div>
                                                     @endforeach
+                                                    </center>
                                                 </div>
                                             @endforeach
                                         </div>
                                     @endif
                                     <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal" aria-label="Close">Cancel 取消</button>
                                         <button type="submit" class="btn btn-primary">Confirm 确定</button>
                                     </div>
                                 </div>

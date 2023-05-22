@@ -19,27 +19,27 @@
     body{
         background-image: url("https://thumbs.dreamstime.com/b/simple-background-one-color-monochrome-made-brush-painting-colors-blue-green-181107745.jpg");
     }
+        
+    .button3 {
+      padding: 6px 9px;
+      font-size: 15px;
+      text-align: center;
+      cursor: pointer;
+      outline: none;
+      color: #fff;
+      background-color: #04AA6D;
+      border: none;
+      border-radius: 15px;
+      box-shadow: 0 0px #999;
+    }
     
-          .button3 {
-  padding: 6px 9px;
-  font-size: 15px;
-  text-align: center;
-  cursor: pointer;
-  outline: none;
-  color: #fff;
-  background-color: #04AA6D;
-  border: none;
-  border-radius: 15px;
-  box-shadow: 0 0px #999;
-}
-
-.button3:hover {background-color: #3e8e41}
-
-.button3:active {
-  background-color: #3e8e41;
-  box-shadow: 0 5px #666;
-  transform: translateY(4px);
-}
+    .button3:hover {background-color: #3e8e41}
+    
+    .button3:active {
+      background-color: #3e8e41;
+      box-shadow: 0 5px #666;
+      transform: translateY(4px);
+    }
      </style>
     <body> 
    @include('functions.toastr')
