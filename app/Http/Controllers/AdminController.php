@@ -60,6 +60,10 @@ class AdminController extends Controller
         return view('admin/dashboard',compact('data', 'totalOrder', 'todayOrder', 'thisMonthOrder', 'thisYearOrder'));
     }
     
+    public function analytics(){
+        return view('admin/analytics');
+    }
+    
     // Action List
     public function actionList(){
         $admins = User::where('role',1)->get();

@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head itemscope itemtype="http://schema.org/WebSite">
@@ -42,13 +44,16 @@
                                                 <table width="100%" cellpadding="0" cellspacing="0">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="content-block"><h2>Successfully Confirmed order !</h2></td>
+                                                            <td class="content-block"><h2>Successfully Confirmed order </h2>
+                                                            <center><h5>Pay By: {{ $order->payment_method == 1 ? 'Cash' : 'Touch n Go' }}</h5></center>
+                                                            </td>
                                                         </tr>
                                                         <tr>
                                                             <td class="content-block">
                                                                 <table class="invoice">
                                                                     <tbody>
                                                                         <tr>
+                                                    
                                                                             <td>Table {{$order -> table_id}}<br>Order ID #{{$order -> orderID}}<br>{{ \Carbon\Carbon::parse($order -> created_at)->format(' j  F  Y , g:i a') }}<br></td>
                                                                         </tr>
                                                                         <tr>
@@ -57,7 +62,7 @@
                                                                                     <tbody>
                                                                                         @foreach($carts as $cart)
                                                                                             <tr>
-                                                                                                <td>{{$cart -> name}} <span class="text-info">x{{$cart -> quantity}}</span>
+                                                                                                <td>{{$cart -> name}} &nbsp;<span class="text-info"> x{{$cart -> quantity}}</span>
                                                                                                     @if(!empty($cart->addon))
                                                                                                         @php
                                                                                                             $addons = json_decode($cart->addon, true);
@@ -78,10 +83,7 @@
                                                                                             <td class="alignright" width="80%">Total:</td>
                                                                                             <td class="alignright">RM {{number_format($order -> amount,2)}}</td>
                                                                                         </tr>
-                                                                                        <tr class="pay_by">
-                                                                                            <td>Pay By: </td>
-                                                                                            <td class="alignright">{{ $order->payment_method == 1 ? 'Cash' : 'Touch n Go' }}</td>
-                                                                                        </tr>
+                                                                                        
                                                                                     </tbody>
                                                                                 </table>
                                                                             </td>
@@ -91,7 +93,7 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td><a href="{{ url('method',['id' => $order -> table_id]) }}" class="btn btn-primary btn-sm">Main Page</a></td>
+                                                            <td><a href="{{ url('method',['id' => $order -> table_id]) }}" class="btn btn-primary btn-sm">Back  To Main Page</a></td>
                                                         </tr>
                                                     </tbody>
                                                 </table>

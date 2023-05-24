@@ -143,6 +143,7 @@ class HomeController extends Controller
         'food.image as image','food.id as foodID')
         ->where('table_id',$id)
         ->get();
+        
 
         return view('view',compact('details','table'));
 
@@ -181,7 +182,10 @@ class HomeController extends Controller
     
     public function last_order($id)
     {
-        $orders = Order::where('table_id', $id)->latest()->take(3)->get();
+        $orders = Order::where('table_id', $id)
+                        ->latest()
+                        ->take(3)
+                        ->get();
     
         if ($orders->isEmpty()) {
             return view('404');

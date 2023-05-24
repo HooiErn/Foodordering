@@ -91,10 +91,10 @@ class CartController extends Controller
     //View Cart
     public function view(){
         $carts=DB::table('carts')
-        ->leftjoin('food','food.id','=','carts.food_id')
-        ->select('carts.quantity as cartQTY','carts.id as cid','food.*')
-        ->where('carts.orderID','=','')
-        ->get();       
+        ->join('food as detail','carts.food_id','detail.id')
+                ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+                ->where('carts.orderID', $order -> orderID)
+                ->get();    
 
         return view('auth.viewCart', compact('carts'));
     }

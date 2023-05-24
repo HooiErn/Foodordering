@@ -13,15 +13,15 @@
 
 <div class="row">
     <div class="col-md-12">
-        <div class="card border border-dark">
+        <div class="card border border-dark shadow">
             <div class="table-responsive">
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <td>No.</td>
-                            <td>Name</td>
-                            <td>Created Date</td>
-                            <td>Action</td>
+                            <td style="background-color: #f0f0f0; font-weight: bold;">No.</td>
+                            <td style="background-color: #f0f0f0; font-weight: bold;">Name</td>
+                            <td style="background-color: #f0f0f0; font-weight: bold; cursor:pointer;">Created Date</td>
+                            <td style="background-color: #f0f0f0; font-weight: bold;">Action</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -90,38 +90,80 @@
 @endif
 
 @if(count($actions))
-<div class="d-sm-flex align-items-center justify-content-between mt-1 mb-2">
+<div class="d-sm-flex align-items-center justify-content-between mt-3 mb-2">
     <h1 class="h3 mb-0 text-gray-800">Action List</h1>
 </div>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="card border border-dark">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead>
+<div class="row">
+    <div class="col-md-12">
+        <div class="card border border-dark shadow">
+            <div class="table-responsive">
+                <table id="mylists" class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th style="background-color: #f0f0f0; font-weight: bold;">Name</th>
+                            <th style="background-color: #f0f0f0; font-weight: bold;">Action</th>
+                            <th onclick="sortTable(2)" style="background-color: #f0f0f0; font-weight: bold;cursor:pointer;">Date</th>
+                            <th style="background-color: #f0f0f0; font-weight: bold;">Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($actions as $action)
                             <tr>
-                                <td>Name</td>
-                                <td>Action</td>
-                                <td>Date</td>
-                                <td>Time</td>
+                                <td>{{$action->name}}</td>
+                                <td>{{$action->action}}</td>
+                                <td>{{date('Y-m-d', strtotime($action->created_at))}}</td>
+                                <td>{{date('H:i:s', strtotime($action->created_at))}}</td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($actions as $action)
-                                <tr>
-                                    <td>{{$action -> name}}</td>
-                                    <td>{{$action -> action}}</td>
-                                    <td>{{date('Y-m-d', strtotime($action-> created_at))}}</td>
-                                    <td>{{date('H:i:s', strtotime($action->created_at)) }}</td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
+</div>
 @endif
 
+<script>
+    function sortTable(n) {
+        var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+        table = document.getElementById("mylists");
+        switching = true;
+        dir = "asc";
+        
+        while (switching) {
+            switching = false;
+            rows = table.rows;
+            
+            for (i = 1; i < (rows.length - 1); i++) {
+                shouldSwitch = false;
+                x = rows[i].getElementsByTagName("TD")[n];
+                y = rows[i + 1].getElementsByTagName("TD")[n];
+                
+                if (dir == "asc") {
+                    if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                } else if (dir == "desc") {
+                    if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                        shouldSwitch = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (shouldSwitch) {
+                rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
+                switchcount++;
+            } else {
+                if (switchcount == 0 && dir == "asc") {
+                    dir = "desc";
+                    switching = true;
+                }
+            }
+        }
+    }
+</script>
 @endsection

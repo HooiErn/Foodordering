@@ -14,5 +14,6 @@ class Cart extends Model
         'table_id',
         'quantity',
         'orderID',
+        'addon',
     ];
 }

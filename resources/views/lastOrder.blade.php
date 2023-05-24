@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -31,7 +33,8 @@
                                                                                     $index = $loop->index;
                                                                                     $numberWord = isset($numberWords[$index]) ? $numberWords[$index] : ($index + 1) . 'th';
                                                                                 @endphp
-                                                                                <h2>Last {{ $numberWord }} Order</h2>
+                                                                                <h2>< Last {{ $numberWord }} Order ></h2>
+                                                                                <center><h5>Pay By: {{ $data['order']->payment_method == 1 ? 'Cash' : 'Touch n Go' }}</h5> </center>
                                                                             </td>
                                                                         </tr>
                                                                         <tr>
@@ -52,7 +55,7 @@
                                                                                                     @foreach($data['carts'] as $cart)
                                                                                                         <tr>
                                                                                                             <td>
-                                                                                                                {{ $cart->name }} <span class="text-info">x{{ $cart->quantity }}</span>
+                                                                                                                {{ $cart->name }} &nbsp;<span class="text-info">x{{ $cart->quantity }}</span>
                                                                                                                 <!-- Display addons if available -->
                                                                                                                 @if(!empty($cart->addon))
                                                                                                                     @php
@@ -96,10 +99,6 @@
                                                                                                     <tr class="total">
                                                                                                         <td class="alignright" width="80%">Total:</td>
                                                                                                         <td class="alignright">RM {{ number_format($data['order']->amount, 2) }}</td>
-                                                                                                    </tr>
-                                                                                                    <tr class="pay_by">
-                                                                                                        <td>Pay By: </td>
-                                                                                                        <td class="alignright">{{ $data['order']->payment_method == 1 ? 'Cash' : 'Touch n Go' }}</td>
                                                                                                     </tr>
                                                                                                 </table>
                                                                                             </td>

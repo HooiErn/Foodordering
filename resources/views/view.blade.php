@@ -65,7 +65,24 @@
                 
                                  <td>{{$detail -> name}}</td>
                                  <td>{{$detail -> quantity}}</td>
-                                 <td>{{$detail -> addon}}</td>
+                              @if(!empty($detail->addon))
+                                 @php
+                                    $addons = json_decode($detail->addon, true);
+                                 @endphp
+                                
+                                    @foreach($addons as $title => $addon)
+                                        @if($addon !== null)
+                                            <td>{{$title}} - {{$addon}}</td>
+                                              @else
+                                            <td>-</td>
+                                     @endif
+                                    @endforeach
+                                    
+                               @endif
+                                @if(empty($detail->addon))
+                                    <td></td>
+                                    
+                               @endif
                                  <td><span>{{number_format($detail -> quantity * $detail -> price,2)}}</span>
                                     <input type="hidden" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/></td>
                                 <td><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food? 您确定要删除该食物吗?')"><i class="fa fa-trash"></i></a></td>

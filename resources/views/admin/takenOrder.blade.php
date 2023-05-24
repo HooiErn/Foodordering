@@ -38,7 +38,7 @@
         <div class="col-md-4 mb-2">
             <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between p-1 m-1">
-                    <h5 class="card-title">Table {{$order->table_id}}  {{$order -> orderID}}</h5>
+                    <h5 class="card-title">Table {{$order->table_id}}</h5>
                     <p class="card-text">Waiter :
                         @if($order->waiter != null)
                             {{$order->waiter}}

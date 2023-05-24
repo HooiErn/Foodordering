@@ -19,6 +19,14 @@
             <span>Dashboard主页</span>
         </a>
     </li>
+    
+    <!-- Nav Item - Analytics -->
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('admin/analytics') }}">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Total Bandwidth 总宽带</span>
+        </a>
+    </li>
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -51,7 +59,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/takenOrder') }}">
             <i class="fas fa-fw fa-list"></i>
-            <span>Current Order List</span>
+            <span>Current Order List当前订单列表</span>
         </a>
     </li>
 

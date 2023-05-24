@@ -46,6 +46,9 @@ Route::get('kitchen/donePreparing/{id}', [KitchenController::class, 'donePrepari
 //Admin DashBoard
 Route::get('admin/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
+// Analytics
+Route::get('admin/analytics', [AdminController::class, 'analytics'])->name('analytics');
+
 // Action List
 Route::get('admin/action-list', [AdminController::class, 'actionList']);
 Route::post('admin/addSubAccount', [AdminController::class, 'addSubAccount']);
