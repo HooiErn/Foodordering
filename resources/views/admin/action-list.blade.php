@@ -4,10 +4,10 @@
 <title>Sub Account && Action List</title>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-2">
-    <h1 class="h3 mb-0 text-gray-800">Sub Account List</h1>
+    <h1 class="h3 mb-0 text-gray-800">Sub Account List 分账户列表</h1>
     <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addSubAcc">
         <i class="fas fa-user fa-sm text-white-50"></i>
-        Create Sub Account
+        Create Sub Account 生成分账户
     </a>
 </div>
 
@@ -18,10 +18,10 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <td style="background-color: #f0f0f0; font-weight: bold;">No.</td>
-                            <td style="background-color: #f0f0f0; font-weight: bold;">Name</td>
-                            <td style="background-color: #f0f0f0; font-weight: bold; cursor:pointer;">Created Date</td>
-                            <td style="background-color: #f0f0f0; font-weight: bold;">Action</td>
+                            <td style="background-color: #f0f0f0; font-weight: bold;">No. 编号</td>
+                            <td style="background-color: #f0f0f0; font-weight: bold;">Name 名字</td>
+                            <td style="background-color: #f0f0f0; font-weight: bold; cursor:pointer;">Created Date 生成时间</td>
+                            <td style="background-color: #f0f0f0; font-weight: bold;">Action 行动</td>
                         </tr>
                     </thead>
                     <tbody>
@@ -45,7 +45,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Create Sub Account</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Create Sub Account 生成分账户</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -54,27 +54,27 @@
                 <form action="{{ url('admin/addSubAccount') }}" method="POST">
                     @csrf
                     <div class="form-floating ml-2 mr-2 mb-2">
-                        <labe for="name">Name</labe>
-                        <input type="string" name="name" class="form-control form-control-line" placeholder="Enter Name" value="{{ old('name')}}" required>
+                        <labe for="name">Name 名字</labe>
+                        <input type="string" name="name" class="form-control form-control-line" placeholder="Enter Name 输入名字" value="{{ old('name')}}" required>
                         @error('name')
                             <span class="text-danger">{{$message}}</span>
                         @enderror
                     </div>
                     <div class="form-floating m-2">
-                        <labe for="password">Password</labe>
-                        <input type="password" name="password" class="form-control form-control-line" placeholder="Enter Password" required>
+                        <labe for="password">Password 密码</labe>
+                        <input type="password" name="password" class="form-control form-control-line" placeholder="Enter Password 输入密码" required>
                         @error('password')
                             <span class="text-danger">{{$message}}</span>
                         @enderror
                     </div>
                     <div class="form-floating m-2">
-                        <labe for="confirm_password">Confirm Password</labe>
-                        <input type="password" name="confirm_password" class="form-control form-control-line" placeholder="Enter Confirm Password" required>
+                        <labe for="confirm_password">Confirm Password 确认密码</labe>
+                        <input type="password" name="confirm_password" class="form-control form-control-line" placeholder="Enter Confirm Password 输入确认密码" required>
                         @error('confirm_password')
                             <span class="text-danger">{{$message}}</span>
                         @enderror
                     </div>
-                    <button type="submit" class="btn btn-block btn-primary m-2">Submit</button>
+                    <button type="submit" class="btn btn-block btn-primary m-2">Submit 提交</button>
                 </form>
             </div>
         </div>
@@ -91,7 +91,7 @@
 
 @if(count($actions))
 <div class="d-sm-flex align-items-center justify-content-between mt-3 mb-2">
-    <h1 class="h3 mb-0 text-gray-800">Action List</h1>
+    <h1 class="h3 mb-0 text-gray-800">Action List 行动列表</h1>
 </div>
 
 <div class="row">
@@ -101,10 +101,10 @@
                 <table id="mylists" class="table table-hover">
                     <thead>
                         <tr>
-                            <th style="background-color: #f0f0f0; font-weight: bold;">Name</th>
-                            <th style="background-color: #f0f0f0; font-weight: bold;">Action</th>
-                            <th onclick="sortTable(2)" style="background-color: #f0f0f0; font-weight: bold;cursor:pointer;">Date</th>
-                            <th style="background-color: #f0f0f0; font-weight: bold;">Time</th>
+                            <th style="background-color: #f0f0f0; font-weight: bold;">Name 名字</th>
+                            <th style="background-color: #f0f0f0; font-weight: bold;">Action 行动</th>
+                            <th onclick="sortTable(2)" style="background-color: #f0f0f0; font-weight: bold;cursor:pointer;">Date 日期</th>
+                            <th style="background-color: #f0f0f0; font-weight: bold;">Time 时间</th>
                         </tr>
                     </thead>
                     <tbody>

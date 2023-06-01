@@ -15,6 +15,7 @@ use App\Models\FoodOption;
 use App\Models\FoodSelect;
 use App\Models\WaiterCart;
 use App\Events\Refresh2;
+use App\Events\AdminRefresh;
 use Carbon\Carbon;
 use Session;
 use DB;
@@ -76,11 +77,11 @@ class CartController extends Controller
     
         if ($elapsed_time > 3) {
             // User was the last active user, delete their cart
-            Cart::where('table_id', $table_id)->where('orderID', null)->delete();
             $table = Table::where('table_id',$table_id)->first();
             $table -> payment = null;
             $table -> last_active_at = null;
             $table -> save();
+            Cart::where('table_id', $table_id)->where('orderID', null)->delete();
             event(new Refresh($table_id));
             return response()->json([
                 'message' => "Unload Function Success",
@@ -134,7 +135,6 @@ class CartController extends Controller
                     $cart -> orderID = $orderID;
                     $cart -> save();
                 }
-        
                 event(new PlaceOrder($request -> tableID, $orderID));
                 
                 return redirect()->back();

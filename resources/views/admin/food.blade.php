@@ -1,5 +1,16 @@
 @extends('layouts.admin')
 @section('content')
+<style>
+     .category-header, .table-button {
+        background-color: #eaeaea;
+        font-weight: bold;
+     }
+     
+     .table-header{
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+</style>
 
 <title>Food</title>
 
@@ -12,12 +23,12 @@
     <div class="col-md-12">
         @foreach($categories as $category)
             <div class="card">
-                <div class="table-responsive border border-dark">
+                <div class="table-responsive shadow">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th colspan="4">Category 种类 : {{ $category -> name }}</th>
-                                <th class="text-end">
+                                <th colspan="4" class="category-header">Category 种类 : {{ $category -> name }}</th>
+                                <th class="text-end table-button">
                                     <div>
                                     <a type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addFood{{$category -> id}}"><i class="fas fa-plus text-white"></i></a>
                                     <a type="button" class="d-none d-sm-inline-block btn btn-sm btn-success shadow-sm" data-toggle="modal" data-target="#editCategory{{$category -> id}}"><i class="fas fa-pen text-white"></i></a>
@@ -25,7 +36,7 @@
                                     </div>
                                 </th>
                             </tr>
-                            <tr>
+                            <tr class="table-header">
                                 <th>No.</th>
                                 <th>Image 图片</th>
                                 <th>Name 名字</th>

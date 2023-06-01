@@ -376,6 +376,13 @@ class AdminController extends Controller
         $works = Work::all();
         return view('admin/waiter',compact('waiters','orders','works'));
     }
+    
+    public function waiterSearchDate(Request $request){
+        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
+        $works = Work::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
+        $waiters = User::where('role',2)->get();
+        return view('admin/waiter', compact('waiters', 'orders', 'works'));
+    }
 
     public function registerWaiter(Request $request){
         $validator = Validator::make($request->all(), [

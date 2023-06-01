@@ -11,7 +11,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Clean Table</div>
+                            Clean Table 清理桌子</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{count($works -> where('work_number',1))}}</div>
                     </div>
                     <div class="col-auto">
@@ -27,7 +27,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Wash Toilet</div>
+                            Wash Toilet 清理厕所</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{count($works -> where('work_number',2))}}</div>
                     </div>
                     <div class="col-auto">
@@ -43,7 +43,7 @@
                 <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
                         <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Help Customer</div>
+                            Help Customer 协助顾客</div>
                         <div class="h5 mb-0 font-weight-bold text-gray-800">{{count($works -> where('work_number',3))}}</div>
                     </div>
                     <div class="col-auto">
@@ -60,10 +60,10 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <td>Table ID</td>
-                    <td>Clean Table</td>
-                    <td>Wash Toilet</td>
-                    <td>Help Customer</td>
+                    <td>Table ID 桌子编号</td>
+                    <td>Clean Table 清理桌子</td>
+                    <td>Wash Toilet 清理厕所</td>
+                    <td>Help Customer 协助顾客</td>
                 </tr>
             </thead>
             <tbody>

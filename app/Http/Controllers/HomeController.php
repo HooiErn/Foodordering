@@ -20,6 +20,7 @@ use App\Events\Refresh2;
 use Session;
 use Carbon\Carbon;
 use DB;
+use Cookie;
 
 
 class HomeController extends Controller
@@ -52,6 +53,14 @@ class HomeController extends Controller
     
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
+            if($request->has('rememberme')){
+                Cookie::queue('name',$request->name,1440); //1440 means it stays for 24 hours
+                Cookie::queue('password',$request->password,1440);
+            }
+            else{
+                Cookie::queue(Cookie::forget('name'));
+                Cookie::queue(Cookie::forget('password'));
+            }
     
             if ($user->isAdmin()) {
                 Toastr::success('Welcome back '.$request->name, 'Login Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
@@ -75,7 +84,6 @@ class HomeController extends Controller
     public function logout()
     {
         $user = Auth::user();
-        $user->session_id = null;
         $user->save();
     
         Auth::logout();

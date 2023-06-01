@@ -97,7 +97,7 @@ Route::get('waiter/scan',[WaiterController::class, 'scan']);
 // --- Order ---
 Route::get('waiter/order',[WaiterController::class, 'viewTakenOrder'])->name('waiter.order');
 Route::get('waiter/viewFoodList/{orderID}',[WaiterController::class,'viewFoodList']);
-Route::post('waiter/searchDate',[WaiterController::class,'searchDate']);
+Route::post('waiter/searchDate',[WaiterController::class,'searchDate'])->name('waiter.searchDate');
 Route::get('waiter/placeOrder',[WaiterController::class, 'placeOrder']);
 Route::get('waiter/add-to-cart/{id}', [WaiterController::class, 'addToCart']);
 Route::get('waiter/showWork',[WaiterController::class, 'showWork']);

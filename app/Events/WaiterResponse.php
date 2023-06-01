@@ -10,7 +10,7 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class CallWaiter implements ShouldBroadcast
+class WaiterResponse implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $table;
@@ -31,16 +31,16 @@ class CallWaiter implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new Channel('callWaiter-channel');
+        return new Channel('waiterResponse-channel');
     }
-    
+
     /**
      * 
      *
      * @return void
      */
-     
-    public function broadcastAs(){
-        return 'call-waiter';
+    public function broadcastAs()
+    {
+        return 'waiter-response';
     }
 }

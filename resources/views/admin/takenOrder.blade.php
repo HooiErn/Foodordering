@@ -4,12 +4,12 @@
 <title>Taken Order</title>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
-    <h1 class="h3 mb-0 text-gray-800">Kitchen - Orders</h1>
+    <h1 class="h3 mb-0 text-gray-800">Kitchen 厨房 - Orders 订单</h1>
 </div>
 
 <div class="row mb-2">
     <div class="col-12">
-        <h2 class="text-center">Orders Yet to be Prepared</h2>
+        <h2 class="text-center">Orders Yet to be Prepared 订单还没被准备</h2>
     </div>
     @foreach($orders->where('status', 0)->sortBy('created_at') as $order)
         <div class="col-md-4 mb-2">
@@ -29,17 +29,18 @@
         </div>
     @endforeach
 </div>
-
+ <hr class="my-5">
+ 
 <div class="row ">
     <div class="col-12">
-        <h2 class="text-center">Orders Already Prepared</h2>
+        <h2 class="text-center">Orders Already Prepared 订单已经被准备</h2>
     </div>
     @foreach($orders->where('status', 1)->sortByDesc('done_prepare_at')->take(6) as $order)
         <div class="col-md-4 mb-2">
             <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between p-1 m-1">
                     <h5 class="card-title">Table {{$order->table_id}}</h5>
-                    <p class="card-text">Waiter :
+                    <p class="card-text">Waiter 服务员 :
                         @if($order->waiter != null)
                             {{$order->waiter}}
                         @else

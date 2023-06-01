@@ -19,8 +19,9 @@ use App\Models\Qrcode;
 use App\Models\User;
 use App\Events\AdminRefresh;
 use App\Events\Refresh2;
-use Carbon\Carbon;
+use App\Events\WaiterResponse;
 use Session;
+use Carbon\Carbon;
 use Cookie;
 use DB;
 
@@ -41,13 +42,9 @@ class WaiterController extends Controller
         return view('waiter/scan');
     }
     
-    public function orderDetail($id){
-        $order = Order::where('orderID', $id)->first();
+    public function orderDetail(){
+        $orders = Order::all();
         
-        if(!$order){
-            return view('404');
-        }
-
         // Load carts using Eloquent relationships
         $carts = DB::table('carts')
                 ->join('food as detail','carts.food_id','detail.id')
@@ -57,21 +54,55 @@ class WaiterController extends Controller
         
         $qrcode = DB::table('qrcodes')->first();
         
-        if($order -> waiter == null){
-            $order->waiter = Auth::user()->name;
-            $order->serve_time = Carbon::now();
-            $order->save();
-    
-            $msg = "Successfully Take Order";
-            event(new AdminRefresh());
-            return view('waiter/orderDetail', compact('order', 'carts', 'qrcode'))->with('msg', $msg); 
-        }
-        else{
-            $msg = "This order has been taken";
-            return view('waiter/orderDetail', compact('order', 'carts', 'qrcode'))->with('msg', $msg); 
-        }
+        $msg = null;
         
+        return view('waiter/orderDetail', compact('orders', 'carts', 'qrcode'))->with('msg',$msg);
     }
+    
+    public function takeOrder(Request $request)
+    {
+        $orderIDs = $request->input('orderID');
+    
+        $orders = Order::whereIn('orderID', $orderIDs)->get();
+    
+        if ($orders->isEmpty()) {
+            return view('404');
+        }
+    
+        // Load carts using Eloquent relationships
+        $carts = DB::table('carts')
+            ->join('food as detail', 'carts.food_id', 'detail.id')
+            ->select('carts.*', 'detail.name as name', 'detail.image as image', 'detail.price as price')
+            ->whereIn('carts.orderID', $orderIDs)
+            ->get();
+    
+        $qrcode = DB::table('qrcodes')->first();
+    
+        // Check if any orders have already been taken
+        $msg = [];
+    
+        foreach ($orders as $order) {
+            if ($order->waiter !== null) {
+                $msg[$order->orderID] = "This order has been taken";
+            } else {
+                $waiter = Auth::user()->name;
+                $serveTime = Carbon::now();
+    
+                Order::where('orderID', $order->orderID)->update([
+                    'waiter' => $waiter,
+                    'serve_time' => $serveTime,
+                ]);
+    
+                event(new AdminRefresh());
+    
+                $msg[$order->orderID] = "Successfully Take Order";
+            }
+        }
+    
+        return view('waiter/orderDetail', compact('orders', 'carts', 'qrcode', 'msg'));
+    }
+
+
     
     public function viewTakenOrder(Request $request)
     {
@@ -82,11 +113,12 @@ class WaiterController extends Controller
     }
     
     public function searchDate(Request $request){
-        $waiter = User::where('name',Auth::user()->name)->first();
-        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->where('waiter',$waiterName)->get();
+        $waiter = User::where('name', Auth::user()->name)->first();
+        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->where('waiter',$waiter -> name)->get();
         
-        return view('waiter.viewOrder',compact('waiter','orders'));
+        return view('waiter.viewOrder', compact('waiter', 'orders'));
     }
+    
     
     public function viewFoodlist($orderID)
     {
@@ -148,7 +180,7 @@ class WaiterController extends Controller
         $work -> waiter = Auth::user()->name;
         $work -> save();
         
-        event(new Refresh2());
+        event(new WaiterResponse($work -> table_id));
         return back();
         
     }

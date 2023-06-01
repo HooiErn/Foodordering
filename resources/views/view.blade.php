@@ -36,7 +36,7 @@
     });
 </script>
  <br>
- <center><h4><b> <  MyCart 我的购物单  > </b></h4></center>
+ <center><h4><b>  MyCart 我的购物单 <i class="fa fa-shopping-cart" style="font-size:32px;color:red"></i> </b></h4></center>
 
 <div class="row">
     <div class="col-md-12">

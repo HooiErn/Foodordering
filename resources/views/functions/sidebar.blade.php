@@ -16,7 +16,7 @@
     <li class="nav-item active">
         <a class="nav-link" href="{{ url('admin/dashboard') }}">
             <i class="fas fa-fw fa-tachometer-alt"></i>
-            <span>Dashboard主页</span>
+            <span>Dashboard 主页</span>
         </a>
     </li>
     
@@ -35,7 +35,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/food') }}">
             <i class="fas fa-fw fa-chart-area"></i>
-            <span>Food食物</span>
+            <span>Food 食物</span>
         </a>
     </li>
 
@@ -43,7 +43,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/table') }}">
             <i class="fas fa-fw fa-table"></i>
-            <span>Table桌子</span>
+            <span>Table 桌子</span>
         </a>
     </li>
     
@@ -51,7 +51,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/action-list') }}">
             <i class="fas fa-fw fa-list"></i>
-            <span>Action List行动表</span>
+            <span>Action List 行动表</span>
         </a>
     </li>
 
@@ -59,7 +59,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/takenOrder') }}">
             <i class="fas fa-fw fa-list"></i>
-            <span>Current Order List当前订单列表</span>
+            <span>Current Order List 当前订单列表</span>
         </a>
     </li>
 
@@ -67,7 +67,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/waiter') }}">
            <i class="fas fa-fw fa-user"></i>
-            <span>Waiters服务员</span>
+            <span>Waiters 服务员</span>
         </a>
     </li>
     
@@ -83,7 +83,7 @@
     <li class="nav-item">
         <a class="nav-link" href="{{ url('/logout') }}">
             <i class="fa fa-sign-out"></i>
-            <span>Logout登出</span>
+            <span>Logout 登出</span>
         </a>
     </li>
 

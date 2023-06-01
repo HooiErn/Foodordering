@@ -46,7 +46,9 @@
        <br><br><br>
        <center> <h3>Welcome to XXX Restaurant </h3> </center>
        <center> <h3>欢迎来到XXX餐馆</h3> </center>
-       <br><br><br>
+       <br>
+       <center><h3>Table {{$table -> table_id}}</h3></center>
+       <br>
        <center> <h5>Please select your payment method :</h5> </center>
        <center> <h5>请选择您的付款方式 :</h5> </center>
         <div class="top">

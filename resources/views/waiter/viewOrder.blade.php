@@ -43,7 +43,7 @@
             <input type="date" class="form-control form-control-line" id="to" name="to" required>
         </div>
         <div class="col-sm-12 d-flex mt-2">
-            <a href="#" onclick="{{ url('waiter/order') }}" class="btn-sm btn-danger">Display All</a>
+           <a href="{{ route('waiter.order') }}" onclick="window.location.href = '{{ route('waiter.order') }}';" class="btn-sm btn-danger">Display All</a>
             &nbsp;&nbsp;&nbsp;
             <button type="submit" class="btn-sm btn-primary "><i class="fas fa-search"></i></button>
         </div>
@@ -72,7 +72,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                @foreach($orders ->where("is_paid",1) as $order)
+               @foreach($orders ->where("status",1) as $order)
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td><a href="{{ url('waiter/viewFoodList',['orderID' => $order -> orderID]) }}" id="orderID">{{$order -> orderID}} </a></td>
@@ -97,6 +97,7 @@
         
     </div>
 </div>
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script scr="text/javascript">
