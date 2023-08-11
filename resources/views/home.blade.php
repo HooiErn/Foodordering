@@ -11,7 +11,20 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ asset('css/menu.css') }}">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6TPCFRQFYP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-6TPCFRQFYP');
+    </script>
    <style>
+   .body{
+        background-image: url("https://cdn.wallpapersafari.com/47/46/IOFTRN.jpg");
+    }
+   
    .navbar{
        padding: 0.2rem 0.2rem !important;
        max-height:80px;
@@ -93,18 +106,35 @@
             channel3.bind('menu-refresh', function() {
                 window.location.reload();
             });
-            </script>
+            
+            var channel4 = pusher.subscribe('waiterResponse-channel');
+            channel4.bind('waiter-response', function(data) {
+                var table = document.getElementById("table_id").value;
+                if(data.table == table){
+                    alert("Waiter is responsed to your call and on his way.");
+                }
+            });
+            
+            var channel5 = pusher.subscribe('multipleAddItem-channel');
+            channel5.bind('multiple-add-item', function(data) {
+                var table = document.getElementById("table_id").value;
+                if(data.table == table){
+                    alert("This item is already in the cart.");
+                    window.location.reload();
+                }
+            });
+        </script>
 
   </head>
 
   <body id="page-top">
+        @include('functions.toastr')
         @if($table -> payment == null)
             <script>
                 window.location.href = "/method/" + {{$table -> table_id}};
             </script>
         @endif
         <input type="hidden" id="table_id" value="{{$table -> table_id}}">
-    
         <!-- Navbar -->
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
           <div class="container">
@@ -125,7 +155,6 @@
             </div>
           </div>
         </nav>
-            
         <div class="container mb-5">
             <div class="row mt-1 mb-1">
                 <div class="col-12 d-flex justify-content-center" style="margin-top:5px;">
@@ -137,8 +166,11 @@
                 </div>
                  <br>
                  <div class="col-12 d-flex justify-content-center" style="margin-top:5px;">
-                    <a href="{{ url('lastOrder', ['id' => $table -> table_id]) }}" class="btn btn-primary rounded-pill ml-2" style="font-size:small;">View Previous Order 查看上个订单</a>
+                    <a href="{{ url('lastOrder', ['id' => $table -> table_id]) }}" class="btn btn-warning rounded-pill ml-2" style="font-size:small;">View previous order 查看上个订单</a>
                 </div>
+                
+               
+                
             </div>
             <div class="row">
             @foreach($menu as $categoryName => $foods)
@@ -179,14 +211,14 @@
                                            <h3 class="title" style="font-size: 20px; font-weight: bold;">Select Quantity 选择数量</h3>
                                         </div>
                                         <div class="input-group quantity">
-                                            <div class="input-group-prepend decrement-btn changeQuantity">
-                                                <span class="input-group-text">-</span>
-                                            </div>
-                                            <input type="hidden" class="price-input form-control" name="price" id="price" value="{{$food -> price}}">
-                                            <input type="number" class="qty-input form-control text-center" name="quantity" id="quantity" value="1">
-                                            <div class="input-group-append increment-btn changeQuantity">
-                                                <span class="input-group-text">+</span>
-                                            </div>
+                                            <!--<div class="input-group-prepend decrement-btn changeQuantity">-->
+                                            <!--    <span class="input-group-text">-</span>-->
+                                            <!--</div>-->
+                                            <input type="hidden" class="price-input form-control" name="price" id="price" value="{{$food->price}}">
+                                            <input type="number" class="qty-input form-control text-center" name="quantity" id="quantity" value="1" min="1" @if($food->stock !== null) max="{{$food->stock}}"@endif>
+                                            <!--<div class="input-group-append increment-btn changeQuantity">-->
+                                            <!--    <span class="input-group-text">+</span>-->
+                                            <!--</div>-->
                                         </div>
                                         
                                         @if(count($food -> foodSelect))
@@ -198,7 +230,7 @@
                                                        <center> <strong>{{ $foodSelect->name }}</strong> </center>
                                                         @foreach($foodSelect->foodOption as $foodOption)
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}">
+                                                                <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}" {{ ($foodOption->name == 'Dive In' || $foodOption->name == 'Take Away') ? 'required' : '' }}>
                                                                 <label class="form-check-label">
                                                                     {{ $foodOption->name }}
                                                                 </label>
@@ -278,28 +310,28 @@
         <script>
             $(document).ready(function () {
         
-                $('.increment-btn').click(function (e) {
-                    e.preventDefault();
-                    var incre_value = $(this).parents('.quantity').find('.qty-input').val();
-                    var value = parseInt(incre_value, 10);
-                    value = isNaN(value) ? 0 : value;
-                    if(value<10){
-                        value++;
-                        $(this).parents('.quantity').find('.qty-input').val(value);
-                    }
-        
-                });
-        
-                $('.decrement-btn').click(function (e) {
-                    e.preventDefault();
-                    var decre_value = $(this).parents('.quantity').find('.qty-input').val();
-                    var value = parseInt(decre_value, 10);
-                    value = isNaN(value) ? 0 : value;
-                    if(value>1){
-                        value--;
-                        $(this).parents('.quantity').find('.qty-input').val(value);
-                    }
-                });
+                // $('.increment-btn').click(function (e) {
+                //     e.preventDefault();
+                //     var incre_value = $(this).siblings('.qty-input').val(); // Use .siblings() to find the quantity input
+                //     var value = parseInt(incre_value, 10);
+                //     value = isNaN(value) ? 0 : value;
+                //     if (value < 10) {
+                //         value++;
+                //     }
+                //     $(this).siblings('.qty-input').val(value); // Use .siblings() to update the quantity input
+                // });
+                
+                // $('.decrement-btn').click(function (e) {
+                //     e.preventDefault();
+                //     var decre_value = $(this).siblings('.qty-input').val(); // Use .siblings() to find the quantity input
+                //     var value = parseInt(decre_value, 10);
+                //     value = isNaN(value) ? 0 : value;
+                //     if (value > 1) {
+                //         value--;
+                //     }
+                //     $(this).siblings('.qty-input').val(value); // Use .siblings() to update the quantity input
+                // });
+
                 
                 var table = document.getElementById("table_id").value;
                 if (window.location.href.indexOf('_token=') !== -1) {

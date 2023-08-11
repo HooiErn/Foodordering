@@ -1,108 +1,81 @@
-<style>
-.ticket {
-  background-color: lightgrey;
-  width: 140px;
-  border: 5px solid black;
-  padding: 50px;
-  margin: 20px;
-}
-
-
-</style>
-
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="ie=edge">
-        <link rel="stylesheet" href="{{asset('css/style.css')}}">
-        <title>Receipt</title>
-    </head>
-    <body>
-           <br><br><br><br><br><br>
-       
-        <div id="invoice-POS">
-            <div class="ticket">
-                @if($order -> payment_method == 2)
-                    <div id="extra">
-                        <div>
-                            &nbsp;&nbsp;&nbsp; 
-                            <img src="{{ asset('images/')}}/{{$qrcode -> qrcode}}" style="width:70px; height:70px; float:right;">
-                            <p style="color:blue;  float:right;">Pay Here
-                        </div>
-                    </div>
-                @endif
-       
-           &nbsp;&nbsp;&nbsp; <p class="centered">RECEIPT</p>
-              
-            <table>
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th class="quantity">Qty</th>
-                        <th class="name">Name</th>
-                        <th class="price">Price per unit(RM)</th>
-                        <th class="price">Subtotal(RM)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($carts as $cart)
-                    <tr>
-                        <td>{{$loop->iteration}}</td>
-                        <td class="quantity" style="text-align:center;">{{$cart -> quantity}}</td>
-                        <td class="name">{{$cart -> fName}}</td>
-                        <td class="price"> {{number_format($cart -> fPrice,2)}}</td>
-                        <td class="price">{{number_format($cart->quantity * $cart->fPrice,2)}}</td>
-                    </tr>
-                    @endforeach
-                    
-                    <tr>
-                        <td></td>
-                        <td class="quantity"></td>
-                        <td class="name"></td>
-                        <td class="text-right"><b>Total:</b></td>
-                        <td><b>{{number_format($order->amount,2)}}</b></td>
-                    </tr>
-                    
-                    <tr>
-                        <td class="text-right"><b>Pay</b></td>
-                        <td class="text-right"><b>By:</b></td>
-                        @if($order -> payment_method == 1)
-                        <td class="text-right" style="width:30%"><b><span>Cash</span></b></td>
-                        @elseif($order -> payment_method ==2)
-                        <td class="text-right" style="width:30%"><b><span>Touch 'n Go</span></b></td>
-                        @endif
-                    </tr>
-                </tbody>
-            </table>
-            <br>
-            <center>
-        <div>
-        {{QrCode::generate($order->orderID)}}
-        </div>
-        <center>
-            <p class="centered">Thanks for your purchase!
-        </div>
-            <br>
-            
-           
-           
-       
-        <script src="{{ asset('js/script.js') }}"></script>
-        </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script>
-            $(document).ready(function(){
-                let number = localStorage.getItem("paymentMethod");
-                if(number == 1){
-                    $("span[id='paymentName']").html("Cash");
-                }
-                if(number == 2){
-                    $("span[id='paymentName']").html("Touch 'n Go");
-                }
-            })
-
-        </script>
-    </body>
+<html>
+<head>
+    <title>Receipt</title>
+       <style>
+        @page {
+            size: 72mm 100%; /* Adjusted paper size */
+            margin: 0;
+        }
+        body {
+            margin: 0;
+            padding: 0; /* Adjusted padding to remove extra space */
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 5mm; /* Add margin to center the heading */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5mm; /* Add margin to move the table down */
+        }
+        th, td {
+            padding: 5px;
+            border-bottom: 1px solid #ccc;
+        }
+        th {
+            text-align: left;
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Receipt</h1>
+    <p>Order ID: {{ $order->orderID }}</p>
+    
+    <table>
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th>Quantity</th>
+                <th>Price</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($carts as $cart)
+            <tr>
+                <td>{{ $cart->name }}</td>
+                <td>{{ $cart->quantity }}</td>
+             <td class="addon">
+                            @if(!empty($cart->addon))
+                                @php
+                                    $addons = json_decode($cart->addon, true);
+                                @endphp
+                                <ul style="list-style-type: disc; padding-left: 10px;">
+                                    @foreach($addons as $title => $addon)
+                                        @if($addon !== null)
+                                            <li style="font-size:9px;">{{$addon}}</li>
+                                        @endif
+                                    @endforeach
+                                </ul>   
+                            @endif
+                        </td>
+                <td>{{ $cart->quantity * $cart->price }}</td>
+            </tr>
+            @endforeach
+        </tbody>
+        <tfoot>
+            <tr class="total">
+                <td colspan="2">Total:</td>
+                <td colspan="2">{{ $order -> amount }}</td>
+            </tr>
+        </tfoot>
+    </table>
+</body>
 </html>

@@ -26,6 +26,15 @@
         <meta property="og:description" content="Preview Bootstrap snippets. simple invoice receipt email template. Copy and paste the html, css and js code for save time, build your app faster and responsive">
         <meta name="msvalidate.01" content="23285BE3183727A550D31CAE95A790AB" /> 
         <script src="/cache-js/cache-1635427806-97135bbb13d92c11d6b2a92f6a36685a.js" type="text/javascript"></script> 
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-6TPCFRQFYP"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+        
+            gtag('config', 'G-6TPCFRQFYP');
+        </script>
     <body>
         <div id="snippetContent">
             <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
@@ -44,8 +53,9 @@
                                                 <table width="100%" cellpadding="0" cellspacing="0">
                                                     <tbody>
                                                         <tr>
-                                                            <td class="content-block"><h2>Successfully Confirmed order </h2>
-                                                            <center><h5>Pay By: {{ $order->payment_method == 1 ? 'Cash' : 'Touch n Go' }}</h5></center>
+                                                            <td class="content-block"><h2>Successfully Confirmed order <br> 成功确认订单 </h2>
+                                                            <center><h5>Pay By: {{ $order->payment_method == 1 ? 'Cash 现金' : 'Touch n Go 线上付款' }}</h5></center>
+                                                            <center><h5>Selection: {{ $order->selection == 1 ? 'Dive In 堂食' : 'Take Away 外带' }}</h5></center>
                                                             </td>
                                                         </tr>
                                                         <tr>
@@ -67,7 +77,7 @@
                                                                                                         @php
                                                                                                             $addons = json_decode($cart->addon, true);
                                                                                                         @endphp
-                                                                                                        <ul style="list-style-type: none; margin: 0; padding: 0;">
+                                                                                                        <ul style="list-style-type: disc; margin: 0;">
                                                                                                             @foreach($addons as $title => $addon)
                                                                                                                 @if($addon !== null)
                                                                                                                     <li>{{$title}} - {{$addon}}</li>
@@ -93,7 +103,11 @@
                                                             </td>
                                                         </tr>
                                                         <tr>
-                                                            <td><a href="{{ url('method',['id' => $order -> table_id]) }}" class="btn btn-primary btn-sm">Back  To Main Page</a></td>
+                                                            @if(!Auth::check() || Auth::user()->isKitchen() || Auth::user()->isAdmin())
+                                                            <td><a href="{{ url('method',['id' => $order -> table_id]) }}" class="btn btn-primary btn-sm">Back To Main Page <br> 返回首页</a></td>
+                                                            @elseif(Auth::user()->isWaiter())
+                                                            <td><a href="{{url('waiter/placeOrder')}}" class="btn btn-primary btn-sm">Back <br> 返回</a></td>
+                                                            @endif
                                                         </tr>
                                                     </tbody>
                                                 </table>

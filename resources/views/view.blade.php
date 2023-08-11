@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 
-<title>View Cart查看购物车</title>
+<title>View Cart 查看购物车</title>
 
 <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
 <script>
@@ -35,8 +35,10 @@
         }
     });
 </script>
+
+
  <br>
- <center><h4><b>  MyCart 我的购物单 <i class="fa fa-shopping-cart" style="font-size:32px;color:red"></i> </b></h4></center>
+ <center><h4 style="background-color:LightGray;"><b>  MyCart 我的购物单 </b></h4></center>
 
 <div class="row">
     <div class="col-md-12">
@@ -47,67 +49,99 @@
             <div class="col-sm-auto">
                 <div class="table-responsive">
                     <table class="table tabl-hover">
-                        <thead>
-                            <tr>
-                                <td>Image 图片</td>
-                                <td>Name 名字</td>
-                                <td>Quantity 数量</td>
-                                <td>Addon 附加</td>
-                                <td>Grand Price 共计</td>
-                                <td></td>
-                            </tr>
-                        </thead>
+                        
                         <tbody>
                             @foreach($details ->where('orderID','=',null) as $detail)
-                            <input type="hidden" name="cartID" id="cartID" value="{{$detail -> id}}">
-                            <tr>
-                                <td><img src="{{ asset('images')}}/{{$detail->image}}" alt="" width="50px" height="50px"></td>
-                
-                                 <td>{{$detail -> name}}</td>
-                                 <td>{{$detail -> quantity}}</td>
-                              @if(!empty($detail->addon))
-                                 @php
-                                    $addons = json_decode($detail->addon, true);
-                                 @endphp
-                                
-                                    @foreach($addons as $title => $addon)
-                                        @if($addon !== null)
-                                            <td>{{$title}} - {{$addon}}</td>
-                                              @else
-                                            <td>-</td>
-                                     @endif
-                                    @endforeach
+                                <input type="hidden" name="cartID" id="cartID" value="{{$detail -> id}}">
+                                <tr>
+                                    <td><img src="{{ asset('images')}}/{{$detail->image}}" alt="" width="50px" height="50px"></td>
+                    
+                                   <td style="width:90%">{{$detail -> name}}
+                                    <button class="button" style="background-color: yellow; border-radius: 50%;"> x{{$detail -> quantity}}</button>
+                                    <br>
+                                    <span style="color:red;">RM {{number_format($detail -> quantity * $detail -> price,2)}}</span>
+                                    <br>
+                                    <b>
+                                     @if(!empty($detail->addon))
+                                        @php
+                                            $addons = json_decode($detail->addon, true);
+                                        @endphp
                                     
-                               @endif
-                                @if(empty($detail->addon))
-                                    <td></td>
+                                        @foreach($addons as $title => $addon)
+                                            @if($addon !== null)
+                                                {{$title}} - {{$addon}}
+                                                    @else
+                                                -
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                    @if  (empty($detail->addon))
+                                    @endif </b></td>
                                     
-                               @endif
-                                 <td><span>{{number_format($detail -> quantity * $detail -> price,2)}}</span>
-                                    <input type="hidden" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/></td>
-                                <td><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food? 您确定要删除该食物吗?')"><i class="fa fa-trash"></i></a></td>
-                               
-                            </tr>
+                                    <td style="width:10%"><center>
+                                        <input type="hidden" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/>
+                                        <center><a href="{{ url('deleteCart',['id' =>$detail -> id])}}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure to delete this food? 您确定要删除该食物吗?')"><i class="fa fa-trash"></i></a></center></td>
+                                    
+                                   
+                                </tr>
                             @endforeach
                             
                             <tr>
-                                 <td class="text-right" colspan="5"><b>Sub Total 共计 :</b></td>
-                                <td><b><span name="total2" id="total2"></span></b></td>
+                                 <td class="text-center" colspan="5"><b>Sub Total 共计 : RM
+                                <span name="total2" id="total2"></span></b></td>
                                <input type="hidden" name="total" id="total" readonly class="form-control-plaintext">
                             </tr>
                           
-                            <tr>
-                                <td class="text-left" colspan="5">Pay By 付款 :
-                                <span id="paymentName"></span>
-                                <input type="hidden" name="payment_method" id="paymentMethod" class="form-control" value="{{$table -> payment}}"></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
             @if(count($details -> where('orderID',null)) > 0)
             <div class="d-flex align-items-center justify-content-center">
-                <button class="btn btn-success" type="submit" onclick="return confirm('Are you sure to place order now? 您确定要现在下单吗?')">Confirm Order 确定下单 &nbsp; &#10003;</button>
+                
+                <!-- Button trigger modal -->
+<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" style="border-radius: 2px;">
+  <i class="fa fa-info"></i>
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel"> Details 详细信息</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <td class="text-left" colspan="5">Pay By 付款 :
+                                <span id="paymentName">
+                                    @if($table -> payment == 1)
+                                        Cash 现金
+                                    @elseif($table -> payment == 2)
+                                        Touch 'n Go 线上付款
+                                    @endif
+                                </span>
+                                <br>
+                                <input type="hidden" name="payment_method" id="paymentMethod" class="form-control" value="{{$table -> payment}}">
+                                 
+                                    <span id="selection">
+                                        @if($table -> selection == 1)
+                                            Selection 选择: Dive In 堂食
+                                        @elseif($table -> selection == 2)
+                                           Selection 选择: Take Away 外带
+                                        @endif
+                                    </span>
+                                    <input type="hidden" name="selection" id="selection" class="form-control" value="{{$table -> selection}}">
+                                </td>
+      </div>
+      
+    </div>
+  </div>
+</div>
+    &nbsp;
+                <button class="btn btn-success" type="submit" onclick="return confirm('Are you sure to place order now? 您确定要现在下单吗?')">Confirm Order 确定下单</button>
             </div>
             @endif
         </form>
@@ -124,17 +158,10 @@
     $("document").ready(function () {
         
         var arr = document.getElementsByName('grandprice');
-        var number = document.getElementById("paymentMethod").value;
         var tot=0.00;
         for(var i=0;i<arr.length;i++){
             if(parseFloat(arr[i].value))
                 tot += parseFloat(arr[i].value);
-        }
-        if(number == 1){
-            $("span[id='paymentName']").html("Cash");
-        }
-        if(number == 2){
-            $("span[id='paymentName']").html("Touch 'n Go");
         }
         document.getElementById('total').value = tot.toFixed(2);
         document.getElementById('total2').innerHTML = tot.toFixed(2);

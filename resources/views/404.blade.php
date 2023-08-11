@@ -8,6 +8,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>404 Error Page</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-6TPCFRQFYP"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+        
+            gtag('config', 'G-6TPCFRQFYP');
+        </script>
     </head>
     <body>
         <div class="d-flex align-items-center justify-content-center vh-100">

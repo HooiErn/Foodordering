@@ -6,7 +6,15 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <title itemprop="name">Last Order</title>
         <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-6TPCFRQFYP"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
         
+            gtag('config', 'G-6TPCFRQFYP');
+        </script>
     </head>
     <body>
         <div id="snippetContent">
@@ -33,7 +41,7 @@
                                                                                     $index = $loop->index;
                                                                                     $numberWord = isset($numberWords[$index]) ? $numberWords[$index] : ($index + 1) . 'th';
                                                                                 @endphp
-                                                                                <h2>< Last {{ $numberWord }} Order ></h2>
+                                                                                <h2> Last {{ $numberWord }} Order </h2>
                                                                                 <center><h5>Pay By: {{ $data['order']->payment_method == 1 ? 'Cash' : 'Touch n Go' }}</h5> </center>
                                                                             </td>
                                                                         </tr>
@@ -61,7 +69,7 @@
                                                                                                                     @php
                                                                                                                         $addons = json_decode($cart->addon, true);
                                                                                                                     @endphp
-                                                                                                                    <ul style="list-style-type: none; margin: 0; padding: 0;">
+                                                                                                                    <ul style="list-style-type: disc; margin: 0;">
                                                                                                                         @foreach($addons as $title => $addon)
                                                                                                                             @if($addon !== null)
                                                                                                                                 <li>{{ $title }} - {{ $addon }}</li>

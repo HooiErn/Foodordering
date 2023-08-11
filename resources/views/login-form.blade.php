@@ -14,6 +14,15 @@
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
         <link href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.css" rel="stylesheet" type='text/css'>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-6TPCFRQFYP"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+        
+            gtag('config', 'G-6TPCFRQFYP');
+        </script>
         <style>
             body {
                 background-color: #f8f9fa; /* Specify your desired color code */
@@ -54,6 +63,8 @@
     <body>
         <!-- Toastr -->
         @include('functions.toastr')
+        
+        <!--<a href="{{ url('test') }}" class="btn btn-success">Print</a>-->
 
         <div class="container bg-light">
             <div class="row">

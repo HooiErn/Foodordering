@@ -47,7 +47,10 @@
             <div class="col-sm-3">
                 <input type="date" class="form-control-sm input-sm" id="to" name="to" required>
             </div>
-            <button type="submit" class="btn-sm btn-primary " name="search" title="Search"><i class="fas fa-search"></i></button>
+            <div>
+                <a href="{{ url('/viewOrder', ['name' => $waiter -> name]) }}" class="btn btn-sm btn-danger" onclick="clearLocalStorage()" style="text-decoration: none;">Default</a>
+                <button type="submit" class="btn btn-sm btn-primary" name="search" title="Search"><i class="fas fa-search"></i></button>
+            </div>  
         </div>  
 </form>
 
@@ -118,26 +121,33 @@
         document.getElementById('cashTotal').innerHTML = cashTot.toFixed(2);
         var total = parseFloat(document.getElementById('cashTotal').innerHTML) + parseFloat(document.getElementById('touchTotal').innerHTML);
         document.getElementById('total').innerHTML = total.toFixed(2);
-        
-        $('input[name=from]').change(function() {
-            var fromDate = $(this).val();
-            localStorage.setItem("fromDate", fromDate);
-        });
-        
-        $('input[name=to]').change(function() {
-            var toDate = $(this).val();
-            localStorage.setItem("toDate", toDate);
-        });
-        
-        if(localStorage.getItem("fromDate")){
-            $('input[name=from]').val(localStorage.getItem("fromDate"));
-        }
-        
-        if(localStorage.getItem("toDate")){
-            $('input[name=to]').val(localStorage.getItem("toDate"));
-        }
     });
 
+</script>
+<script>
+    function clearLocalStorage() {
+        localStorage.removeItem("fromDate");
+        localStorage.removeItem("toDate");
+    }
+
+    $(document).ready(function() {
+        // Get the default dates from localStorage or set them to today's date
+        var fromDate = localStorage.getItem("fromDate") || new Date().toISOString().split('T')[0];
+        var toDate = localStorage.getItem("toDate") || new Date().toISOString().split('T')[0];
+    
+        // Set the values of the input fields
+        $('input[name=from]').val(fromDate);
+        $('input[name=to]').val(toDate);
+    
+        // Update localStorage when the input values change
+        $('input[name=from]').change(function() {
+            localStorage.setItem("fromDate", $(this).val());
+        });
+    
+        $('input[name=to]').change(function() {
+            localStorage.setItem("toDate", $(this).val());
+        });
+    });
 </script>
 
 @endsection

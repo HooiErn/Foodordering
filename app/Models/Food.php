@@ -14,6 +14,7 @@ class Food extends Model
         'name',
         'image',
         'available',
+        'stock',
         'price',
         'categoryID',
     ];

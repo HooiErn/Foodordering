@@ -16,6 +16,7 @@ class Order extends Model
         'status',
         'waiter',
         'payment_method',
+        'selection',
         'done_prepare_at',
         'serve_time',
     ];

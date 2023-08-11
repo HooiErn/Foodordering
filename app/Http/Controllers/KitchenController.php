@@ -87,12 +87,34 @@ class KitchenController extends Controller
     
     public function donePreparing($id){
         $order = Order::where('id', $id)->first();
-        event(new DonePrepare($order -> table_id));
+        if($order -> waiter == null){
+            event(new DonePrepare($order -> table_id));
+        }
+        else{
+            event(new DonePrepare($order -> table_id, $order -> waiter, $order -> orderID));
+        }
         event(new AdminRefresh());
         $order -> done_prepare_at = Carbon::now();
         $order -> status = 1;
         $order -> save();
         
         return redirect()->back();
+    }
+    
+    public function printReceipt($id){
+        $qrcode = DB::table('qrcodes')->first();
+        $order = Order::where('orderID',$id)->first();
+
+        if(!$order){
+            return view('404');
+        }
+
+        $carts = DB::table('carts')
+                ->join('food as detail','carts.food_id','detail.id')
+                ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+                ->where('carts.orderID', $order -> orderID)
+                ->get();
+    
+        return view('kitchen.printReceipt',compact('qrcode','carts','order'));
     }
 }

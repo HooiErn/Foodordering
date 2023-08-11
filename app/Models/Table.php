@@ -12,6 +12,7 @@ class Table extends Model
     protected $fillable =[
         'table_id',
         'payment',
+        'selection',
         'last_active_at',
     ];
 }

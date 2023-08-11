@@ -15,4 +15,8 @@ class WaiterCart extends Model
         'quantity',
         'orderID',
     ];
+    
+    public function food(){
+        return $this->belongsTo(Food::class, 'food_id');
+    }
 }

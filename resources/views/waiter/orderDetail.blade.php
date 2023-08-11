@@ -33,83 +33,96 @@
                 <tbody>
                     <tr>
                         <td></td>
-                        <td class="container" width="600">
-                            <div class="content">
-                                <table class="main" width="100%" cellpadding="0" cellspacing="0">
-                                    <tbody>
-                                        <tr>
-                                            <td class="content-wrap aligncenter">
-                                                <table width="100%" cellpadding="0" cellspacing="0">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td class="content-block"><h2>{{$msg}}</h2></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td class="content-block">
-                                                                <table class="invoice">
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <td>Order ID #{{$order -> orderID}}<br>{{ \Carbon\Carbon::parse($order -> created_at)->format('F d Y') }}<br>Table {{$order -> table_id}}</td>
-                                                                        </tr>
-                                                                        <tr>
-                                                                            <td>
-                                                                                <table class="invoice-items" cellpadding="0" cellspacing="0">
-                                                                                    <tbody>
-                                                                                        @foreach($carts as $cart)
-                                                                                        <tr>
-                                                                                            <td>{{$cart -> name}} <span class="text-info">x{{$cart -> quantity}}</span>
-                                                                                                @if(!empty($cart->addon))
-                                                                                                    @php
-                                                                                                        $addons = json_decode($cart->addon, true);
-                                                                                                    @endphp
-                                                                                                    <ul style="list-style-type: none; margin: 0; padding: 0;">
-                                                                                                        @foreach($addons as $title => $addon)
-                                                                                                            @if($addon !== null)
-                                                                                                                <li>{{$title}} - {{$addon}}</li>
-                                                                                                            @endif
-                                                                                                        @endforeach
-                                                                                                    </ul>   
-                                                                                                @endif
-                                                                                            </td>
-                                                                                            <td class="alignright">RM {{number_format($cart -> price * $cart -> quantity,2)}}</td>
-                                                                                        </tr>
-                                                                                        @endforeach
-                                                                                        <tr class="total">
-                                                                                            <td class="alignright" width="80%">Total</td>
-                                                                                            <td class="alignright">RM {{number_format($order -> amount,2)}}</td>
-                                                                                        </tr>
-                                                                                        <tr class="pay_by">
-                                                                                            <td>Pay By: </td>
-                                                                                            <td class="alignright">{{ $order->payment_method == 1 ? 'Cash' : 'Touch n Go' }}</td>
-                                                                                        </tr>
-                                                                                    </tbody>
-                                                                                </table>
-                                                                            </td>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </td>
-                                                        </tr>
-                                                        @if($order -> payment_method == 2)
+                        @foreach($orders as $order)
+                            <td class="container" width="600">
+                                <div class="content">
+                                    <table class="main" width="100%" cellpadding="0" cellspacing="0">
+                                        <tbody>
+                                            <tr>
+                                                <td class="content-wrap aligncenter">
+                                                    <table width="100%" cellpadding="0" cellspacing="0">
+                                                        <tbody>
                                                             <tr>
-                                                                <td class="content-block"><img src="{{ asset('images/')}}/{{$qrcode -> qrcode}}"></td>
+                                                                <td class="content-block">
+                                                                    @if(isset($msg) && $msg[$order->orderID])
+                                                                        <h2>{{$msg[$order->orderID]}}</h2>
+                                                                    @endif
+                                                                    @if(isset($msg2) && $msg2[$order->orderID])
+                                                                        <h2>{{$msg2[$order->orderID]}}</h2>
+                                                                    @endif
+                                                                </td>
                                                             </tr>
-                                                        @endif
-                                                        <tr>
-                                                            <td class="content-block"><a class="btn btn-info btn-block" href="{{ url('waiter/work') }}" style="text-decoration: none;" id="close">Close</a> </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
+                                                            <tr>
+                                                                <td class="content-block">
+                                                                    <table class="invoice">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <td>Order ID #{{$order->orderID}}<br>{{\Carbon\Carbon::parse($order->created_at)->format('F d Y')}}<br>Table {{$order->table_id}}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <td>
+                                                                                    <table class="invoice-items" cellpadding="0" cellspacing="0">
+                                                                                        <tbody>
+                                                                                            @foreach($carts->where('orderID', $order->orderID) as $cart)
+                                                                                                <tr>
+                                                                                                    <td>{{$cart->name}} <span class="text-info">x{{$cart->quantity}}</span>
+                                                                                                        @if(!empty($cart->addon))
+                                                                                                            @php
+                                                                                                                $addons = json_decode($cart->addon, true);
+                                                                                                            @endphp
+                                                                                                            <ul style="list-style-type: disc; margin: 0; padding: 0;">
+                                                                                                                @foreach($addons as $title => $addon)
+                                                                                                                    @if($addon !== null)
+                                                                                                                        <li>{{$title}} - {{$addon}}</li>
+                                                                                                                    @endif
+                                                                                                                @endforeach
+                                                                                                            </ul>   
+                                                                                                        @endif
+                                                                                                    </td>
+                                                                                                    <td class="alignright">RM {{number_format($cart->price * $cart->quantity, 2)}}</td>
+                                                                                                </tr>
+                                                                                            @endforeach
+                                                                                            <tr class="total">
+                                                                                                <td class="alignright" width="80%">Total</td>
+                                                                                                <td class="alignright">RM {{number_format($order->amount, 2)}}</td>
+                                                                                            </tr>
+                                                                                            <tr class="pay_by">
+                                                                                                <td>Pay By: </td>
+                                                                                                <td class="alignright">{{ $order->payment_method == 1 ? 'Cash 现金' : 'Touch n Go 线上付款' }}</td>
+                                                                                            </tr>
+                                                                                            <tr class="selection">
+                                                                                                <td>Selection: </td>
+                                                                                                <td class="alignright">{{ $order->selection == 1 ? 'Dive In 堂食' : 'Take Away 外带' }}</td>
+                                                                                            </tr>
+                                                                                        </tbody>
+                                                                                    </table>
+                                                                                </td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </td>
+                                                            </tr>
+                                                            @if($order->payment_method == 2)
+                                                                <tr>
+                                                                    <td class="content-block"><img src="{{ asset('images/')}}/{{$qrcode->qrcode}}"></td>
+                                                                </tr>
+                                                            @endif
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        @endforeach
                         <td></td>
                     </tr>
                 </tbody>
             </table>
+            <div class="d-flex justify-content-center align-items-center mb-4">
+                <a class="btn btn-info pr-4 pl-4" href="{{ url('waiter/work') }}" style="text-decoration: none;" id="close">Close <br> 关闭</a>
+            </div>
         <style type="text/css">/*<![CDATA[*//* -------------------------------------
     GLOBAL
     A very basic CSS reset

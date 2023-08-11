@@ -42,15 +42,31 @@ class WaiterController extends Controller
         return view('waiter/scan');
     }
     
+    public function onload(Request $request){
+        $table_id = $request -> table_id;
+        
+        WaiterCart::where('table_id', $table_id)->where('orderID', null)->delete();
+        
+        return response()->json([
+            'message' => "Onload Function Success",
+        ]);
+    }
+    
     public function orderDetail(){
         $orders = Order::all();
         
         // Load carts using Eloquent relationships
-        $carts = DB::table('carts')
-                ->join('food as detail','carts.food_id','detail.id')
-                ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
-                ->where('carts.orderID', $order -> orderID)
-                ->get();
+        $item1 = DB::table('carts')
+        ->join('food as detail','carts.food_id','detail.id')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $carts = $item1 -> merge($item2);
         
         $qrcode = DB::table('qrcodes')->first();
         
@@ -69,12 +85,17 @@ class WaiterController extends Controller
             return view('404');
         }
     
-        // Load carts using Eloquent relationships
-        $carts = DB::table('carts')
-            ->join('food as detail', 'carts.food_id', 'detail.id')
-            ->select('carts.*', 'detail.name as name', 'detail.image as image', 'detail.price as price')
-            ->whereIn('carts.orderID', $orderIDs)
-            ->get();
+        $item1 = DB::table('carts')
+        ->join('food as detail','carts.food_id','detail.id')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $carts = $item1 -> merge($item2);
     
         $qrcode = DB::table('qrcodes')->first();
     
@@ -84,6 +105,7 @@ class WaiterController extends Controller
         foreach ($orders as $order) {
             if ($order->waiter !== null) {
                 $msg[$order->orderID] = "This order has been taken";
+                $msg2[$order->orderID] = "这订单已被拿取";
             } else {
                 $waiter = Auth::user()->name;
                 $serveTime = Carbon::now();
@@ -96,10 +118,11 @@ class WaiterController extends Controller
                 event(new AdminRefresh());
     
                 $msg[$order->orderID] = "Successfully Take Order";
+                $msg2[$order->orderID] = "成功拿取订单";
             }
         }
     
-        return view('waiter/orderDetail', compact('orders', 'carts', 'qrcode', 'msg'));
+        return view('waiter/orderDetail', compact('orders', 'carts', 'qrcode', 'msg', 'msg2'));
     }
 
 
@@ -107,7 +130,7 @@ class WaiterController extends Controller
     public function viewTakenOrder(Request $request)
     {
         $waiter = User::where('name',Auth::user()->name)->first();
-        $orders = Order::where('waiter',Auth::user()->name)->get();
+        $orders = Order::where('waiter',Auth::user()->name)->whereDate('created_at', now()->toDateString())->get();
 
         return view('waiter.viewOrder',compact('waiter','orders'));
     }

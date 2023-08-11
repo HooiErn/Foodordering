@@ -2,7 +2,28 @@
 <html lang="en">
 
 <head>
-
+    <!-- Matomo -->
+    <script>
+      var _paq = window._paq = window._paq || [];
+      /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
+      _paq.push(['trackPageView']);
+      _paq.push(['enableLinkTracking']);
+      (function() {
+        var u="//foodorderapp.ctosweb.com/matomo/";
+        _paq.push(['setTrackerUrl', u+'matomo.php']);
+        _paq.push(['setSiteId', '1']);
+        var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+        g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
+      })();
+    </script>
+    <!-- End Matomo Code -->
+    <!-- Google Tag Manager -->
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','GTM-NLTFTTN');</script>
+    <!-- End Google Tag Manager -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -22,9 +43,18 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6TPCFRQFYP"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
     
+        gtag('config', 'G-6TPCFRQFYP');
+    </script>
+    <!-- Pusher -->
     <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
-<script>
+    <script>
         // Enable pusher logging - don't include this in production
         Pusher.logToConsole = true;
 
@@ -40,8 +70,12 @@
         
         var channel2 = pusher.subscribe('callWaiter-channel');
         channel2.bind('call-waiter', function(data){
-            window.location.reload();
-            alert("Table " + data.table + " is calling waiter");
+            toastr.info("Table " + data.table + " calling.");
+            audio.play();
+            setTimeout(function() {
+                window.location.href = "{{ url('waiter/work') }}";
+            }, 2000);
+            
         });
 
         var channel3 = pusher.subscribe('donePrepare-channel');
@@ -53,6 +87,35 @@
             }, 2000);
         });
     </script>
+
+    <style>
+        .scroll-to-bottom {
+            position: fixed;
+            right: 1rem;
+            bottom: 1rem;
+            display: none;
+            width: 2.75rem;
+            height: 2.75rem;
+            text-align: center;
+            color: #fff;
+            background: rgba(90, 92, 105, 0.5);
+            line-height: 46px;
+            z-index: 9999;
+        }
+    
+        .scroll-to-bottom:focus,
+        .scroll-to-bottom:hover {
+            color: white;
+        }
+    
+        .scroll-to-bottom:hover {
+            background: #5a5c69;
+        }
+    
+        .scroll-to-bottom i {
+            font-weight: 800;
+        }
+    </style>
 
     @if(Auth::user()->isAdmin())
         <script>
@@ -66,6 +129,11 @@
 </head>
 
 <body id="page-top">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NLTFTTN"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    
     @php
         $data1 = DB::table('orders')->where('status', 1)->where('waiter',null)->count();
         $data2 = DB::table('works')->where('waiter',null)->count();
@@ -73,6 +141,7 @@
     @endphp
     <!-- Page Wrapper -->
     <div id="wrapper">
+        <input type="hidden" id="name" value="{{Auth::user()->name}}">
         <!-- Toastr -->
         @include('functions.toastr')
         <!-- Sidebar -->
@@ -148,7 +217,7 @@
                         <!-- Nav Item - User Information -->
                         <li class="nav-item dropdown no-arrow">
                             <a class="nav-link" href="#" id="userDropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{Auth::user()->name}}</span>
+                                <span class="mr-2 text-gray-600 small">{{Auth::user()->name}}</span>
                                 <img class="img-profile rounded-circle" src="{{ asset('images/undraw_profile.svg')}}">
                             </a>
                         </li>
@@ -171,6 +240,11 @@
         <i class="fas fa-angle-up"></i>
     </a>
     
+    <!-- Scroll to Bottom Button -->
+    <a class="scroll-to-bottom rounded" href="#page-bottom" id="scrollToBottom">
+        <i class="fas fa-angle-down"></i>
+    </a>
+    
     <!-- JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
@@ -178,6 +252,39 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="{{ asset('jquery-easing/jquery.easing.min.js')}}"></script>
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
+    
+    
+    <script>
+        $(document).ready(function () {
+            var scrollToBottomButton = $("#scrollToBottom");
+    
+            // Function to toggle the visibility of the scroll-to-bottom button
+            function toggleScrollToBottomButton() {
+                if ($(window).scrollTop() > 0) {
+                    scrollToBottomButton.fadeOut();
+                } else {
+                    scrollToBottomButton.fadeIn();
+                }
+            }
+    
+            // Initial state
+            toggleScrollToBottomButton();
+    
+            // Toggle the visibility of the scroll-to-bottom button on scroll
+            $(window).scroll(function () {
+                toggleScrollToBottomButton();
+            });
+    
+            // Smooth scroll to the bottom when the button is clicked
+            scrollToBottomButton.click(function (e) {
+                e.preventDefault();
+                $('html, body').animate({
+                    scrollTop: $(document).height()
+                }, 800);
+            });
+        });
+    </script>
+
 </body>
 
 </html>

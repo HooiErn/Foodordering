@@ -20,13 +20,23 @@
         </a>
     </li>
     
-    <!-- Nav Item - Analytics -->
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url('admin/analytics') }}">
-            <i class="fas fa-fw fa-list"></i>
-            <span>Total Bandwidth 总宽带</span>
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ url('matomo') }}">
+            <i class="fas fa-fw fa-tachometer-alt"></i>
+            <span>Dashboard(Matomo) 主页</span>
         </a>
     </li>
+    
+    <!-- Nav Item - Analytics -->
+    <li class="nav-item">
+        <a class="nav-link" href="#" id="analytics-link">
+            <i class="fas fa-fw fa-list"></i>
+            <span>Analytics 分析</span>
+        </a>
+    </li>
+    <form id="analytics-form" method="POST" action="{{ url('admin/analytics') }}">
+        @csrf
+    </form>
 
     <!-- Divider -->
     <hr class="sidebar-divider">
@@ -34,11 +44,30 @@
     <!-- Nav Item - Food -->
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/food') }}">
-            <i class="fas fa-fw fa-chart-area"></i>
+            <i class="fas fa-fw fa-utensils"></i>
             <span>Food 食物</span>
         </a>
     </li>
-
+    
+    <!-- Nav Item - Stock -->
+    <li class="nav-item">
+        <a class="nav-link" data-toggle="collapse" href="#stockCollapse" role="button" aria-expanded="false" aria-controls="waitersCollapse">
+            <i class="fas fa-fw fa-boxes"></i>
+            <span>Stock 库存</span>
+        </a>
+        <div class="collapse" id="stockCollapse">
+            <a class="nav-link" href="{{ url('admin/stock') }}">
+                <i class="fas fa-fw fa-boxes"></i>
+                <span>List 列表</span>
+            </a>
+            <a class="nav-link" href="{{ url('admin/stock-history') }}">
+                <i class="fas fa-fw fa-list"></i>
+                <span>History 历史</span>
+            </a>
+            
+            
+        </div>
+    </li>
     <!-- Nav Item - Tables -->
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/table') }}">
@@ -65,12 +94,36 @@
 
     <!-- Nav Item - Waiters -->
     <li class="nav-item">
-        <a class="nav-link" href="{{ url('admin/waiter') }}">
-           <i class="fas fa-fw fa-user"></i>
+        <a class="nav-link" data-toggle="collapse" href="#waitersCollapse" role="button" aria-expanded="false" aria-controls="waitersCollapse">
+            <i class="fas fa-fw fa-user"></i>
             <span>Waiters 服务员</span>
         </a>
+        <div class="collapse" id="waitersCollapse">
+            <a class="nav-link" href="{{ url('admin/waiter-list', ['id' => Auth::user()->id]) }}">
+                <i class="fas fa-fw fa-list"></i>
+                <span>List 列表</span>
+            </a>
+            <a class="nav-link" href="{{ url('admin/waiter-report') }}">
+                <i class="fas fa-fw fa-file-alt"></i>
+                <span>Report 报告</span>
+            </a>
+        </div>
     </li>
     
+    <!--<li class="nav-item">-->
+    <!--    <a class="nav-link" href="{{ url('admin/waiter-list', ['id' => Auth::user()->id]) }}">-->
+    <!--            <i class="fas fa-fw fa-list"></i>-->
+    <!--            <span>List 列表</span>-->
+    <!--        </a>-->
+    <!--</li>-->
+    
+    <!--<li class="nav-item">-->
+    <!--    <a class="nav-link" href="{{ url('admin/waiter-report') }}">-->
+    <!--        <i class="fas fa-fw fa-file-alt"></i>-->
+    <!--        <span>Report 报告</span>-->
+    <!--    </a>-->
+    <!--</li>-->
+            
     <!-- Nav Item - Setup Touch n Go -->
     <li class="nav-item">
         <a class="nav-link" href="{{ url('admin/setup') }}">
@@ -96,3 +149,10 @@
     </div>
 
 </ul>
+
+<script>
+    document.getElementById('analytics-link').addEventListener('click', function (event) {
+        event.preventDefault();
+        document.getElementById('analytics-form').submit();
+    });
+</script>

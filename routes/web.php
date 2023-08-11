@@ -38,6 +38,9 @@ Route::get('/logout', [HomeController::class, 'logout']);
 Route::get('kitchen/food', [KitchenController::class, 'food'])->name('kitchen.food');
 Route::get('kitchen/changeStatus/{id}', [KitchenController::class, 'changeStatus'])->name('kitchen.changeStatus');
 
+// Print Receipt
+Route::get('kitchen/printReceipt/{id}', [KitchenController::class, 'printReceipt'])->name('kitchen.printReceipt');
+
 // Taken Order
 Route::get('kitchen/takenOrder', [KitchenController::class, 'takenOrder']);
 Route::get('kitchen/donePreparing/{id}', [KitchenController::class, 'donePreparing']);
@@ -47,7 +50,7 @@ Route::get('kitchen/donePreparing/{id}', [KitchenController::class, 'donePrepari
 Route::get('admin/dashboard', [AdminController::class, 'index'])->name('dashboard');
 
 // Analytics
-Route::get('admin/analytics', [AdminController::class, 'analytics'])->name('analytics');
+Route::post('admin/analytics', [AdminController::class, 'analytics'])->name('analytics');
 
 // Action List
 Route::get('admin/action-list', [AdminController::class, 'actionList']);
@@ -65,6 +68,14 @@ Route::get('admin/deleteFood/{id}',[AdminController::class, 'deleteFood']);
 Route::get('admin/deleteSelect/{id}', [AdminController::class, 'deleteSelect'])->name('delete.select');
 Route::get('admin/deleteSelectOption/{id}', [AdminController::class, 'deleteSelectOption'])->name('delete.selectOption');
 
+// Stock
+Route::get('admin/stock', [AdminController::class, 'stock'])->name('admin.stock');
+Route::get('admin/stock-history', [AdminController::class, 'stockHistory'])->name('admin.stock.history');
+Route::post('admin/stock-history/searchDate', [AdminController::class, 'stockHistorySearchDate'])->name('admin.stockHistory.searchDate');
+Route::get('admin/stock-info/{id}', [AdminController::class, 'stockInfo'])->name('admin.stock.info');
+Route::post('admin/addStock', [AdminController::class, 'addStock'])->name('admin.addStock');
+Route::post('admin/removeStock', [AdminController::class, 'removeStock'])->name('admin.removeStock');
+
 //Category
 Route::post('admin/addCategory',[AdminController::class,'addCategory']);
 Route::get('admin/deleteCategory/{id}',[AdminController::class, 'deleteCategory']);
@@ -77,9 +88,14 @@ Route::post('admin/searchDate',[AdminController::class,'searchDate']);
 Route::get('admin/viewFoodList/{orderID}',[AdminController::class, 'viewFoodList']);
 
 // --- Waiter ---
-Route::get('admin/waiter',[AdminController::class, 'waiter']);
+Route::get('admin/waiter-report',[AdminController::class, 'waiter_report']);
+Route::get('admin/waiter-list/{id}', [AdminController::class, 'waiter_list']);
+Route::post('admin/edit-waiter', [AdminController::class, 'edit_waiter']);
+Route::post('admin/waiter/searchDate', [AdminController::class, 'waiterSearchDate'])->name('admin.waiter.searchDate');
 Route::post('admin/registerWaiter',[AdminController::class, 'registerWaiter']);
 Route::get('admin/deleteWaiter/{id}',[AdminController::class, 'deleteWaiter']);
+Route::get('admin/undoDeletedWaiter/{id}',[AdminController::class, 'undoDeletedWaiter']);
+
 //Table 
 Route::get('admin/table',[AdminController::class, 'table']);
 Route::post('admin/addTable',[AdminController::class, 'addTable']);
@@ -101,7 +117,8 @@ Route::post('waiter/searchDate',[WaiterController::class,'searchDate'])->name('w
 Route::get('waiter/placeOrder',[WaiterController::class, 'placeOrder']);
 Route::get('waiter/add-to-cart/{id}', [WaiterController::class, 'addToCart']);
 Route::get('waiter/showWork',[WaiterController::class, 'showWork']);
-Route::get('waiter/orderDetail/{id}', [WaiterController::class, 'orderDetail']);
+Route::post('waiter/takeOrder', [WaiterController::class, 'takeOrder']);
+Route::get('waiter/orderDetail/', [WaiterController::class, 'orderDetail']);
 
 // --- Work ---
 Route::get('waiter/work', [WaiterController::class, 'work']);
@@ -109,6 +126,9 @@ Route::get('waiter/acceptWork/{id}', [WaiterController::class, 'acceptWork']);
 
 //View Food
 Route::get('food/view/{id}',[FoodController::class, 'view'])->name('view.food');
+
+// Other
+Route::post('waiter/onload', [WaiterController::class, 'onload'])->name('onload');
 
 //--- Cart ---
 //Add
@@ -160,6 +180,8 @@ Route::get('/auth/check', function () {
 
 // Auto Logout
 Route::get('unload/logout',[HomeController::class, 'unloadLogout'])->name('unload.logout');
+
+Route::get('test', [HomeController::class, 'print']);
 
 // 404 Error
 Route::fallback(function () {

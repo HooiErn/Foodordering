@@ -143,6 +143,14 @@
                     margin-left:10px !important;
                 }
             }
+            .navbar {
+    
+      height: 60px; /* Adjust the height as needed */
+      justify-content: center;
+      align-items: center;
+       display: flex;
+      padding: 10px; /* Adjust the padding as needed */
+    }
 
         </style>
     </head>
@@ -150,11 +158,22 @@
     <body>
       <!--TopNav first--> 
      
-    <nav class="navbar navbar-expand-lg navbar-laravel" style=" background-image:linear-gradient(to right,#000000,#000000); position: fixed; bottom: 0; width: 100%;">
+    <nav class="navbar" style=" background-image:linear-gradient(#2E2E2E,#2E2E2E); position: fixed; bottom: 0; width: 100%; height: 50px; padding: 10px; display: flex; justify-content: center; align-items: center;">
         
         <div class="container">
-
-        &nbsp; <a class="navbar-brand-center" href="#" style="color:white;display:inline;">  <a href="{{ url('viewCart',['id' => $table -> table_id]) }}" class="fa fa-shopping-cart float-right" style="text-decoration:none; color:red;"><span class="text-white"><sup>{{count($carts->where('table_id',$table -> table_id)->where('orderID',null))}}</> &nbsp;&nbsp; RM {{$carts->where('table_id',$table -> table_id)->where('orderID',null)->sum('price')}}</span></a> </a> 
+            @php
+                $cartTotal = 0;
+                $filteredCarts = $carts->where('table_id', $table->table_id)->where('orderID', null);
+            @endphp
+            
+            @foreach ($filteredCarts as $cart)
+                @php
+                    $itemTotal = $cart->quantity * $cart->price;
+                    $cartTotal += $itemTotal;
+                @endphp
+            @endforeach
+         <a class="navbar" href="#">  <a href="{{ url('viewCart',['id' => $table -> table_id]) }}" class="fa fa-shopping-cart fa-fade"  style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;font-size:25px;color:white;">&nbsp;<span style="color:red; font-size:25px;"><sup>{{count($carts->where('table_id',$table -> table_id)->where('orderID',null))}}</> &nbsp; Cart 购物单 </span> &nbsp;</a></a> <h5 style="color:white;">RM {{$cartTotal}}</h5>  
+         
     </nav> 
         
     <!--TopNav second--> 

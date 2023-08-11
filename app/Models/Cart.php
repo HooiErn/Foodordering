@@ -16,4 +16,8 @@ class Cart extends Model
         'orderID',
         'addon',
     ];
+    
+    public function food(){
+        return $this->belongsTo(Food::class, 'food_id');
+    }
 }

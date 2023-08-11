@@ -17,6 +17,7 @@ use App\Models\Action;
 use App\Models\Category;
 use App\Models\FoodOption;
 use App\Models\FoodSelect;
+use App\Models\StockList;
 use App\Events\AddToCart;
 use App\Events\AdminRefresh;
 use App\Events\WaiterRefresh;
@@ -29,6 +30,8 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Analytics;
+use Spatie\Analytics\Period;
 
 class AdminController extends Controller
 {
@@ -47,7 +50,8 @@ class AdminController extends Controller
     public function index(){
         $data = Order::all();
         
-        
+        // $analyticsData = Analytics::fetchVisitorsAndPageViews(Period::days(7));
+
         $todayDate = Carbon::now()->format('d-m-Y');
         $thisMonth = Carbon::now()->format('m');
         $thisYear = Carbon::now()->format('Y');
@@ -58,10 +62,18 @@ class AdminController extends Controller
         $thisYearOrder = Order::whereYear('created_at', $thisYear)->count();
         
         return view('admin/dashboard',compact('data', 'totalOrder', 'todayOrder', 'thisMonthOrder', 'thisYearOrder'));
+        
+        //, 'analyticsData'
     }
     
-    public function analytics(){
-        return view('admin/analytics');
+    public function analytics(Request $request)
+    {
+        $days = $request->input('days', 7);
+        $period = Period::days($days);
+        $total = Analytics::fetchTotalVisitorsAndPageViews($period);
+        $datas = Analytics::fetchVisitorsAndPageViews($period);
+    
+        return view('admin/analytics', compact('datas', 'total'));
     }
     
     // Action List
@@ -112,7 +124,96 @@ class AdminController extends Controller
         $foods = Food::all();
         return view('admin/food', compact('categories','foods'));
     }
-
+    
+    // Stock
+    public function stock(){
+        $foods = Food::all();
+        
+        return view('admin/stock', compact('foods'));
+    }
+    
+    public function stockInfo($id){
+        $food = Food::find($id);
+        $stocks = StockList::where('food_id',$food -> id)->get();
+        
+        return view('admin/stock-info', compact('stocks','food'));
+    }
+    
+    // Stock History
+    public function stockHistory(){
+        $foods = Food::all();
+        $stock_histories = StockList::whereDate('created_at', now()->toDateString())->get();
+        return view('admin/stock-history', compact('foods', 'stock_histories'));
+    }
+    
+    public function stockHistorySearchDate(Request $request){
+        $foods = Food::all();
+        $stock_histories = StockList::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
+        return view('admin/stock-history', compact('foods', 'stock_histories'));
+    }
+    
+    // Add Stock
+    public function addStock(Request $request){
+        if($request -> quantity == 0){
+            Toastr::info('Please enter a valid value for quantity');
+            return redirect()->back();
+        }
+        
+        $food = Food::where('id', $request -> food_id)->first();
+        
+        $newStockList = StockList::create([
+            'food_id' => $request -> food_id,
+            'action' => 1,
+            'quantity' => $request -> quantity,
+        ]);
+        
+        $food -> stock += $request -> quantity;
+        $food -> save();
+        
+        $this -> checkAndUpdateAvailability($food);
+        
+        Toastr::success('Stock has been successfully added.', 'Success');
+        return redirect()->back();
+    }
+    
+    // Remove Stock
+    public function removeStock(Request $request){
+        $food = Food::where('id', $request -> food_id)->first();
+        
+        if ($food->stock < $request->quantity) {
+            Toastr::error('Insufficient stock to remove.', 'Error');
+            return redirect()->back();
+        }
+        
+        $newStockList = StockList::create([
+            'food_id' => $request -> food_id,
+            'action' => 2,
+            'quantity' => $request -> quantity,
+        ]);
+        
+        $food -> stock -= $request -> quantity;
+        $food -> save();
+        
+        $this -> checkAndUpdateAvailability($food);
+        
+        Toastr::success('Stock has been successfully removed.', 'Success');
+        return redirect()->back();
+    }
+    
+    private function checkAndUpdateAvailability($food){
+        if ($food->stock === 0) {
+            // Set $food->available to 2
+            $food->available = 0;
+            // Save the updated $food object to the database (or your data store)
+            $food->save();
+        }
+        elseif ($food -> stock > 0){
+            $food->available = 1;
+            // Save the updated $food object to the database (or your data store)
+            $food->save();
+        }
+    }
+    
     //Add Category
     public function addCategory(Request $request){
 
@@ -187,10 +288,24 @@ class AdminController extends Controller
         $food = new Food;
         $food -> name = $request -> name;
         $food -> available = $request -> available;
+        if($request -> stock == 1){
+            $food -> stock = null;
+        }
+        elseif($request -> stock == 2){
+            $food -> stock = $request -> numberInput;
+        }
         $food -> price = $request -> price;
         $food -> categoryID = $request -> categoryID;
         $food -> image = $imageName;
         $food -> save();
+        
+        if($request -> stock == 2){
+            $newStockList = StockList::create([
+                'food_id' => $food -> id,
+                'action' => 1,
+                'quantity' => $request -> numberInput,
+            ]);
+        }
 
         if($request -> has('select_option_name') && $request -> has('option_value_name')){
             $selectNames = $request -> select_option_name;
@@ -238,7 +353,22 @@ class AdminController extends Controller
             $food->name = $request->name;
             $food->price = $request->price;
             $food->categoryID = $request->categoryID;
-            
+            if ($request->stock == 1) {
+                // Set food stock to null
+                $food->stock = null;
+                
+                // Create a new StockList record
+                $newStockList = StockList::create([
+                    'food_id' => $food->id,
+                    'action' => 2,
+                    'quantity' => $request->stockNumber,
+                ]);
+            } elseif ($request->stock == 2) {
+                // Set food stock to 0 if it's not already set
+                if ($food->stock === null) {
+                    $food->stock = 0;
+                }
+            }
             $food->save();
     
             if($request -> has('edit_select_name') && $request -> has('edit_option')){
@@ -363,18 +493,37 @@ class AdminController extends Controller
             return redirect('admin/table');
         }
         else{
-            return redirect('admin/table');
+            return view('404');
         }
     }
     
 
     //Waiter
-    public function waiter(){
+    public function waiter_report(){
 
         $waiters = User::where('role',2)->get();
-        $orders = Order::all();
-        $works = Work::all();
-        return view('admin/waiter',compact('waiters','orders','works'));
+        $orders = Order::whereDate('created_at', now()->toDateString())->get();
+        $works = Work::whereDate('created_at', now()->toDateString())->get();
+        return view('admin/waiter-report',compact('waiters','orders','works'));
+    }
+    
+    public function waiter_list($id){
+        $waiters = User::where('role',2)->get();
+        $detail = User::find($id);
+        return view('admin/waiter-list',compact('waiters', 'detail'));
+    }
+    
+    public function edit_waiter(Request $request){
+        $waiter = User::where('id', $request -> id)->first();
+        if($request -> has('name')){
+            $waiter -> name = $request -> name;
+        }
+        if($request -> has('password') && $request -> password !== null){
+            $waiter -> password = $request -> password;
+        }
+        $waiter -> save();
+        
+        return redirect()->back();
     }
     
     public function waiterSearchDate(Request $request){
@@ -409,20 +558,35 @@ class AdminController extends Controller
         Action::action(Auth::user()->name, "Add waiter - " . $request -> w_name);
 
         Toastr::success('You successfully register a new waiter account','Register a waiter',["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-        return redirect('admin/waiter');
+        return redirect()->back();
     }
     
      //Delete Waiter
     public function deleteWaiter($id){
         $waiter = User::where('id',$id)->first();
-        $waiter -> delete();
+        $waiter -> deleted = 2;
+        $waiter -> save();
 
         if($waiter){
             
             return redirect('admin/waiter');
         }
         else{
+            return view('404');
+        }
+    }
+    
+    public function undoDeletedWaiter($id){
+        $waiter = User::where('id',$id)->first();
+        $waiter -> deleted = 1;
+        $waiter -> save();
+
+        if($waiter){
+            
             return redirect('admin/waiter');
+        }
+        else{
+            return view('404');
         }
     }
 
@@ -436,7 +600,7 @@ class AdminController extends Controller
     public function viewTakenOrder($name)
     {
         $waiter = User::where('name',$name)->first();
-        $orders = Order::where('waiter',$name)->where('status',"1")->get();
+        $orders = Order::where('waiter',$name)->where('status',"1")->whereDate('created_at', now()->toDateString())->get();
 
         if(!($waiter && $orders)){
             return view('404');

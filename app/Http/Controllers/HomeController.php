@@ -21,7 +21,8 @@ use Session;
 use Carbon\Carbon;
 use DB;
 use Cookie;
-
+use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
+use Mike42\Escpos\Printer;
 
 class HomeController extends Controller
 {
@@ -50,6 +51,13 @@ class HomeController extends Controller
         ]);
     
         $credentials = $request->only('name', 'password');
+    
+        $user = User::where('name', $request->name)->first();
+
+        if ($user && $user->deleted == 2) {
+            Toastr::error('Your account has been deleted', 'Error', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
+            return redirect()->back();
+        }
     
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
@@ -83,15 +91,14 @@ class HomeController extends Controller
     // Logout
     public function logout()
     {
-        $user = Auth::user();
-        $user->save();
-    
-        Auth::logout();
+        if (Auth::check()) {
+            Auth::logout();
+        }
         Toastr::info('You have logged out of your account', 'Logout Successfully', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
         return redirect('/');
     }
 
-    public function method($id){
+    public function method($id,){
  
         $table = Table::where('table_id',$id)->first();
 
@@ -117,8 +124,9 @@ class HomeController extends Controller
             return view('404');
         }
     
-        if ($request->filled('payment')) {
+        if ($request->filled('payment') && $request -> filled('selection')) {
             $table->payment = $request->input('payment');
+            $table->selection = $request -> input('selection');
             $table->save();
             event(new Refresh($table->table_id));
         }
@@ -165,9 +173,11 @@ class HomeController extends Controller
             return view('404');
         }
 
-        $carts = \DB::table('carts')->join('orders','carts.orderID','=','orders.orderID')
-        ->join('food','carts.food_id','=','food.id')->select('carts.*','food.name as fName','food.price as fPrice')
-        ->where('orders.orderID',$id)->get(); //if use Cart model, it somehow pass all food in there, regardless if you choose it or not
+        $carts = DB::table('carts')
+                ->join('food as detail','carts.food_id','detail.id')
+                ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+                ->where('carts.orderID', $order -> orderID)
+                ->get();
     
         return view('pages.receipt',compact('qrcode','carts','order'));
     }
@@ -178,12 +188,20 @@ class HomeController extends Controller
         if(!$order){
             return view('404');
         }
+                
+        $item1 = DB::table('carts')
+        ->join('food as detail','carts.food_id','detail.id')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->where('carts.orderID', $order -> orderID)
+        ->get();
 
-        $carts = DB::table('carts')
-                ->join('food as detail','carts.food_id','detail.id')
-                ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
-                ->where('carts.orderID', $order -> orderID)
-                ->get();
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->where('waiter_carts.orderID', $order -> orderID)
+        ->get();
+
+        $carts = $item1 -> merge($item2);
                 
         return view('viewReceipt', compact('order', 'carts'));
     }
@@ -286,5 +304,23 @@ class HomeController extends Controller
         return response->json([
             ''  
         ]);
+    }
+    
+    public function print(){
+        $connector = new NetworkPrintConnector("192.168.1.5", 9100);
+        $printer = new Printer($connector);
+        
+        if($printer){
+            Toastr::success("Yes","Got Printer");
+            
+            $printer->text("Hello, World!\n");
+            $printer->cut();
+            $printer->close();
+        }
+        else{
+            Toastr::error("No","No Printer");
+        }
+
+        return redirect()->back();
     }
 }
