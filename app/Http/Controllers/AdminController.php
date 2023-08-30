@@ -76,6 +76,89 @@ class AdminController extends Controller
         return view('admin/analytics', compact('datas', 'total'));
     }
     
+    // Bill
+    public function bills(){
+        $tables = Table::all();
+        
+        $orders = Order::orderByDesc('created_at')->get();
+        
+        $qrcode = Qrcode::first();
+        
+        $item1 = DB::table('carts')
+        ->join('food as detail','carts.food_id','detail.id')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $carts = $item1 -> merge($item2);
+        
+        return view('admin/bills', compact('tables','orders', 'carts','qrcode'));
+    }
+    
+    public function allBills(){
+        $tables = Table::all();
+        
+        $orders = Order::orderByDesc('created_at')->where('is_paid', '!=', 0)->get();
+        
+        $qrcode = Qrcode::first();
+        
+        $item1 = DB::table('carts')
+        ->join('food as detail','carts.food_id','detail.id')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $carts = $item1 -> merge($item2);
+        
+        return view('admin/allBills', compact('tables','orders', 'carts','qrcode'));
+    }
+    
+    public function bill_check(Request $request) {
+        try {
+            DB::beginTransaction();
+    
+            $orders = Order::whereIn('orderID', $request->order_ids)->get();
+            foreach ($orders as $order) {
+                $order->is_paid = 1;
+                $order->save();
+            }
+    
+            DB::commit();
+    
+            return response()->json(['message' => 'Orders marked as paid'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => 'Error marking orders as paid'], 500);
+        }
+    }
+    
+    public function bill_uncheck(Request $request){
+        try {
+            DB::beginTransaction();
+    
+            $orders = Order::whereIn('orderID', $request->order_ids)->get();
+            foreach ($orders as $order) {
+                $order->is_paid = 2;
+                $order->save();
+            }
+    
+            DB::commit();
+    
+            return response()->json(['message' => 'Orders marked as unpaid'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => 'Error marking orders as unpaid'], 500);
+        }
+    }
+    
     // Action List
     public function actionList(){
         $admins = User::where('role',1)->get();
@@ -172,6 +255,7 @@ class AdminController extends Controller
         
         $this -> checkAndUpdateAvailability($food);
         
+        Action::action(Auth::user()->name, "Add". $request -> quantity ."stocks for " . $food -> name);
         Toastr::success('Stock has been successfully added.', 'Success');
         return redirect()->back();
     }
@@ -307,20 +391,25 @@ class AdminController extends Controller
             ]);
         }
 
-        if($request -> has('select_option_name') && $request -> has('option_value_name')){
-            $selectNames = $request -> select_option_name;
-            foreach($selectNames as $i => $selectName){
+        if ($request->has('select_option_name') && $request->has('option_value_name') && $request->has('option_value_price')) {
+            $selectNames = $request->select_option_name;
+            $optionValues = $request->option_value_name;
+            $optionPrices = $request->option_value_price;
+        
+            foreach ($selectNames as $i => $selectName) {
                 $newSelect = new FoodSelect;
-                $newSelect -> name = $selectName;
-                $newSelect -> food_id = $food -> id;
-                $newSelect -> save();
-
-                $optionValues = $request -> option_value_name;
-                foreach ($optionValues[$i] as $optionValue) {
-                    $newOptionValue = new FoodOption;
-                    $newOptionValue->name = $optionValue;
-                    $newOptionValue->food_select_id = $newSelect->id; // associate with the current select
-                    $newOptionValue->save();
+                $newSelect->name = $selectName;
+                $newSelect->food_id = $food->id;
+                $newSelect->save();
+        
+                if (isset($optionValues[$i]) && isset($optionPrices[$i])) {
+                    foreach ($optionValues[$i] as $j => $optionValue) {
+                        $newOptionValue = new FoodOption;
+                        $newOptionValue->name = $optionValue;
+                        $newOptionValue->price = $optionPrices[$i][$j]; // Set the price value here
+                        $newOptionValue->food_select_id = $newSelect->id;
+                        $newOptionValue->save();
+                    }
                 }
             }
         }
@@ -356,13 +445,15 @@ class AdminController extends Controller
             if ($request->stock == 1) {
                 // Set food stock to null
                 $food->stock = null;
-                
-                // Create a new StockList record
-                $newStockList = StockList::create([
-                    'food_id' => $food->id,
-                    'action' => 2,
-                    'quantity' => $request->stockNumber,
-                ]);
+            
+                // Create a new StockList record only if the original stock was greater than 0
+                if (is_array($food->original) && ($food->original['stock'] > 0 || $food->original['stock'] === null)) {
+                    $newStockList = StockList::create([
+                        'food_id' => $food->id,
+                        'action' => 2,
+                        'quantity' => $request->stockNumber,
+                    ]);
+                }
             } elseif ($request->stock == 2) {
                 // Set food stock to 0 if it's not already set
                 if ($food->stock === null) {
@@ -371,28 +462,39 @@ class AdminController extends Controller
             }
             $food->save();
     
-            if($request -> has('edit_select_name') && $request -> has('edit_option')){
+            if ($request->has('edit_select_name') && $request->has('edit_option')) {
                 $selectNames = $request->input('edit_select_name', []);
                 $options = $request->input('edit_option', []);
-    
+                $optionPrices = $request->input('edit_option_price', []); // Add this line for prices
+                
                 $existingSelects = $food->foodSelect;
-    
+            
                 foreach ($existingSelects as $index => $existingSelect) {
                     $existingSelect->name = $selectNames[$index];
                     $existingSelect->save();
-        
+                    
                     $existingOptions = $existingSelect->foodOption;
                     $existingOptionCount = count($existingOptions);
                     $newOptionCount = count($options[$index]);
-        
-                    // Update existing options
+                    
+                    // Update existing options and prices
                     for ($i = 0; $i < $existingOptionCount; $i++) {
                         if ($i < $newOptionCount) {
                             $existingOptions[$i]->name = $options[$index][$i];
+                            $existingOptions[$i]->price = $optionPrices[$index][$i]; // Set the price here
                             $existingOptions[$i]->save();
                         } else {
                             $existingOptions[$i]->delete(); // Remove extra options
                         }
+                    }
+            
+                    // Create new options if necessary
+                    for ($i = $existingOptionCount; $i < $newOptionCount; $i++) {
+                        $newOption = new FoodOption;
+                        $newOption->name = $options[$index][$i];
+                        $newOption->price = $optionPrices[$index][$i]; // Set the price here
+                        $newOption->food_select_id = $existingSelect->id;
+                        $newOption->save();
                     }
                 }
             }
@@ -530,7 +632,7 @@ class AdminController extends Controller
         $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
         $works = Work::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
         $waiters = User::where('role',2)->get();
-        return view('admin/waiter', compact('waiters', 'orders', 'works'));
+        return view('admin/waiter-report', compact('waiters', 'orders', 'works'));
     }
 
     public function registerWaiter(Request $request){
@@ -540,13 +642,13 @@ class AdminController extends Controller
                     return $query->where('role', 2);
                 }),
             ],
-            'w_password' => 'min:8|max:12',
+            'w_password' => 'max:12',
             'w_confirm_password' => 'same:w_password',
         ]);
 
         if($validator -> fails()){
             Toastr::error('Invalid input please try again.', 'Validate Fail', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect('admin/waiter')->withInput()->withErrors($validator);
+            return redirect->back()->withInput()->withErrors($validator);
         }
         
         $addWaiter = User::create([
@@ -569,7 +671,7 @@ class AdminController extends Controller
 
         if($waiter){
             
-            return redirect('admin/waiter');
+            return redirect()->back();
         }
         else{
             return view('404');
@@ -583,7 +685,7 @@ class AdminController extends Controller
 
         if($waiter){
             
-            return redirect('admin/waiter');
+            return redirect()->back();
         }
         else{
             return view('404');

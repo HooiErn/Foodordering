@@ -11,7 +11,8 @@ class FoodOption extends Model
     use HasFactory;
     protected $fillable = [
         'food_select_id', 
-        'name'
+        'name',
+        'price'
     ];
 
     public function foodSelect()

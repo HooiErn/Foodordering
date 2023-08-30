@@ -130,7 +130,7 @@ class WaiterController extends Controller
     public function viewTakenOrder(Request $request)
     {
         $waiter = User::where('name',Auth::user()->name)->first();
-        $orders = Order::where('waiter',Auth::user()->name)->whereDate('created_at', now()->toDateString())->get();
+        $orders = Order::where('waiter',Auth::user()->name)->whereDate('serve_time', now()->toDateString())->get();
 
         return view('waiter.viewOrder',compact('waiter','orders'));
     }

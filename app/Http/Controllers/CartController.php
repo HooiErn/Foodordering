@@ -34,6 +34,36 @@ class CartController extends Controller
             $cart->food_id = $request->food_id;
             $cart->table_id = $request->table_id;
             $cart->quantity = $request->quantity;
+            if ($request->has('select') && $request->has('option')) {
+                $selects = $request->select;
+                $options = $request->option;
+            
+                $selectOptionArray = [];
+                foreach ($selects as $selectId => $selectName) {
+                    $optionName = isset($options[$selectId]) ? $options[$selectId] : null;
+                    $optionPrice = null; // Initialize the option price
+            
+                    // Find the selected food option by name
+                    $selectedOption = FoodOption::where('food_select_id', $selectId)
+                                                ->where('name', $optionName)
+                                                ->first();
+            
+                    // If the option is found, get its price
+                    if ($selectedOption) {
+                        $optionPrice = $selectedOption->price;
+                    }
+            
+                    // Add both name and price to the array
+                    $selectOptionArray[$selectName] = [
+                        'name' => $optionName,
+                        'price' => $optionPrice
+                    ];
+                }
+            
+                $jsonSelectOptions = json_encode($selectOptionArray);
+                $cart->addon = $jsonSelectOptions;
+            }
+            
             $cart->save();
 
             return redirect()->back();
@@ -53,15 +83,32 @@ class CartController extends Controller
                 $cart->quantity = $request->quantity;
 
 
-            if($request -> has('select') && $request -> has('option')){
+            if ($request->has('select') && $request->has('option')) {
                 $selects = $request->select;
                 $options = $request->option;
-
+            
                 $selectOptionArray = [];
                 foreach ($selects as $selectId => $selectName) {
                     $optionName = isset($options[$selectId]) ? $options[$selectId] : null;
-                    $selectOptionArray[$selectName] = $optionName;
+                    $optionPrice = null; // Initialize the option price
+            
+                    // Find the selected food option by name
+                    $selectedOption = FoodOption::where('food_select_id', $selectId)
+                                                ->where('name', $optionName)
+                                                ->first();
+            
+                    // If the option is found, get its price
+                    if ($selectedOption) {
+                        $optionPrice = $selectedOption->price;
+                    }
+            
+                    // Add both name and price to the array
+                    $selectOptionArray[$selectName] = [
+                        'name' => $optionName,
+                        'price' => $optionPrice
+                    ];
                 }
+            
                 $jsonSelectOptions = json_encode($selectOptionArray);
                 $cart->addon = $jsonSelectOptions;
             }
@@ -71,8 +118,6 @@ class CartController extends Controller
             return redirect()->route('home', ['id' => $request -> table_id]);   
             }
         }
-        
-        
     }
     
     public function onUnload(Request $request)
