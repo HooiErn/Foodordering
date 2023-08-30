@@ -1,0 +1,247 @@
+#cd-cart-trigger {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0; /* Adjust the right margin as needed */
+    z-index: 4; /* Ensure it stays above other elements */
+    width: 0;
+    height: 0;
+    border-top: 40px solid transparent; /* Increase the size of the triangle */
+    border-bottom: 40px solid transparent; /* Increase the size of the triangle */
+    border-right: 60px solid #26292f; /* Increase the size of the triangle and adjust the color as needed */
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+#cd-cart-trigger a {
+    text-decoration: none;
+    color: #9cb7ee; /* Set the color for the icon */
+    padding-left: 20px; /* Add padding to the left of the icon to center it inside the triangle */
+}
+
+#cd-cart-trigger a i {
+    font-size: 1.2rem; /* Adjust the font size as needed */
+}
+
+#cd-cart-trigger a sup {
+    color: #f44336; /* Adjust the color for the badge */
+    font-size: 0.8rem; /* Adjust the font size for the badge */
+    margin-left: 0; /* Add some spacing between the icon and badge */
+}
+
+#cd-cart-trigger ul {
+    list-style: none; /* Remove default bullet points */
+}
+
+#cd-cart-trigger.is-not-visible {
+    display: none;
+}
+
+#cd-cart {
+    position: fixed;
+    top: 0;
+    height: 100%;
+    width: 260px;
+    /* header height */
+    padding-top: 50px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+    z-index: 3;
+}
+
+@media only screen and (min-width: 768px) {
+    #cd-cart {
+        width: 350px;
+    }
+}
+@media only screen and (min-width: 1200px) {
+    #cd-cart {
+        width: 30%;
+        /* header height has changed */
+        padding-top: 80px;
+    }
+}
+
+#cd-cart {
+    right: -100%;
+    background: #FFF;
+    -webkit-transition: right 0.3s;
+    -moz-transition: right 0.3s;
+    transition: right 0.3s;
+}
+
+#cd-cart.speed-in {
+    right: 0;
+}
+
+#cd-cart > * {
+    padding: 0 1em;
+}
+
+#cd-cart h2 {
+    font-size: 14px;
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin: 1em 0;
+}
+
+#cd-cart .cd-cart-items {
+    padding: 0;
+}
+
+#cd-cart .cd-cart-items li {
+    position: relative;
+    padding: 1em;
+    border-top: 1px solid #e0e6ef;
+}
+
+#cd-cart .cd-cart-items li:last-child {
+    border-bottom: 1px solid #e0e6ef;
+}
+
+#cd-cart .cd-qty, #cd-cart .cd-price {
+    color: #a5aebc;
+}
+
+#cd-cart .cd-price {
+    margin-top: .4em;
+}
+
+#cd-cart .cd-item-remove {
+    position: absolute;
+    right: 1em;
+    top: 50%;
+    bottom: auto;
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    -o-transform: translateY(-50%);
+    transform: translateY(-50%);
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: url("../img/cd-remove-item.svg") no-repeat center center;
+}
+
+.no-touch #cd-cart .cd-item-remove:hover {
+    background-color: #e0e6ef;
+}
+
+#cd-cart .cd-cart-total {
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+#cd-cart .cd-cart-total span {
+    float: right;
+}
+
+#cd-cart .cd-cart-total::after {
+    /* clearfix */
+    content: '';
+    display: table;
+    clear: both;
+}
+
+#cd-cart .checkout-btn {
+    display: block;
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    background: #7dcf85;
+    color: #FFF;
+    text-align: center;
+}
+
+.no-touch #cd-cart .checkout-btn:hover {
+    background: #a2dda8;
+}
+
+#cd-cart .cd-go-to-cart {
+    text-align: center;
+    margin: 1em 0;
+}
+
+#cd-cart .cd-go-to-cart a {
+    text-decoration: underline;
+}
+
+@media only screen and (min-width: 1200px) {
+    #cd-cart > * {
+        padding: 0 2em;
+    }
+    #cd-cart .cd-cart-items li {
+        padding: 1em 2em;
+    }
+    #cd-cart .cd-item-remove {
+        right: 2em;
+    }
+}
+
+#cd-shadow-layer {
+    position: fixed;
+    min-height: 100%;
+    width: 100%;
+    top: 0;
+    left: 0;
+    background: rgba(67, 87, 121, 0.6);
+    cursor: pointer;
+    z-index: 2;
+    display: none;
+}
+
+
+#cd-shadow-layer.is-visible {
+    display: block;
+    -webkit-animation: cd-fade-in 0.3s;
+    -moz-animation: cd-fade-in 0.3s;
+    animation: cd-fade-in 0.3s;
+}
+
+.cd-img-replace {
+    white-space: nowrap;
+}
+
+/* Add styles for the close button */
+.cd-close-btn {
+    position: absolute;
+    top: 1em;
+    right: 1em;
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #26292f;
+}
+
+@-webkit-keyframes cd-fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@-moz-keyframes cd-fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes cd-fade-in {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}

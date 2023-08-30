@@ -1,5 +1,8 @@
-body{
+.body{
     overflow: auto;
+     
+        background-image: url("https://cdn.wallpapersafari.com/47/46/IOFTRN.jpg");
+   
 }
 
 .card {
