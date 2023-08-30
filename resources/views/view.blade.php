@@ -57,26 +57,29 @@
                                     <td><img src="{{ asset('images')}}/{{$detail->image}}" alt="" width="50px" height="50px"></td>
                     
                                    <td style="width:90%">{{$detail -> name}}
-                                    <button class="button" style="background-color: yellow; border-radius: 50%;"> x{{$detail -> quantity}}</button>
+                                    <button class="button" disabled style="background-color: yellow; border-radius: 50%;"> x{{$detail -> quantity}}</button>
                                     <br>
                                     <span style="color:red;">RM {{number_format($detail -> quantity * $detail -> price,2)}}</span>
                                     <br>
                                     <b>
-                                     @if(!empty($detail->addon))
+                                    @if (!empty($detail->addon))
                                         @php
                                             $addons = json_decode($detail->addon, true);
                                         @endphp
-                                    
-                                        @foreach($addons as $title => $addon)
-                                            @if($addon !== null)
-                                                {{$title}} - {{$addon}}
-                                                    @else
+                                
+                                        @foreach ($addons as $title => $addon)
+                                            @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
+                                                {{$title}} - {{$addon['name']}} <br> 
+                                                @if($addon['price'] > 0)
+                                                    <span class="text-danger">+ RM {{number_format($addon['price'] * $detail -> quantity,2)}}</span>
+                                                @endif
+                                                <input type="hidden" name="addon_price[]" value="{{$addon['price'] * $detail -> quantity}}">
+                                            @else
                                                 -
                                             @endif
                                         @endforeach
                                     @endif
-                                    @if  (empty($detail->addon))
-                                    @endif </b></td>
+                                    </b></td>
                                     
                                     <td style="width:10%"><center>
                                         <input type="hidden" name="grandprice" id="grandprice" readonly class="grandprice-input form-control-plaintext" value="{{number_format($detail -> quantity * $detail -> price,2)}}"/>
@@ -100,7 +103,7 @@
             <div class="d-flex align-items-center justify-content-center">
                 
                 <!-- Button trigger modal -->
-<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" style="border-radius: 2px;">
+<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal" style="border-radius: 60%; width:40px">
   <i class="fa fa-info"></i>
 </button>
 
@@ -154,34 +157,34 @@
     });
 </script>
 <script>
-    
     $("document").ready(function () {
-        
         var arr = document.getElementsByName('grandprice');
-        var tot=0.00;
-        for(var i=0;i<arr.length;i++){
-            if(parseFloat(arr[i].value))
+        var addonPrices = document.getElementsByName('addon_price[]');
+        
+        var tot = 0.00;
+        for (var i = 0; i < arr.length; i++) {
+            if (parseFloat(arr[i].value)) {
                 tot += parseFloat(arr[i].value);
+            }
         }
+        
+        // Add addon prices to the total
+        for (var i = 0; i < addonPrices.length; i++) {
+            if (parseFloat(addonPrices[i].value)) {
+                tot += parseFloat(addonPrices[i].value);
+            }
+        }
+    
         document.getElementById('total').value = tot.toFixed(2);
         document.getElementById('total2').innerHTML = tot.toFixed(2);
-        
-        if(document.getElementById('grandprice').value !== ""){
-            document.getElementById('grandprice2').innerHTML = document.getElementById('grandprice').value;   
-        }
-        else{
+    
+        if (document.getElementById('grandprice').value !== "") {
+            document.getElementById('grandprice2').innerHTML = document.getElementById('grandprice').value;
+        } else {
             document.getElementById('grandprice2').innerHTML = 0.00;
         }
-        
     });
-</script>
 
- <script type = "text/JavaScript">
-         <!--
-            function AutoRefresh( t ) {
-               setTimeout("location.reload(true);", t);
-            }
-         //-->
-      </script>
+</script>
 
 @endsection

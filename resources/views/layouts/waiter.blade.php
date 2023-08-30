@@ -43,6 +43,29 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+        .w3-sidebar {
+            color: white !important;
+            background-color: #007BFF !important;
+            transition: background-color 0.3s, color 0.3s !important;
+        }
+        
+        .w3-sidebar a{
+            text-decoration: none !important;
+        }
+    
+        .w3-sidebar a.w3-bar-item.w3-button:hover {
+            background-color: #0056b3 !important; /* Darker shade of blue */
+            color: white !important;
+        }
+        
+        .w3-dropdown-hover .w3-button:hover,
+        .w3-dropdown-hover .w3-button:focus {
+            background-color: #007bff; /* Hover/active background color */
+            color: white; /* Hover/active text color */
+        }
+    </style>
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-6TPCFRQFYP"></script>
     <script>
@@ -51,41 +74,6 @@
         gtag('js', new Date());
     
         gtag('config', 'G-6TPCFRQFYP');
-    </script>
-    <!-- Pusher -->
-    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
-    <script>
-        // Enable pusher logging - don't include this in production
-        Pusher.logToConsole = true;
-
-        var audio = new Audio('/sound/notification.mp3');
-        var pusher = new Pusher('472896e216249f1fefdb', {
-            cluster: 'ap1'
-        });
-        
-        var channel = pusher.subscribe('refresh2-channel');
-        channel.bind('refresh2', function(){
-            window.location.reload();
-        });
-        
-        var channel2 = pusher.subscribe('callWaiter-channel');
-        channel2.bind('call-waiter', function(data){
-            toastr.info("Table " + data.table + " calling.");
-            audio.play();
-            setTimeout(function() {
-                window.location.href = "{{ url('waiter/work') }}";
-            }, 2000);
-            
-        });
-
-        var channel3 = pusher.subscribe('donePrepare-channel');
-        channel3.bind('done-prepare', function(data) {
-            toastr.info("Table " + data.table_id + " has done preparing. Please serve it.");
-            audio.play();
-            setTimeout(function() {
-                window.location.href = "{{ url('waiter/work') }}";
-            }, 2000);
-        });
     </script>
 
     <style>
@@ -145,60 +133,52 @@
         <!-- Toastr -->
         @include('functions.toastr')
         <!-- Sidebar -->
-        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion toggled" id="accordionSidebar">
-            <!-- Sidebar - Brand -->
-            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="">
-                <div class="sidebar-brand-icon">
+        
+        <div class="w3-sidebar w3-bar-block w3-card w3-animate-left" style="display:none;" id="mySidebar">
+            <!-- Side Bar Title & Brand -->
+            <a class="w3-bar-item w3-button d-flex align-items-center justify-content-center" href="#">
+                <div class="sidebar-brand-icon mt-4 mb-3">
                     Waiter's Page
-                    <img src="https://cdn-icons-png.flaticon.com/512/3462/3462049.png" style="width:25px;height:25px;">
+                    <img src="https://cdn-icons-png.flaticon.com/512/1/1819.png" style="width:30px;height:30px">
                 </div>
             </a>
-
+            
             <!-- Divider -->
-            <hr class="sidebar-divider my-0">
+            <hr>
 
-            <li class="nav-item">
-                <a class="nav-link" href="{{url('waiter/placeOrder')}}">
-                    <i class="fas fa-fw fa-download"></i>
-                    <span>Place Order 下单</span>
-                </a>
-            </li>
+            <!-- Place Order -->
+            <a class="w3-bar-item w3-button" href="{{url('waiter/placeOrder')}}">
+                <i class="fas fa-fw fa-download"></i>
+                <span>Place Order 下单</span>
+            </a>
             
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('waiter/work') }}">
-                    <i class="fas fa-fw fa-tasks"><span class="badge badge-danger badge-counter">{{$count}}</span></i>
-                    <span>Work 工作</span>
-                </a>
-            </li>
-
+            <!-- Work -->
+            <a class="w3-bar-item w3-button" href="{{ url('waiter/work') }}">
+                <i class="fas fa-fw fa-tasks"></i>
+                <span>Work 工作<span class="badge badge-danger badge-counter ml-3">{{$count}}</span></span>
+            </a>
+            
+            <!-- Show Work -->
+            <a class="w3-bar-item w3-button" href="{{ url('waiter/showWork') }}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Show Work 显示工作</span>
+            </a>
+            
+            <!-- Show Order -->
+            <a class="w3-bar-item w3-button" href="{{ url('waiter/order') }}">
+                <i class="fas fa-fw fa-chart-area"></i>
+                <span>Report 报告</span>
+            </a>
+            
             <!-- Divider -->
-            <hr class="sidebar-divider">
-
-            <!-- Nav Item - Order -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('waiter/order') }}">
-                    <i class="fas fa-fw fa-tasks"></i>
-                    <span>Order 订单</span>
-                </a>
-            </li>
+            <hr class="mr-2 ml-2">
             
-            <!-- Nav Item - Order -->
-            <li class="nav-item">
-                <a class="nav-link" href="{{ url('waiter/showWork') }}">
-                    <i class="fas fa-fw fa-chart-area"></i>
-                    <span>Show Work 显示工作</span>
-                </a>
-            </li>
-            
-               <li class="nav-item">
-                <a class="nav-link" href="{{ url('/logout') }}">
-                    <i class="fas fa-fw fa-sign-out-alt "></i>
-                    <span>Logout 登出</span>
-                </a>
-            </li>
-
-
-        </ul>
+            <!-- Logout -->
+            <a class="w3-bar-item w3-button" href="{{ url('/logout') }}">
+                <i class="fa fa-sign-out"></i>
+                <span>Logout 登出</span>
+            </a>
+        </div>
         
         <!-- Content Wrapper -->
         <div id="content-wrapper" class="d-flex flex-column">
@@ -207,8 +187,8 @@
                 <!-- Topbar  -->
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
                     <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-                        <i class="fa fa-bars"></i>
+                    <button id="sidebar_bar" class="btn btn-link" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
                     </button>
                 
                     <!-- Topbar Navbar -->
@@ -282,9 +262,66 @@
                     scrollTop: $(document).height()
                 }, 800);
             });
+            
         });
     </script>
+    
+    <!-- Pusher -->
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script>
+        // Enable pusher logging - don't include this in production
+        Pusher.logToConsole = true;
 
+        var audio = new Audio('/sound/notification.mp3');
+        var pusher = new Pusher('472896e216249f1fefdb', {
+            cluster: 'ap1'
+        });
+        
+        var channel = pusher.subscribe('refresh2-channel');
+        channel.bind('refresh2', function(){
+            window.location.reload();
+        });
+        
+        var channel2 = pusher.subscribe('callWaiter-channel');
+        channel2.bind('call-waiter', function(data){
+            toastr.info("Table " + data.table + " calling.");
+            audio.play();
+            setTimeout(function() {
+                window.location.href = "{{ url('waiter/work') }}";
+            }, 2000);
+            
+        });
+
+        var channel3 = pusher.subscribe('donePrepare-channel');
+        channel3.bind('done-prepare', function(data) {
+            audio.play();
+            toastr.info("Table " + data.table_id + " has done preparing. Please serve it.");
+            setTimeout(function() {
+                window.location.href = "{{ url('waiter/work') }}";
+            }, 2000);
+        });
+    </script>
+    <script>
+        function toggleSidebar() {
+            var sidebar = document.getElementById("mySidebar");
+            var container = document.getElementById("content");
+            var sidebarBar = document.getElementById("sidebar_bar");
+    
+            if (sidebar.style.display === "none") {
+                // Open the sidebar
+                var sidebarWidth = window.innerWidth >= 768 ? '15%' : '50%';
+                container.style.marginLeft = sidebarWidth;
+                sidebar.style.width = sidebarWidth;
+                sidebar.style.display = "block";
+                sidebarBar.innerHTML = '<i class="fas fa-times"></i>';
+            } else {
+                // Close the sidebar
+                container.style.marginLeft = "0%";
+                sidebar.style.display = "none";
+                sidebarBar.innerHTML = '<i class="fas fa-bars"></i>';
+            }
+        }
+    </script>
 </body>
 
 </html>

@@ -68,8 +68,8 @@
                                         @endphp
                                         <ul style="list-style-type: disc; margin: 0;">
                                             @foreach($addons as $title => $addon)
-                                                @if($addon !== null)
-                                                    <li>{{$title}} - {{$addon}}</li>
+                                                @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
+                                                    <li>{{$title}} - {{$addon['name']}}</li>
                                                 @endif
                                             @endforeach
                                         </ul>   
@@ -126,8 +126,8 @@
                                         @endphp
                                         <ul style="list-style-type: disc; margin: 0;">
                                             @foreach($addons as $title => $addon)
-                                                @if($addon !== null)
-                                                    <li>{{$title}} - {{$addon}}</li>
+                                                @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
+                                                    <li>{{$title}} - {{$addon['name']}}</li>
                                                 @endif
                                             @endforeach
                                         </ul>   

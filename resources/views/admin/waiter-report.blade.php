@@ -30,7 +30,7 @@
         </div>
         <div class="col-sm-3">
             <button type="submit" class="btn btn-primary btn-sm" name="search" title="Search"><i class="fas fa-search"></i></button>
-            <a href="{{ url('admin/waiter') }}" class="btn btn-danger btn-sm ml-2 text-white" onclick="clearLocalStorage()" style="text-decoration: none;">Default</a>
+            <a href="{{ url('admin/waiter-report') }}" class="btn btn-danger btn-sm ml-2 text-white" onclick="clearLocalStorage()" style="text-decoration: none;">Default</a>
         </div>
     </div>
 </form>

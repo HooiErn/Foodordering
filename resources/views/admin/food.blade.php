@@ -159,12 +159,12 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <input type="hidden" class="form-control form-control-line" id="available" name="available" value="0">
+                        <input type="hidden" class="form-control form-control-line" id="available" name="available" value="1">
                         <div class="form-group">
                             <label for="foodImage">Food Image 食物图片</label>
                             <div class="custom-file">
-                                <input type="file" class="custom-file-input" id="foodImage" name="foodImage" onchange="changeFileName(this)" required>
-                                <label class="custom-file-label" id="foodImageLabel" for="foodImage">Choose file</label>
+                                <input type="file" class="custom-file-input food-image-input" id="foodImage" name="foodImage" required>
+                                <label class="custom-file-label food-image-label" for="foodImage">Choose file</label>
                             </div>
                         </div>
                         <div class="form-group">
@@ -254,7 +254,14 @@
                                 </div>
                                 @foreach($foodSelect->foodOption as $foodOption)
                                     <div class="form-group option-value-container">
-                                        <input type="text" name="edit_option[{{$index}}][]" class="form-control form-control-inline" value="{{$foodOption->name}}">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="text" name="edit_option[{{$index}}][]" class="form-control form-control-inline" value="{{$foodOption->name}}">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <input type="number" name="edit_option_price[{{$index}}][]" class="form-control form-control-inline" value="{{$foodOption->price}}" step="0.01" min="0">
+                                            </div>
+                                        </div>
                                     </div>
                                 @endforeach
                             @endforeach
@@ -277,76 +284,86 @@
 
 @foreach($categories as $category)
     <script>
-$(document).ready(function() {
-    var selectOptionsContainer = $('#select-options-container-{{$category->id}}');
-    var selectOptionTemplate = `
-        <div class="select-options" style="margin-bottom:10px;">
-            <div class="form-group">
-                <input type="text" class="form-control select-option-name" name="select_option_name[]" placeholder="Option Name {index}" required>
-            </div>
-            <div class="option-value-list">
-                <div class="form-group position-relative option-value-container">
-                    <input type="text" name="option_value_name[{optionValueIndex}][]" class="form-control form-control-inline option-value" placeholder="Option Value" style="width: 30%;" required>
-                    <button type="button" class="btn btn-danger delete-option-value" style="position: absolute; left: 30%; top:1%;"><i class="fa fa-trash"></i></button>
+        $(document).ready(function() {
+            var selectOptionsContainer = $('#select-options-container-{{$category->id}}');
+            var selectOptionTemplate = `
+                <div class="select-options" style="margin-bottom:10px;">
+                    <div class="form-group">
+                        <input type="text" class="form-control select-option-name" name="select_option_name[]" placeholder="Option Name {index}" required>
+                    </div>
+                    <div class="option-value-list">
+                        <div class="form-group position-relative option-value-container">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <input type="text" name="option_value_name[{optionValueIndex}][]" class="form-control form-control-inline option-value" placeholder="Option Value" required>
+                                </div>
+                                <div class="col-md-5">
+                                    <input type="number" name="option_value_price[{optionValueIndex}][]" class="form-control form-control-inline option-price" placeholder="Option Price (RM)" required step="0.01">
+                                </div>
+                                <div class="col-md-2">
+                                    <button type="button" class="btn btn-danger delete-option-value"><i class="fa fa-trash"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a type="button" class="btn btn-success btn-sm mb-1 text-white add-option-value" id="add-option-value"><i class="fa fa-plus text-white"></i> Add New Value</a>
+                    <button type="button" class="btn btn-danger btn-sm mb-1 delete-select-option" style="right: 0; bottom:0;"><i class="fa fa-trash"></i> Delete Option</button>
                 </div>
-            </div>
-            <a type="button" class="btn btn-success btn-sm mb-1 text-white add-option-value" id="add-option-value"><i class="fa fa-plus text-white"></i> Add New Value</a>
-            <button type="button" class="btn btn-danger btn-sm mb-1 delete-select-option" style="right: 0; bottom:0;"><i class="fa fa-trash"></i> Delete Option</button>
-        </div>
-    `;
-
-    var optionValueTemplate = `
-        <div class="form-group position-relative option-value-container">
-            <input type="text" name="option_value_name[{optionValueIndex}][]" class="form-control form-control-inline option-value" placeholder="Option Value" style="width: 30%;" required>
-            <button type="button" class="btn btn-danger delete-option-value" style="position: absolute; left: 30%; top:1%;"><i class="fa fa-trash"></i></button>
-        </div>
-    `;
-
-    var value = 0;
-
-    $('#add-select-option-{{$category->id}}').click(function() {
-        var values = {
-            optionValueIndex: value,
-            index: value + 1
-        };
-
-        var newSelectOption = $(selectOptionTemplate.replace(/\{(\w+)\}/g, function(match, placeholder) {
-            return values[placeholder];
-        }));
-        selectOptionsContainer.append(newSelectOption);
-        value++;
-    });
-
-    selectOptionsContainer.on('click', '.add-option-value', function() {
-        var optionValueList = $(this).closest('.select-options').find('.option-value-list');
-        var optionValueContainer = optionValueList.find('.option-value-container').last();
-        var optionValueIndex = optionValueContainer.find('input').attr('name').match(/\[(\d+)\]/)[1];
-        var newOptionValue = $(optionValueTemplate.replace(/\{optionValueIndex\}/g, optionValueIndex));
-        optionValueList.append(newOptionValue);
-    });
-
-    selectOptionsContainer.on('click', '.delete-option-value', function() {
-        var optionValueContainer = $(this).closest('.option-value-container');
-        if (optionValueContainer.siblings('.option-value-container').length > 0) {
-            optionValueContainer.remove();
-        } else {
-            $(this).closest('.option-value-list').remove();
-        }
-    });
-
-    selectOptionsContainer.on('click', '.delete-select-option', function() {
-        $(this).closest('.select-options').remove();
-        value--;
-    });
-});
-</script>
-
-<script>
-    function changeFileName(input) {
-        var fileName = input.value.split('\\').pop();
-        var label = document.getElementById('foodImageLabel');
-        label.innerHTML = fileName;
-    }
+            `;
+        
+            var optionValueTemplate = `
+                <div class="form-group position-relative option-value-container">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <input type="text" name="option_value_name[{optionValueIndex}][]" class="form-control form-control-inline option-value" placeholder="Option Value" required>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="number" name="option_value_price[{optionValueIndex}][]" class="form-control form-control-inline option-price" placeholder="Option Price (RM)" required step="0.01">
+                        </div>
+                        <div class="col-md-2">
+                            <button type="button" class="btn btn-danger delete-option-value"><i class="fa fa-trash"></i></button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        
+            var value = 0;
+        
+            $('#add-select-option-{{$category->id}}').click(function() {
+                var values = {
+                    optionValueIndex: value,
+                    index: value + 1
+                };
+        
+                var newSelectOption = $(selectOptionTemplate.replace(/\{(\w+)\}/g, function(match, placeholder) {
+                    return values[placeholder];
+                }));
+                selectOptionsContainer.append(newSelectOption);
+                value++;
+            });
+        
+            selectOptionsContainer.on('click', '.add-option-value', function() {
+                var optionValueList = $(this).closest('.select-options').find('.option-value-list');
+                var optionValueContainer = optionValueList.find('.option-value-container').last();
+                var optionValueIndex = optionValueContainer.find('input').attr('name').match(/\[(\d+)\]/)[1];
+                var newOptionValue = $(optionValueTemplate.replace(/\{optionValueIndex\}/g, optionValueIndex));
+                optionValueList.append(newOptionValue);
+            });
+        
+            selectOptionsContainer.on('click', '.delete-option-value', function() {
+                var optionValueContainer = $(this).closest('.option-value-container');
+                if (optionValueContainer.siblings('.option-value-container').length > 0) {
+                    optionValueContainer.remove();
+                } else {
+                    $(this).closest('.option-value-list').remove();
+                }
+            });
+        
+            selectOptionsContainer.on('click', '.delete-select-option', function() {
+                $(this).closest('.select-options').remove();
+                value--;
+            });
+        });
 </script>
 
 @endforeach

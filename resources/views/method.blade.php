@@ -89,9 +89,8 @@
                 </script>
             @endif
         @endif
-       <br><br><br>
-       
-       <center><h3><i>Table {{$table -> table_id}}</i></h3></center>
+       <br><br>
+       <center><h3 style="color:yellow; background-color:black;">NOBITA 大家勝</h3></center>
        <br>
         <div class="top">
             <div class="d-flex justify-content-center align-items-center">
@@ -109,13 +108,15 @@
                       <center><input class="form-check-input" type="radio" name="selection" value="2" id="takeAway" required>
                         <label class="form-check-label" for="tngRadio"><h6 style="color:blue;">&nbsp; Take Away 外带</h6></label></center>
                     </div>
-                      <br><br><br>
+                      <br><br>
                     <center> <h5>Please select your payment method :</h5> </center>
                     <center> <h5>请选择您的付款方式 :</h5> </center>
                     
                     <center><button class="button button1" type="submit" name="payment" value="1">Cash 现金 &nbsp;&nbsp;<img src="https://cdn-icons-png.flaticon.com/512/2704/2704312.png" style="width:50px;height:50px;"></button></center>
                     
-                   <center> <button class="button button2" type="submit" name="payment" value="2">Touch 'n Go 线上付款 &nbsp;&nbsp;<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSexKLDtXeIwF9mdCt_befE61MAFvBNyQxH_xLzUdY&s" style="width:50px;height:50px;"></button> </center>
+                    @if($value == 1)
+                    <center> <button class="button button2" type="submit" name="payment" value="2">Touch 'n Go 线上付款 &nbsp;&nbsp;<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSexKLDtXeIwF9mdCt_befE61MAFvBNyQxH_xLzUdY&s" style="width:50px;height:50px;"></button> </center>
+                    @endif
                 </form>
             </div>
          

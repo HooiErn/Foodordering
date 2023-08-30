@@ -52,6 +52,13 @@ Route::get('admin/dashboard', [AdminController::class, 'index'])->name('dashboar
 // Analytics
 Route::post('admin/analytics', [AdminController::class, 'analytics'])->name('analytics');
 
+// Bill
+Route::get('admin/bills', [AdminController::class,'bills'])->name('bills');
+Route::get('admin/allBills', [AdminController::class, 'allBills'])->name('allBills');
+Route::post('admin/allBills/searchDate', [AdminController::class, 'allBillsSearchDate'])->name('allBills.searchDate');
+Route::post('admin/bill_check', [AdminController::class, 'bill_check'])->name('bill_check');
+Route::post('admin/bill_uncheck', [AdminController::class, 'bill_uncheck'])->name('bill_uncheck');
+
 // Action List
 Route::get('admin/action-list', [AdminController::class, 'actionList']);
 Route::post('admin/addSubAccount', [AdminController::class, 'addSubAccount']);

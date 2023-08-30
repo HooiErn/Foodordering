@@ -15,7 +15,7 @@
         <div class="col-md-4 mb-2">
             <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between p-1 m-1">
-                    <h5 class="card-title">Table {{$order->table_id}} {{$order -> orderID}}</h5>
+                    <h5 class="card-title">Table {{$order->table_id}}</h5>
                     <div>
                         
                     <!--<a class="btn btn-primary btn-sm text-white" href="{{ url('kitchen/printReceipt', ['id' => $order->orderID]) }}" target="_blank">Print</a>-->
@@ -31,8 +31,8 @@
                             @endphp
                             <ul style="list-style-type: disc; margin: 0;">
                                 @foreach($addons as $title => $addon)
-                                    @if($addon !== null)
-                                        <li>{{$title}} - {{$addon}}</li>
+                                    @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
+                                        <li>{{$title}} - {{$addon['name']}}</li>
                                     @endif
                                 @endforeach
                             </ul>   
@@ -77,8 +77,8 @@
                             @endphp
                             <ul style="list-style-type: disc; margin: 0;">
                                 @foreach($addons as $title => $addon)
-                                    @if($addon !== null)
-                                        <li>{{$title}} - {{$addon}}</li>
+                                    @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
+                                        <li>{{$title}} - {{$addon['name']}}</li>
                                     @endif
                                 @endforeach
                             </ul>   

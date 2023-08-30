@@ -72,21 +72,40 @@
                                                                                     <tbody>
                                                                                         @foreach($carts as $cart)
                                                                                             <tr>
-                                                                                                <td>{{$cart -> name}} &nbsp;<span class="text-info"> x{{$cart -> quantity}}</span>
+                                                                                                <td>
+                                                                                                    {{$cart->name}} &nbsp;<span class="text-info"> x{{$cart->quantity}}</span>
                                                                                                     @if(!empty($cart->addon))
                                                                                                         @php
                                                                                                             $addons = json_decode($cart->addon, true);
                                                                                                         @endphp
                                                                                                         <ul style="list-style-type: disc; margin: 0;">
                                                                                                             @foreach($addons as $title => $addon)
-                                                                                                                @if($addon !== null)
-                                                                                                                    <li>{{$title}} - {{$addon}}</li>
+                                                                                                                @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
+                                                                                                                    <li>
+                                                                                                                        {{$title}} - {{$addon['name']}}
+                                                                                                                    </li>
                                                                                                                 @endif
                                                                                                             @endforeach
                                                                                                         </ul>   
                                                                                                     @endif
                                                                                                 </td>
-                                                                                                <td class="alignright">RM {{number_format($cart -> price * $cart -> quantity,2)}}</td>
+                                                                                                <td class="alignright">
+                                                                                                    RM {{number_format($cart->price * $cart->quantity, 2)}}
+                                                                                                    @if(!empty($cart->addon))
+                                                                                                        @php
+                                                                                                            $addons = json_decode($cart->addon, true);
+                                                                                                        @endphp
+                                                                                                        <ul style="list-style-type: none; margin: 0; padding: 0;">
+                                                                                                            @foreach($addons as $title => $addon)
+                                                                                                                @if (is_array($addon) && isset($addon['name']) && isset($addon['price']) && $addon['price'] > 0)
+                                                                                                                    <li>
+                                                                                                                        + RM {{number_format($addon['price'] * $cart -> quantity, 2)}}
+                                                                                                                    </li>
+                                                                                                                @endif
+                                                                                                            @endforeach
+                                                                                                        </ul>   
+                                                                                                    @endif
+                                                                                                </td>
                                                                                             </tr>
                                                                                         @endforeach
                                                                                         <tr class="total">

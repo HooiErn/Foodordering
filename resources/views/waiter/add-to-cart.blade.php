@@ -82,7 +82,7 @@
             width: 85%; /* Width for mobile screens (90% of the screen) */
         }
     }
-    
+
     #cd-cart {
         right: -100%;
         background: #FFF;
@@ -330,9 +330,34 @@
         <ul class="cd-cart-items">
             @foreach($carts->where('orderID',null) as $cart)
                 <li>
-                    <span class="cd-qty">{{$cart -> quantity}}x</span> {{$cart -> fName}}
-                    <div class="cd-price" name="amount">RM {{number_format($cart -> fPrice * $cart -> quantity,2)}}</div>
-                    <a href="{{ url('deleteCart',['id' =>$cart -> id])}}" style="text-decoration: none;" class="cd-item-remove cd-img-replace">Remove</a>
+                    <span class="cd-qty">{{$cart->quantity}}x</span> {{$cart->fName}} -
+                    @if(!empty($cart->addon))
+                        @php
+                            $addons = json_decode($cart->addon, true);
+                            $addonTotal = 0.00;
+                        @endphp
+                        @foreach($addons as $title => $addon)
+                            @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
+                                {{$addon['name']}}
+                            @endif
+                        @endforeach
+                    @endif
+                    <div class="cd-price" name="amount">
+                        @if(!empty($cart->addon))
+                            @php
+                                $addons = json_decode($cart->addon, true);
+                                $addonTotal = 0.00;
+                            @endphp
+                            @foreach($addons as $title => $addon)
+                                @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
+                                    RM {{number_format(($cart->fPrice * $cart->quantity) + ($addon['price'] * $cart -> quantity), 2)}}
+                                @endif
+                            @endforeach
+                        @else
+                            RM {{number_format(($cart->fPrice * $cart->quantity),2)}}
+                        @endif
+                    </div>
+                    <a href="{{ url('deleteCart',['id' =>$cart->id])}}" style="text-decoration: none;" class="cd-item-remove cd-img-replace">Remove</a>
                 </li>
             @endforeach
         </ul>
@@ -382,7 +407,7 @@
                 </div> 
             </div>
         </div>
-        <div class="table-responsive">
+        <div class="table-responsive" style="font-size:12px;">
             <table class="table table-border results">
                 <thead>
                     <tr>
@@ -397,19 +422,25 @@
                     </tr>
                 </thead>
                 <tbody>
+                     @php
+                        $counter = 1;
+                    @endphp
                     @foreach($foods as $food)
-                            <tr class="p-0 m-0">
-                                <td>{{$food -> id}}</td>
-                                <td><img src="{{ asset('images/')}}/{{$food -> image}}" width="60px" height="60px"></td>
-                                <td>{{$food -> name}}</td>
-                                <td>{{number_format($food -> price,2)}}</td>
-                                @if($food -> available == 0)
-                                    <td><a href="#" style="pointer-events: none; cursor: default;" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a></td>
-                                @elseif($food -> available == 1)
-                                    <td><a class="btn btn-sm btn-success" style="color: white;" data-toggle="modal" data-target=".food{{$food -> id}}"><i class="fas fa-shopping-cart"></i></a></td>
-                                @endif
-                            </tr>
-                    @endforeach    
+                        <tr class="p-0 m-0">
+                            <td>{{$counter }}</td>
+                            <td><img src="{{ asset('images/')}}/{{$food -> image}}" width="60px" height="80px"></td>
+                            <td class="pr-0">{{$food -> name}}</td>
+                            <td>{{number_format($food -> price,2)}}</td>
+                            @if($food -> available == 0)
+                                <td><a href="#" style="pointer-events: none; cursor: default;" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a></td>
+                            @elseif($food -> available == 1)
+                                <td><a class="btn btn-xs btn-success" style="color: white;" data-toggle="modal" data-target=".food{{$food -> id}}"><i class="fas fa-shopping-cart"></i></a></td>
+                            @endif
+                        </tr>
+                          @php
+                            $counter++;
+                        @endphp
+                    @endforeach   
                 </tbody>
             </table>
         </div>
@@ -430,31 +461,33 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="input-group quantity">
-                    <!--<div class="input-group-prepend decrement-btn changeQuantity">-->
-                    <!--    <span class="input-group-text">-</span>-->
-                    <!--</div>-->
-                    <input type="hidden" class="price-input form-control" name="price" id="price" value="{{$food -> price}}">
-                    <input type="number" class="qty-input form-control text-center" name="quantity" id="quantity" value="1" @if($food->stock !== null) max="{{$food->stock}}"@endif>
-                    <!--<div class="input-group-append increment-btn changeQuantity">-->
-                    <!--    <span class="input-group-text">+</span>-->
-                    <!--</div>-->
+                <div class="input-group">
+                    <span class="input-group-prepend">
+                        <button class="btn btn-outline-secondary decreaseBtn" type="button" id="decreaseBtn" data-target="#quantity_{{ $food->id }}">-</button>
+                    </span>
+                    <input type="hidden" class="price-input form-control" name="price" id="price" value="{{$food->price}}">
+                    <input type="number" class="form-control form-control-inline quantity-input" readonly id="quantity_{{ $food->id }}" name="quantity" min="1" @if($food->stock !== null) max="{{ $food->stock }}" @else max="9999" @endif value="1" style="text-align: center;">
+                    <span class="input-group-append">
+                        <button class="btn btn-outline-secondary increaseBtn" type="button" id="increaseBtn" data-target="#quantity_{{ $food->id }}">+</button>
+                    </span>
                 </div>
                 
                 @if(count($food -> foodSelect))
                     <div class="row text-center pt-3 pl-3">
                         @foreach($food->foodSelect as $foodSelect)
                             <input type="hidden" value="{{ $foodSelect->name }}" name="select[{{$foodSelect->id}}]">
-                            <div class="col-md-6" style="width:50%;">
-                                <strong>{{ $foodSelect->name }}</strong>
+                            <div class="col-md-11">
+                                
+                               <center> <strong>{{ $foodSelect->name }}</strong> </center>
                                 @foreach($foodSelect->foodOption as $foodOption)
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}">
+                                        <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}" data-price="{{$foodOption->price}}" required>
                                         <label class="form-check-label">
-                                            {{ $foodOption->name }}
+                                            {{ $foodOption->name }} +RM {{number_format($foodOption->price, 2)}}
                                         </label>
                                     </div>
                                 @endforeach
+                                </center>
                             </div>
                         @endforeach
                     </div>
@@ -570,31 +603,35 @@
 </script>
 
 <script type="text/javascript">
-    // $(document).ready(function () {
+    $(document).ready(function () {
 
-    //     $('.increment-btn').click(function (e) {
-    //         e.preventDefault();
-    //         var incre_value = $(this).parents('.quantity').find('.qty-input').val();
-    //         var value = parseInt(incre_value, 10);
-    //         value = isNaN(value) ? 0 : value;
-    //         if(value<10){
-    //             value++;
-    //             $(this).parents('.quantity').find('.qty-input').val(value);
-    //         }
-
-    //     });
-
-    //     $('.decrement-btn').click(function (e) {
-    //         e.preventDefault();
-    //         var decre_value = $(this).parents('.quantity').find('.qty-input').val();
-    //         var value = parseInt(decre_value, 10);
-    //         value = isNaN(value) ? 0 : value;
-    //         if(value>1){
-    //             value--;
-    //             $(this).parents('.quantity').find('.qty-input').val(value);
-    //         }
-    //     });
-    // });
+         $(".increaseBtn").click(function() {
+                var targetInput = $($(this).data("target"));
+                var max = targetInput.attr("max");
+                var currentValue = parseInt(targetInput.val());
+        
+                if (isNaN(currentValue)) {
+                    currentValue = 0;
+                }
+        
+                if (!isNaN(max) && currentValue < parseInt(max)) {
+                    targetInput.val(currentValue + 1);
+                }
+            });
+        
+            $(".decreaseBtn").click(function() {
+                var targetInput = $($(this).data("target"));
+                var currentValue = parseInt(targetInput.val());
+        
+                if (isNaN(currentValue)) {
+                    currentValue = 0;
+                }
+        
+                if (currentValue > 1) {
+                    targetInput.val(currentValue - 1);
+                }
+            });
+    });
     
 </script>
 

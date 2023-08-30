@@ -192,9 +192,10 @@
                                 </div>
                                 <div class="col-auto mr-2">
                                     @if($food -> available == 0)
-                                        <a class="btn btn-danger rounded-10 text-white" disabled>Out of stock<br>缺货</a>
+                                        <a class="btn btn-danger rounded-10 text-white" style="font-size: 13px;;" disabled>Out of stock<br>缺货</a>
                                     @elseif($food -> available == 1)
-                                        <a href="" data-toggle="modal" data-target="#food{{$food -> id}}" class="btn btn-success rounded-10">Add To Cart<br>加入购物车</a>
+                                        <a href="" data-toggle="modal" data-target="#food{{$food -> id}}" class="btn btn-success rounded-10" 
+                                        style="font-size: 15px;">Add To Cart<br>加入购物车</a>
                                     @endif
                                 </div>
                             </div>
@@ -211,14 +212,16 @@
                                            <h3 class="title" style="font-size: 20px; font-weight: bold;">Select Quantity 选择数量</h3>
                                         </div>
                                         <div class="input-group quantity">
-                                            <!--<div class="input-group-prepend decrement-btn changeQuantity">-->
-                                            <!--    <span class="input-group-text">-</span>-->
-                                            <!--</div>-->
-                                            <input type="hidden" class="price-input form-control" name="price" id="price" value="{{$food->price}}">
-                                            <input type="number" class="qty-input form-control text-center" name="quantity" id="quantity" value="1" min="1" @if($food->stock !== null) max="{{$food->stock}}"@endif>
-                                            <!--<div class="input-group-append increment-btn changeQuantity">-->
-                                            <!--    <span class="input-group-text">+</span>-->
-                                            <!--</div>-->
+                                            <div class="input-group">
+                                                <span class="input-group-prepend">
+                                                    <button class="btn btn-outline-secondary decreaseBtn" type="button" id="decreaseBtn" data-target="#quantity_{{ $food->id }}">-</button>
+                                                </span>
+                                                <input type="hidden" class="price-input form-control" name="price" id="price" value="{{$food->price}}">
+                                                <input type="number" class="form-control form-control-inline quantity-input" readonly id="quantity_{{ $food->id }}" name="quantity" min="1" @if($food->stock !== null) max="{{ $food->stock }}" @else max="9999" @endif value="1" style="text-align: center;">
+                                                <span class="input-group-append">
+                                                    <button class="btn btn-outline-secondary increaseBtn" type="button" id="increaseBtn" data-target="#quantity_{{ $food->id }}">+</button>
+                                                </span>
+                                            </div>
                                         </div>
                                         
                                         @if(count($food -> foodSelect))
@@ -230,9 +233,9 @@
                                                        <center> <strong>{{ $foodSelect->name }}</strong> </center>
                                                         @foreach($foodSelect->foodOption as $foodOption)
                                                             <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}" {{ ($foodOption->name == 'Dive In' || $foodOption->name == 'Take Away') ? 'required' : '' }}>
+                                                                <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}" data-price="{{$foodOption->price}}" required>
                                                                 <label class="form-check-label">
-                                                                    {{ $foodOption->name }}
+                                                                    {{ $foodOption->name }} +RM {{number_format($foodOption->price, 2)}}
                                                                 </label>
                                                             </div>
                                                         @endforeach
@@ -310,29 +313,33 @@
         <script>
             $(document).ready(function () {
         
-                // $('.increment-btn').click(function (e) {
-                //     e.preventDefault();
-                //     var incre_value = $(this).siblings('.qty-input').val(); // Use .siblings() to find the quantity input
-                //     var value = parseInt(incre_value, 10);
-                //     value = isNaN(value) ? 0 : value;
-                //     if (value < 10) {
-                //         value++;
-                //     }
-                //     $(this).siblings('.qty-input').val(value); // Use .siblings() to update the quantity input
-                // });
-                
-                // $('.decrement-btn').click(function (e) {
-                //     e.preventDefault();
-                //     var decre_value = $(this).siblings('.qty-input').val(); // Use .siblings() to find the quantity input
-                //     var value = parseInt(decre_value, 10);
-                //     value = isNaN(value) ? 0 : value;
-                //     if (value > 1) {
-                //         value--;
-                //     }
-                //     $(this).siblings('.qty-input').val(value); // Use .siblings() to update the quantity input
-                // });
+                $(".increaseBtn").click(function() {
+                    var targetInput = $($(this).data("target"));
+                    var max = targetInput.attr("max");
+                    var currentValue = parseInt(targetInput.val());
+            
+                    if (isNaN(currentValue)) {
+                        currentValue = 0;
+                    }
+            
+                    if (!isNaN(max) && currentValue < parseInt(max)) {
+                        targetInput.val(currentValue + 1);
+                    }
+                });
+            
+                $(".decreaseBtn").click(function() {
+                    var targetInput = $($(this).data("target"));
+                    var currentValue = parseInt(targetInput.val());
+            
+                    if (isNaN(currentValue)) {
+                        currentValue = 0;
+                    }
+            
+                    if (currentValue > 1) {
+                        targetInput.val(currentValue - 1);
+                    }
+                });
 
-                
                 var table = document.getElementById("table_id").value;
                 if (window.location.href.indexOf('_token=') !== -1) {
                     window.location.href = "/home/" + table;

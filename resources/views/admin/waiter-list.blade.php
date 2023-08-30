@@ -92,15 +92,19 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <input list="brow">
-<datalist id="brow">
-  <option value="Internet Explorer">
-  <option value="Firefox">
-  <option value="Chrome">
-  <option value="Opera">
-  <option value="Safari">
-</datalist>  
-                    <button type="submit" class="btn btn-primary">Create 添加</button>
+                    <div class="col-md-12">
+                        <label for="w_name">Waiter Name 服务员名字</label>
+                        <input type="text" class="form-control form-control-inline" name="w_name">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="w_password">Password 密码</label>
+                        <input type="password" class="form-control form-control-inline" name="w_password">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="w_confirm_password">Confirm Password 确认密码</label>
+                        <input type="password" class="form-control form-control-inline" name="w_confirm_password">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-2">Register 注册</button>
                 </div>
             </div>
         </div>

@@ -144,13 +144,16 @@
                 }
             }
             .navbar {
-    
-      height: 60px; /* Adjust the height as needed */
-      justify-content: center;
-      align-items: center;
-       display: flex;
-      padding: 10px; /* Adjust the padding as needed */
-    }
+              height: 60px; /* Adjust the height as needed */
+              justify-content: center;
+              align-items: center;
+               display: flex;
+              padding: 10px; /* Adjust the padding as needed */
+            }
+            .fa-shopping-cart::before{
+                position:relative;
+                bottom:4px;
+            }
 
         </style>
     </head>
@@ -170,9 +173,21 @@
                 @php
                     $itemTotal = $cart->quantity * $cart->price;
                     $cartTotal += $itemTotal;
+            
+                    if (!empty($cart->addon)) {
+                        $addons = json_decode($cart->addon, true);
+            
+                        foreach ($addons as $addon) {
+                            if (is_array($addon) && isset($addon['price'])) {
+                                $cartTotal += ($addon['price'] * $cart -> quantity);
+                            }
+                        }
+                    }
                 @endphp
             @endforeach
-         <a class="navbar" href="#">  <a href="{{ url('viewCart',['id' => $table -> table_id]) }}" class="fa fa-shopping-cart fa-fade"  style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;font-size:25px;color:white;">&nbsp;<span style="color:red; font-size:25px;"><sup>{{count($carts->where('table_id',$table -> table_id)->where('orderID',null))}}</> &nbsp; Cart 购物单 </span> &nbsp;</a></a> <h5 style="color:white;">RM {{$cartTotal}}</h5>  
+            
+            
+         <a class="navbar" href="#">  <a href="{{ url('viewCart',['id' => $table -> table_id]) }}" class="fa fa-shopping-cart fa-fade"  style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;font-size:25px;color:white;">&nbsp;<span style="color:red; font-size:25px;"><sup style="font-size:18px;">{{count($carts->where('table_id',$table -> table_id)->where('orderID',null))}}</> &nbsp; Cart 购物单 </span> &nbsp;</a></a> <h5 style="color:white;">RM {{$cartTotal}}</h5>  
          
     </nav> 
         

@@ -113,8 +113,9 @@
         <nav class="navbar navbar-expand-md navbar-dark bg-dark shadow-sm">
             <div class="container">
                  <a href="#" onclick="home({{$table -> table_id}})"><i class="fa fa-arrow-left" aria-hidden="true" style="color: white;"></i></a>
+                  <center><h3 style="color:yellow;">NOBITA 大家勝</h3></center>
                 <a class="navbar-brand" href="">
-                   Table {{str_pad($table -> table_id,3,'0',STR_PAD_LEFT)}}
+                  
                 </a>
             </div>
         </nav>
