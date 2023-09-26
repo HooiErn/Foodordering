@@ -36,59 +36,8 @@
 </form>
 
 <div class="row">
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Earnings 收入 (Cash 现金)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">RM {{number_format($orders -> where("status", 1) -> where("payment_method",1) -> sum("amount"),2)}}</div>
-                    </div>
-                    <div class="col-auto">
-                       <img src="https://cdn-icons-png.flaticon.com/128/2704/2704312.png" style="width:50px;height:50px;">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-3 col-md-6 mb-4">
-        <div class="card border-left-success shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                            Earnings 收入 (Tng 线上付款)</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">RM {{number_format($orders -> where("status", 1) -> where("payment_method",2) -> sum("amount"),2)}}</div>
-                    </div>
-                    <div class="col-auto">
-                       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSexKLDtXeIwF9mdCt_befE61MAFvBNyQxH_xLzUdY&s" style="width:50px;height:50px;">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-xl-6 col-md-6 mb-4">
-        <div class="card border-left-primary shadow h-100 py-2">
-            <div class="card-body">
-                <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                            Successful Bill 成功的账单</div>
-                        <div class="h5 mb-0 font-weight-bold text-gray-800">{{count($orders -> where("status", 1))}}</div>
-                    </div>
-                    <div class="col-auto">
-                       <img src="https://cdn-icons-png.flaticon.com/128/1052/1052856.png" style="width:50px;height:50px;">
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
         <div class="table-responsive ml-5 mr-5">
-            <table class="table table-bodered">
+            <table class="table table-bodered" id="body">
                 <thead>
                     <tr>
                         <td>Name 名字</td>
@@ -102,16 +51,16 @@
                     @foreach($waiters -> where('deleted', 1) as $waiter)
                     <tr>
                         <td><a href="#" onclick="view('{{$waiter -> name}}')" style="text-decoration: none;">{{$waiter -> name}}</a></td>
-                        <td><span name="cash">{{number_format($orders -> where("waiter", $waiter -> name) -> where("status", 1) -> where("payment_method",1) -> sum("amount"),2)}}</span></td>
-                        <td><span name="tng">{{number_format($orders -> where("waiter", $waiter -> name) -> where("status", 1) -> where("payment_method",2) -> sum("amount"),2)}}</span></td>
-                        <td>{{count($orders -> where("waiter", $waiter -> name) -> where("status", 1))}}</td>
+                        <td><span class="cash">RM {{number_format($orders -> where("waiter", $waiter -> name) -> where("payment_method",1) -> sum("amount"),2)}}</span></td>
+                        <td><span class="tng">RM {{number_format($orders -> where("waiter", $waiter -> name) -> where("payment_method",2) -> sum("amount"),2)}}</span></td>
+                        <td>{{count($orders -> where("waiter", $waiter -> name))}}</td>
                         <td>{{count($works -> where('waiter', $waiter -> name))}}</td>
                     </tr>
                     @endforeach
                     <tr>
                         <td class="text-right"> <b>Total总和 :</b></td>
-                        <td><b><span id="t-cash"></span></b></td>
-                        <td><b><span id="t-tng"></span></b></td>
+                        <td><b><span class="t-cash"></span></b></td>
+                        <td><b><span class="t-tng"></span></b></td>
                         <td><b>{{count($orders -> where('status',1))}}</b></td>
                         <td><b>{{count($works -> where('waiter','!=',null))}}</b></td>
                     </tr>
@@ -123,24 +72,47 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-    $(document).ready(function(){
-        var cash = document.getElementsByName("cash");
-        var tng = document.getElementsByName("tng");
-        var cashTot = 0.00;
-        var touchTot = 0.00;
-        for(var i=0;i<cash.length;i++){
-            if(parseFloat(cash[i].innerHTML))
-                cashTot += parseFloat(cash[i].innerHTML);
-        }
-        for(var i=0;i<tng.length;i++){
-            if(parseFloat(tng[i].innerHTML))
-                touchTot += parseFloat(tng[i].innerHTML);
-        }
-        document.getElementById('t-tng').innerHTML = touchTot.toFixed(2);
-        document.getElementById('t-cash').innerHTML = cashTot.toFixed(2);
+    $(document).ready(function() {
+        var $body = $('#body');
         
-    })
+        function calculate() {
+            var cashTot = 0.00;
+            var tngTot = 0.00;
+    
+            // Loop through the rows and sum up the order amounts
+            $body.find('.cash').each(function() {
+                var amountText = $(this).text().trim(); // Remove leading/trailing spaces
+                var amountValue = parseFloat(amountText.replace('RM', '').replace(',', '')); // Remove "RM" and parse
+                cashTot += amountValue;
+            });
+            
+            $body.find('.tng').each(function() {
+                var amountText = $(this).text().trim(); // Remove leading/trailing spaces
+                var amountValue = parseFloat(amountText.replace('RM', '').replace(',', '')); // Remove "RM" and parse
+                tngTot += amountValue;
+            });
+            
+            // Format and display the total amounts using Intl.NumberFormat
+            var formatter = new Intl.NumberFormat('en-MY', {
+                style: 'currency',
+                currency: 'MYR',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            
+            $body.find('.t-cash').each(function(){
+                $(this).text(formatter.format(cashTot));
+            })
+            
+            $body.find('.t-tng').each(function(){
+                $(this).text(formatter.format(tngTot));
+            })
+        }
+        
+        calculate();
+    });
 </script>
+
 <script scr="text/javascript">
     function view(name){
         console.log(name);
@@ -152,16 +124,20 @@
         $('.close').on('click', function() {
             $(this).closest('.modal').modal('hide');
         });
-    });
-</script>
-
-<script>
-    function clearLocalStorage() {
-        localStorage.removeItem("fromDate");
-        localStorage.removeItem("toDate");
-    }
-
-    $(document).ready(function() {
+        
+        // Get the current date in YYYY-MM-DD format
+        var today = new Date().toISOString().split('T')[0];
+    
+        // Set the current date as the default value for the input field
+        document.getElementById('to').value = today;
+        
+        document.getElementById('from').value = today;
+        
+        function clearLocalStorage() {
+            localStorage.removeItem("fromDate");
+            localStorage.removeItem("toDate");
+        }
+        
         // Get the default dates from localStorage or set them to today's date
         var fromDate = localStorage.getItem("fromDate") || new Date().toISOString().split('T')[0];
         var toDate = localStorage.getItem("toDate") || new Date().toISOString().split('T')[0];

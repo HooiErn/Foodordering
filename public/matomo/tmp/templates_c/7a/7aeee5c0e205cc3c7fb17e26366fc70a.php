@@ -70,6 +70,6 @@ class __TwigTemplate_61c1a0083d14a0869f5d1176b70dce29 extends Template
 {% else %}
     <link rel=\"shortcut icon\" href=\"plugins/CoreHome/images/favicon.png\"/>
     <link rel=\"icon\" type='image/png' sizes='256x256' href=\"plugins/CoreHome/images/applogo_256.png\"/>
-{% endif %}", "@CoreHome/_favicon.twig", "/home/u333978671/domains/ctosweb.com/public_html/Food_Order/public/matomo/plugins/CoreHome/templates/_favicon.twig");
+{% endif %}", "@CoreHome/_favicon.twig", "/home/u333978671/domains/ctosweb.com/public_html/Nobita/public/matomo/plugins/CoreHome/templates/_favicon.twig");
     }
 }

@@ -257,7 +257,7 @@ class CartController extends Controller
 
     
     private function checkAndUpdateAvailability($food){
-        if ($food->stock === 0) {
+        if ($food->stock === 0 ||$food -> stock == null) {
             // Set $food->available to 2
             $food->available = 0;
             // Save the updated $food object to the database (or your data store)

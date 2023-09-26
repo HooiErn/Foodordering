@@ -20,6 +20,7 @@ use App\Models\User;
 use App\Events\AdminRefresh;
 use App\Events\Refresh2;
 use App\Events\WaiterResponse;
+use Illuminate\Support\Facades\Hash;
 use Session;
 use Carbon\Carbon;
 use Cookie;
@@ -40,6 +41,27 @@ class WaiterController extends Controller
     //Scan
     public function scan(){
         return view('waiter/scan');
+    }
+    
+    // Change Password
+    public function changePassword(Request $request){
+        $user = Auth::user();
+        $validator = Validator::make($request->all(), [
+            'new_password' => 'max:12',
+            'confirm_password' => 'same:new_password',
+        ]);
+        
+        if($validator -> fails()){
+            Toastr::error('Invalid input please try again.', 'Validate Fail', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect()->back()->withInput()->withErrors($validator);
+        }
+        
+        $user -> updated_at = Carbon::now();
+        $user -> password = Hash::make($request -> new_password);
+        $user -> save();
+        
+        Toastr::success('You have successfully change your password','Success',["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+        return redirect()->back();
     }
     
     public function onload(Request $request){
@@ -130,14 +152,14 @@ class WaiterController extends Controller
     public function viewTakenOrder(Request $request)
     {
         $waiter = User::where('name',Auth::user()->name)->first();
-        $orders = Order::where('waiter',Auth::user()->name)->whereDate('serve_time', now()->toDateString())->get();
+        $orders = Order::where('waiter',Auth::user()->name)->whereDate('created_at', now()->toDateString())->get();
 
         return view('waiter.viewOrder',compact('waiter','orders'));
     }
     
     public function searchDate(Request $request){
         $waiter = User::where('name', Auth::user()->name)->first();
-        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->where('waiter',$waiter -> name)->get();
+        $orders = Order::whereDate('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->whereDate('waiter',$waiter -> name)->get();
         
         return view('waiter.viewOrder', compact('waiter', 'orders'));
     }
@@ -169,14 +191,31 @@ class WaiterController extends Controller
         return view('waiter/placeOrder',compact('tables'));
     }
     
+    public function placeOrder2(){
+        $tables = Table::all();
+        return view('waiter/placeOrder2',compact('tables'));
+    }
+    
     public function addToCart($id){
         $table = Table::where('table_id',$id)->first();
         $foods = Food::all();
+        $categories = Category::all();
         $carts = WaiterCart::leftjoin('food','waiter_carts.food_id','=','food.id')
         ->select('waiter_carts.*','food.name as fName', 'food.price as fPrice', 'food.image as fImage')
         ->where('table_id',$id)->where('orderID',null)->get();
 
-        return view('waiter/add-to-cart', compact('table','foods','carts'));
+        return view('waiter/add-to-cart', compact('table','foods','carts','categories'));
+    }
+    
+    public function addToCart2($id){
+        $table = Table::where('table_id',$id)->first();
+        $foods = Food::all();
+        $categories = Category::all();
+        $carts = WaiterCart::leftjoin('food','waiter_carts.food_id','=','food.id')
+        ->select('waiter_carts.*','food.name as fName', 'food.price as fPrice', 'food.image as fImage')
+        ->where('table_id',$id)->where('orderID',null)->get();
+
+        return view('waiter/add-to-cart2', compact('table','foods','carts','categories'));
     }
     
     public function work(){

@@ -183,7 +183,7 @@
                         <div class="card shadow">
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                    <img src="{{ asset('images/')}}/{{$food -> image}}" width="100px" height="100px">
+                                   <a href="{{ asset('images/')}}/{{$food -> image}}"> <img src="{{ asset('images/')}}/{{$food -> image}}" width="120px" height="150px"></a>
                                 </div>
                                 <div class="col ml-2">
                                     <div class="h6 text-xs font-weight-bold text-primary text-uppercase mb-1">{{$food -> name}}</div>
@@ -227,21 +227,28 @@
                                         @if(count($food -> foodSelect))
                                             <div class="row text-center pt-3 pl-3">
                                                 @foreach($food->foodSelect as $foodSelect)
-                                                    <input type="hidden" value="{{ $foodSelect->name }}" name="select[{{$foodSelect->id}}]">
-                                                    <div class="col-md-11">
-                                                        
-                                                       <center> <strong>{{ $foodSelect->name }}</strong> </center>
-                                                        @foreach($foodSelect->foodOption as $foodOption)
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}" data-price="{{$foodOption->price}}" required>
-                                                                <label class="form-check-label">
-                                                                    {{ $foodOption->name }} +RM {{number_format($foodOption->price, 2)}}
-                                                                </label>
-                                                            </div>
-                                                        @endforeach
-                                                        </center>
-                                                    </div>
-                                                @endforeach
+    <input type="hidden" value="{{ $foodSelect->name }}" name="select[{{$foodSelect->id}}]">
+    <div class="col-md-11">
+        <center><strong>{{ $foodSelect->name }}</strong></center>
+        @php
+            $firstOption = true; // Flag to track the first option
+        @endphp
+        @foreach($foodSelect->foodOption as $foodOption)
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}" 
+                    @if($firstOption) checked @endif <!-- Set the 'checked' attribute for the first option -->
+                    
+                <label class="form-check-label">
+                    {{ $foodOption->name }} 
+                </label>
+            </div>
+            @php
+                $firstOption = false; // Set the flag to false after the first option
+            @endphp
+        @endforeach
+    </div>
+@endforeach
+
                                             </div>
                                         @endif
                                         <div class="modal-footer">

@@ -1,13 +1,6 @@
 @extends('layouts.admin')
 @section('content')
 
-<style>
-    .hoverable-row:hover {
-        background-color: #f0f0f0;
-        cursor: pointer; 
-    }
-</style>
-
 <title>Bill</title>
 
 <div class="d-sm-flex align-items-center justify-content-between mb-2">
@@ -31,69 +24,26 @@
     <div class="col-md-2"></div>
 </div>
 
+<div class="row" id="filtered_dates_container">
+     <!--Dates will be displayed here -->
+</div>
+
 <div class="row">
     <div class="col-md-12">
         <div class="table-responsive">
             <table class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Table ID</th>
-                        <th>Cart</th>
-                        <th>Pay By</th>
-                        <th>Total Price (RM)</th>
-                        <th>Create Date And Time</th>
-                        <th>Paid Status</th>
+                        <th>Date</th>
+                        <th>Cash</th>
+                        <th>Tng</th>
+                        <th>Total</th>
                     </tr>
                 </thead>
-                <tbody id="ordersBody">
-                    @foreach($orders->sortBy('created_at') as $order)
-                        <tr class="hoverable-row">
-                            <td>
-                                {{$order -> table_id}}
-                            </td>
-                            <td>
-                                <ul style="list-style-type: none;" class="m-0 p-0">
-                                    @foreach($carts->where('orderID', $order->orderID) as $cart)
-                                        <li>
-                                            @if(isset($cart->name) && $cart->name)
-                                                {{$cart->name}} &nbsp;<span class="text-info"> x{{$cart->quantity}}</span>
-                                            @else
-                                                <span class="text-danger">Food has been deleted 食物已经被删除</span>
-                                            @endif
-                                        </li>
-                                        
-                                        @if(!empty($cart->addon))
-                                            @php
-                                                $addons = json_decode($cart->addon, true);
-                                            @endphp
-                                            <ul style="list-style-type: disc; margin: 0;">
-                                                @foreach($addons as $title => $addon)
-                                                    @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
-                                                        <li>{{$title}} - {{$addon['name']}}</li>
-                                                    @endif
-                                                @endforeach
-                                            </ul>   
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </td>
-                            <td>@if($order -> payment_method == 1)
-                                    Cash 现金
-                                @elseif($order -> payment_method == 2)
-                                    Touch 'n Go 线上支付
-                                @endif
-                            </td>
-                            <td class="order-amount">RM {{number_format($order -> amount,2)}}</td>
-                            <td>{{$order -> created_at->format('Y-m-d')}} &nbsp; {{ $order->created_at->format('h:i A') }}</td>
-                            <td>
-                                @if($order -> is_paid == 1)
-                                    <span class="text-success">Success</span>
-                                @else($order -> is_paid == 2)
-                                    <span class="text-danger">Fail</span>
-                                @endif
-                            </td>
-                        </tr>
-                    @endforeach
+                <tbody id="dateBody">
+                    <tr>
+                        <td colspan="4">Please Select A Date To Display Result</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -102,7 +52,8 @@
 
 <script>
     $(document).ready(function() {
-        var $ordersBody = $('#ordersBody');
+        var $dateBody = $("#dateBody");
+        var orders = @json($orders);
         
         if (localStorage.getItem("allbill_from_date") !== null) {
             $('#from_date').val(localStorage.getItem("allbill_from_date"));
@@ -113,110 +64,97 @@
 
         $('#from_date').on('change', function() {
             localStorage.setItem("allbill_from_date", $(this).val());
-            applyFilters();
+            filterTable();
         });
         
         $('#to_date').on('change', function() {
             localStorage.setItem("allbill_to_date", $(this).val());
-            applyFilters();
+            filterTable();
         });
     
         // Event listener for clearSearch button
         $('#clearSearch').on('click', function() {
             $('#from_date').val('{{ date('Y-m-d') }}');
             $('#to_date').val('{{ date('Y-m-d') }}');
-            applyFilters();
             localStorage.clear();
+            filterTable();
         });
     
         // Event listener for clearDate button
         $('#clearAll').on('click', function() {
             $('#from_date').val('');
             $('#to_date').val('');
-            applyFilters();
             localStorage.clear();
+            filterTable();
+            var row = `
+                <tr>
+                    <td colspan="4">Please Select A Date To Display Result</td>
+                </tr>
+            `;
+            $dateBody.append(row);
         });
         
-        function applyFilters() {
-            var fromDateInput = $('#from_date').val();
-            var toDateInput = $('#to_date').val();
         
-            // Clear the orders table body
-            $ordersBody.empty();
         
-            @foreach($orders->sortBy('created_at') as $order)
-                @php
-                    $orderDate = $order->created_at->format('Y-m-d');
-                @endphp
-        
-                // Check if the order's attributes match the user input
-                if (
-                    ("{{ $orderDate }}" >= fromDateInput || fromDateInput === '') &&
-                    ("{{ $orderDate }}" <= toDateInput || toDateInput === '')
-                ) {
-                    $ordersBody.append(`
-                        <tr class="hoverable-row">
-                            <td>
-                                {{$order -> table_id}}
-                                <input type="hidden" class="order-id-input" id="orderID" name="orderID" value="{{$order -> orderID}}">
-                            </td>
-                            <td>
-                                <ul style="list-style-type: none;" class="m-0 p-0">
-                                    @foreach($carts->where('orderID', $order->orderID) as $cart)
-                                        <li>
-                                            @if(isset($cart->name) && $cart->name)
-                                                {{$cart->name}} &nbsp;<span class="text-info"> x{{$cart->quantity}}</span>
-                                            @else
-                                                <span class="text-danger">Food has been deleted 食物已经被删除</span>
-                                            @endif
-                                        </li>
-                                        @if(!empty($cart->addon))
-                                            @php
-                                                $addons = json_decode($cart->addon, true);
-                                            @endphp
-                                            <ul style="list-style-type: disc; margin: 0;">
-                                                @foreach($addons as $title => $addon)
-                                                    @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
-                                                        <li>{{$title}} - {{$addon['name']}}</li>
-                                                    @endif
-                                                @endforeach
-                                            </ul>   
-                                        @endif
-                                    @endforeach
-                                </ul>
-                            </td>
-                            <td>@if($order -> payment_method == 1)
-                                    Cash 现金
-                                @elseif($order -> payment_method == 2)
-                                    Touch 'n Go 线上支付
-                                @endif
-                            </td>
-                            <td class="order-amount">RM {{number_format($order -> amount,2)}}</td>
-                            <td>{{$order -> created_at->format('Y-m-d')}} &nbsp; {{ $order->created_at->format('h:i A') }}</td>
-                            <td>
-                                @if($order -> is_paid == 1)
-                                    <span class="text-success">Success</span>
-                                @else($order -> is_paid == 2)
-                                    <span class="text-danger">Fail</span>
-                                @endif
-                            </td>
-                        </tr>
-                    `);
-                }
-            @endforeach;
+        function filterTable() {
+            var fromDate = new Date($("#from_date").val());
+            var toDate = new Date($("#to_date").val());
+            var cashSum = 0.00;
+            var tngSum = 0.00;
+            var totalSum = 0.00;
+    
+            $dateBody.empty();
+    
+            var filteredDates = [];
+            var currentDate = new Date(fromDate);
+    
+            while (currentDate <= toDate) {
+                filteredDates.push(currentDate.toISOString().split('T')[0]);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+    
+            filteredDates.forEach(function (date) {
+                var amount1 = orders
+                    .filter(order => new Date(order.created_at).toISOString().split('T')[0] === date && order.payment_method === 1)
+                    .reduce((sum, order) => sum + parseFloat(order.amount), 0);
+    
+                var amount2 = orders
+                    .filter(order => new Date(order.created_at).toISOString().split('T')[0] === date && order.payment_method === 2)
+                    .reduce((sum, order) => sum + parseFloat(order.amount), 0);
+    
+                var totalAmount = orders
+                    .filter(order => new Date(order.created_at).toISOString().split('T')[0] === date)
+                    .reduce((sum, order) => sum + parseFloat(order.amount), 0);
+                
+                cashSum += amount1;
+                tngSum += amount2;
+                totalSum += totalAmount;
+                
+                var row = `
+                    <tr>
+                        <td><a href="{{ url('admin/allBills_date') }}/${date}" style="text-decoration: none;" class="text-cent">${date}</a></td>
+                        <td>RM ${amount1.toFixed(2)}</td>
+                        <td>RM ${amount2.toFixed(2)}</td>
+                        <td>RM ${totalAmount.toFixed(2)}</td>
+                    </tr>
+                `;
+    
+                $dateBody.append(row);
+            });
+            
+            var sumRow = `
+                <tr>
+                    <td><b>Total:</b></td>
+                    <td><b>RM ${cashSum.toFixed(2)}</b></td>
+                    <td><b>RM ${tngSum.toFixed(2)}</b></td>
+                    <td><b>RM ${totalSum.toFixed(2)}</b></td>
+                </tr>
+            `;
+            
+            $dateBody.append(sumRow);
         }
 
-        applyFilters();
-        calculateSum();
-    });
-</script>
-
-<script>
-    // JavaScript to handle click event and open the modal
-    $(document).ready(function() {
-        $('.tng-span').on('click', function() {
-            $('#tng').modal('show');
-        });
+        filterTable();
     });
 </script>
 

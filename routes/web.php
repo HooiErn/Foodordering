@@ -55,7 +55,7 @@ Route::post('admin/analytics', [AdminController::class, 'analytics'])->name('ana
 // Bill
 Route::get('admin/bills', [AdminController::class,'bills'])->name('bills');
 Route::get('admin/allBills', [AdminController::class, 'allBills'])->name('allBills');
-Route::post('admin/allBills/searchDate', [AdminController::class, 'allBillsSearchDate'])->name('allBills.searchDate');
+Route::get('admin/allBills_date/{date}', [AdminController::class, 'allBills_date'])->name('allBills_date');
 Route::post('admin/bill_check', [AdminController::class, 'bill_check'])->name('bill_check');
 Route::post('admin/bill_uncheck', [AdminController::class, 'bill_uncheck'])->name('bill_uncheck');
 
@@ -117,12 +117,17 @@ Route::post('admin/updateQrcode', [AdminController::class, 'updateQrcode']);
 // --- Dashboard ---
 Route::get('waiter/scan',[WaiterController::class, 'scan']);
 
+// Change Password
+Route::post('waiter/changePassword', [WaiterController::class, 'changePassword']);
+
 // --- Order ---
 Route::get('waiter/order',[WaiterController::class, 'viewTakenOrder'])->name('waiter.order');
 Route::get('waiter/viewFoodList/{orderID}',[WaiterController::class,'viewFoodList']);
 Route::post('waiter/searchDate',[WaiterController::class,'searchDate'])->name('waiter.searchDate');
 Route::get('waiter/placeOrder',[WaiterController::class, 'placeOrder']);
+Route::get('waiter/placeOrder2',[WaiterController::class, 'placeOrder2']);
 Route::get('waiter/add-to-cart/{id}', [WaiterController::class, 'addToCart']);
+Route::get('waiter/add-to-cart2/{id}', [WaiterController::class, 'addToCart2']);
 Route::get('waiter/showWork',[WaiterController::class, 'showWork']);
 Route::post('waiter/takeOrder', [WaiterController::class, 'takeOrder']);
 Route::get('waiter/orderDetail/', [WaiterController::class, 'orderDetail']);

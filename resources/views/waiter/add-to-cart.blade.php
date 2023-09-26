@@ -1,4 +1,24 @@
-@extends('layouts.waiter')
+                        @if(!empty($cart->addon))
+                            @php
+                                $addons = json_decode($cart->addon, true);
+                                $addonTotal = 0.00;
+                            @endphp
+                        
+                            {{-- Calculate total addon price --}}
+                            @foreach($addons as $title => $addon)
+                                @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
+                                    @php
+                                        $addonTotal += ($addon['price'] * $cart->quantity);
+                                    @endphp
+                                @endif
+                            @endforeach
+                        
+                            {{-- Display total price (original price + addon price) --}}
+                            RM {{ number_format(($cart->fPrice * $cart->quantity) + $addonTotal, 2) }}
+                        @else
+                            {{-- No addons, display original price --}}
+                            RM {{ number_format(($cart->fPrice * $cart->quantity), 2) }}
+                        @endif@extends('layouts.waiter')
 @section('content')
 
 <style>
@@ -82,7 +102,7 @@
             width: 85%; /* Width for mobile screens (90% of the screen) */
         }
     }
-
+    
     #cd-cart {
         right: -100%;
         background: #FFF;
@@ -348,16 +368,24 @@
                                 $addons = json_decode($cart->addon, true);
                                 $addonTotal = 0.00;
                             @endphp
+                        
+                            {{-- Calculate total addon price --}}
                             @foreach($addons as $title => $addon)
                                 @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
-                                    RM {{number_format(($cart->fPrice * $cart->quantity) + ($addon['price'] * $cart -> quantity), 2)}}
+                                    @php
+                                        $addonTotal += ($addon['price'] * $cart->quantity);
+                                    @endphp
                                 @endif
                             @endforeach
+                        
+                            {{-- Display total price (original price + addon price) --}}
+                            RM {{ number_format(($cart->fPrice * $cart->quantity) + $addonTotal, 2) }}
                         @else
-                            RM {{number_format(($cart->fPrice * $cart->quantity),2)}}
+                            {{-- No addons, display original price --}}
+                            RM {{ number_format(($cart->fPrice * $cart->quantity), 2) }}
                         @endif
                     </div>
-                    <a href="{{ url('deleteCart',['id' =>$cart->id])}}" style="text-decoration: none;" class="cd-item-remove cd-img-replace">Remove</a>
+                    <a href="{{ url('deleteCart',['id' =>$cart->id])}}" style="text-decoration: none;" class="cd-item-remove cd-img-replace"><i class="fas fa-times"></i></a>
                 </li>
             @endforeach
         </ul>
@@ -406,8 +434,18 @@
                     <input type="text" class="search form-control" placeholder="Search Food 搜索食物">
                 </div> 
             </div>
+            <div class="col-md-12">
+                <div class="form-group">
+                    <select class="form-control search-category" id="category" name="category">
+                        <option value="">Select Category</option>
+                        @foreach($categories as $category)
+                            <option value="{{$category->id}}">{{$category->name}}</option>
+                        @endforeach
+                    </select>
+                </div>
+            </div>
         </div>
-        <div class="table-responsive" style="font-size:12px;">
+        <div class="table-responsive">
             <table class="table table-border results">
                 <thead>
                     <tr>
@@ -418,29 +456,23 @@
                         <th></th>
                     </tr>
                     <tr class="waring no-result">
-                        <th colspan="3"><i class="fa fa-warning">No Result</i></th>
+                        <th colspan="5"><i class="fa fa-warning">No Result</i></th>
                     </tr>
                 </thead>
                 <tbody>
-                     @php
-                        $counter = 1;
-                    @endphp
                     @foreach($foods as $food)
-                        <tr class="p-0 m-0">
-                            <td>{{$counter }}</td>
-                            <td><img src="{{ asset('images/')}}/{{$food -> image}}" width="60px" height="80px"></td>
-                            <td class="pr-0">{{$food -> name}}</td>
+                        <tr class="p-0 m-0" data-category="{{ $food->categoryID }}">
+                            <td>{{$food -> id}}</td>
+                            <td><img src="{{ asset('images/')}}/{{$food -> image}}" width="60px" height="60px"></td>
+                            <td>{{$food -> name}}</td>
                             <td>{{number_format($food -> price,2)}}</td>
                             @if($food -> available == 0)
                                 <td><a href="#" style="pointer-events: none; cursor: default;" class="btn btn-sm btn-danger"><i class="fas fa-times"></i></a></td>
                             @elseif($food -> available == 1)
-                                <td><a class="btn btn-xs btn-success" style="color: white;" data-toggle="modal" data-target=".food{{$food -> id}}"><i class="fas fa-shopping-cart"></i></a></td>
+                                <td><a class="btn btn-sm btn-success" style="color: white;" data-toggle="modal" data-target=".food{{$food -> id}}"><i class="fas fa-shopping-cart"></i></a></td>
                             @endif
                         </tr>
-                          @php
-                            $counter++;
-                        @endphp
-                    @endforeach   
+                    @endforeach    
                 </tbody>
             </table>
         </div>
@@ -519,47 +551,34 @@
         document.getElementById('total').value = formattedTotal;
         document.getElementById('total2').innerHTML = "RM " + formattedTotal;
 
-        $(".search").keyup(function () {
-            var searchTerm = $(".search").val();
-            var listItem = $('.results tbody').children('tr');
-            var searchSplit = searchTerm.replace(/ /g, "'):containsi('")
+        $(".search, .search-food-id, .search-category").on('input change', function () {
+            var searchInput = $(".search").val().toLowerCase();
+            var foodIdInput = $(".search-food-id").val().trim();
+            var selectedCategoryId = $(".search-category").val();
             
-            $.extend($.expr[':'], {'containsi': function(elem, i, match, array){
-                    return (elem.textContent || elem.innerText || '').toLowerCase().indexOf((match[3] || "").toLowerCase()) >= 0;
-                }
-            });
-            
-            $(".results tbody tr").not(":containsi('" + searchSplit + "')").each(function(e){
-                $(this).attr('visible','false');
-            });
-
-            $(".results tbody tr:containsi('" + searchSplit + "')").each(function(e){
-                $(this).attr('visible','true');
-            });
-
-            var jobCount = $('.results tbody tr[visible="true"]').length;
-            $('.counter').text(jobCount + ' item');
-
-            if(jobCount == '0') {
-                $('.no-result').show();
-            }
-            else {
-                $('.no-result').hide();
-            }
-        });
-        
-        $(".search-food-id").keyup(function () {
-            var searchTerm = $(".search-food-id").val();
-            var listItem = $('.results tbody').children('tr');
-            var searchSplit = searchTerm.replace(/ /g, '');
-            
-            $(".results tbody tr").each(function(e) {
+            $('.results tbody tr').each(function() {
+                var foodCategory = $(this).data('category');
                 var foodId = $(this).find("td:eq(0)").text();
-                if (foodId.indexOf(searchSplit) !== -1) {
-                    $(this).attr('visible', 'true');
-                } else {
-                    $(this).attr('visible', 'false');
+                var foodName = $(this).find("td:eq(2)").text().toLowerCase();
+                
+                var showRow = true;
+                
+                // Filter by category
+                if (selectedCategoryId !== '' && selectedCategoryId != foodCategory) {
+                    showRow = false;
                 }
+                
+                // Filter by food ID
+                if (foodIdInput && foodId.indexOf(foodIdInput) === -1) {
+                    showRow = false;
+                }
+                
+                // Filter by search term
+                if (searchInput && (foodName.indexOf(searchInput) === -1)) {
+                    showRow = false;
+                }
+                
+                $(this).attr('visible', showRow ? 'true' : 'false');
             });
             
             var visibleItems = $('.results tbody tr[visible="true"]');
@@ -572,6 +591,7 @@
                 $('.no-result').hide();
             }
         });
+
     });
 </script>
 

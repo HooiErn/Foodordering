@@ -146,10 +146,16 @@
             <!-- Divider -->
             <hr>
 
-            <!-- Place Order -->
+            <!-- Place Order 1 -->
             <a class="w3-bar-item w3-button" href="{{url('waiter/placeOrder')}}">
                 <i class="fas fa-fw fa-download"></i>
                 <span>Place Order 下单</span>
+            </a>
+            
+            <!-- Place Order 2 -->
+            <a class="w3-bar-item w3-button" href="{{url('waiter/placeOrder2')}}">
+                <i class="fas fa-fw fa-download"></i>
+                <span>Place Order2 下单2</span>
             </a>
             
             <!-- Work -->
@@ -165,9 +171,15 @@
             </a>
             
             <!-- Show Order -->
-            <a class="w3-bar-item w3-button" href="{{ url('waiter/order') }}">
+            <a class="w3-bar-item w3-button" href="{{ url('waiter/order') }}" onclick="clearLocalStorage()">
                 <i class="fas fa-fw fa-chart-area"></i>
                 <span>Report 报告</span>
+            </a>
+            
+            <!-- Change Password -->
+            <a class="w3-bar-item w3-button" data-toggle="modal" data-target="#changePassword" href="#">
+                <i class="fas fa-lock fa-sm fa-fw mr-2 text-gray-400"></i>
+                <span>Change Password<br>换密码</span>
             </a>
             
             <!-- Divider -->
@@ -224,6 +236,50 @@
     <a class="scroll-to-bottom rounded" href="#page-bottom" id="scrollToBottom">
         <i class="fas fa-angle-down"></i>
     </a>
+            
+    <div class="modal fade" id="changePassword" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Change Password 换密码</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ url('waiter/changePassword') }}" method="POST">
+                        @csrf
+                        <div class="row">
+                            <div class="col-md-12 mb-2">
+                                <div class="form-floating">
+                                    <label for="new_password">New Password 新密码</label>
+                                    <input type="password" class="form-control @error('new_password') is-invalid @enderror" id="new_password" name="new_password" placeholder="New Password">
+                                </div>
+                            </div>
+                            <div class="col-md-12 mb-4">
+                                <div class="form-floating">
+                                    <label for="confirm_password">Confirm Password 确认密码</label>
+                                    <input type="password" class="form-control @error('confirm_password') is-invalid @enderror" id="confirm_password" name="confirm_password" placeholder="Confirm Password">
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <button type="submit" class="btn btn-primary btn-block">Changes 更换</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if ($errors->has('new_password') || $errors -> has ('confirm_password'))
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('#changePassword').modal('toggle');
+            });
+        </script>
+    @endif
+    
     
     <!-- JavaScript -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -233,6 +289,12 @@
     <script src="{{ asset('jquery-easing/jquery.easing.min.js')}}"></script>
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
     
+    <script>
+        function clearLocalStorage() {
+            localStorage.removeItem("fromDate");
+            localStorage.removeItem("toDate");
+        }
+    </script>
     
     <script>
         $(document).ready(function () {

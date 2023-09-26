@@ -110,7 +110,7 @@ class HomeController extends Controller
         $table -> last_active_at = Carbon::now();
         $table -> save();
 
-        $exists = Qrcode::where('id',1)->exists();
+        $exists = Qrcode::count() > 0;
         $value = $exists ? 1 : 2;
 
 

@@ -65,11 +65,11 @@
     <div class="w3-dropdown-hover">
         <button class="w3-button"><i class="fas fa-fw fa-money mr-1"></i><span>Bill 账单</span></button>
         <div class="w3-dropdown-content w3-bar-block w3-border">
-            <a class="w3-bar-item w3-button" href="{{ url('admin/allBills') }}">
+            <a class="w3-bar-item w3-button" href="{{ url('admin/allBills') }}" onclick="clearLocalStorage2()">
                 <i class="fas fa-fw fa-list"></i>
                 <span>List 列表</span>
             </a>
-            <a class="w3-bar-item w3-button" href="{{ url('admin/bills') }}">
+            <a class="w3-bar-item w3-button" href="{{ url('admin/bills') }}" onclick="clearLocalStorage3()">
                 <i class="fas fa-fw fa-history"></i>
                 <span>Payment 付款</span>
             </a>
@@ -123,7 +123,7 @@
                 <i class="fas fa-fw fa-list"></i>
                 <span>List 列表</span>
             </a>
-            <a class="w3-bar-item w3-button" href="{{ url('admin/waiter-report') }}">
+            <a class="w3-bar-item w3-button" href="{{ url('admin/waiter-report') }}" onclick="clearLocalStorage()">
                 <i class="fas fa-fw fa-file-alt"></i>
                 <span>Report 报告</span>
             </a>
@@ -151,4 +151,18 @@
         event.preventDefault();
         document.getElementById('analytics-form').submit();
     });
+    
+    function clearLocalStorage() {
+        localStorage.removeItem("fromDate");
+        localStorage.removeItem("toDate");
+    }
+    
+    function clearLocalStorage2() {
+        localStorage.removeItem("allbill_from_date");
+        localStorage.removeItem("allbill_to_date");
+    }
+    
+    function clearLocalStorage3() {
+        localStorage.removeItem("date");
+    }
 </script>

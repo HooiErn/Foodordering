@@ -63,6 +63,6 @@ class __TwigTemplate_aecbc2b1b44f9c872ff8f2c38ba48eac extends Template
 {% else %}
 \t<link rel=\"mask-icon\" href=\"plugins/CoreHome/images/applePinnedTab.svg\" color=\"#3450A3\">
 {% endif %}
-", "@CoreHome/_applePinnedTabIcon.twig", "/home/u333978671/domains/ctosweb.com/public_html/Food_Order/public/matomo/plugins/CoreHome/templates/_applePinnedTabIcon.twig");
+", "@CoreHome/_applePinnedTabIcon.twig", "/home/u333978671/domains/ctosweb.com/public_html/Nobita/public/matomo/plugins/CoreHome/templates/_applePinnedTabIcon.twig");
     }
 }

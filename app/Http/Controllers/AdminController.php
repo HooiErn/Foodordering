@@ -121,6 +121,24 @@ class AdminController extends Controller
         return view('admin/allBills', compact('tables','orders', 'carts','qrcode'));
     }
     
+    public function allBills_date($date){
+        $orders = Order::whereDate('created_at', $date)->orderByDesc('created_at')->where('is_paid', '!=', 0)->get();
+        
+        $item1 = DB::table('carts')
+        ->join('food as detail','carts.food_id','detail.id')
+        ->select('carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $item2 = DB::table('waiter_carts')
+        ->join('food as detail','waiter_carts.food_id','detail.id')
+        ->select('waiter_carts.*','detail.name as name','detail.image as image','detail.price as price')
+        ->get();
+
+        $carts = $item1 -> merge($item2);
+        
+        return view('admin/allBills_date', compact('orders','carts'));
+    }
+    
     public function bill_check(Request $request) {
         try {
             DB::beginTransaction();
@@ -210,7 +228,7 @@ class AdminController extends Controller
     
     // Stock
     public function stock(){
-        $foods = Food::all();
+        $foods = Food::all()->sortBy('name');
         
         return view('admin/stock', compact('foods'));
     }
@@ -231,7 +249,7 @@ class AdminController extends Controller
     
     public function stockHistorySearchDate(Request $request){
         $foods = Food::all();
-        $stock_histories = StockList::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
+        $stock_histories = StockList::whereDate('created_at','>=',$request -> from)->whereDate('created_at','<=',$request -> to)->get();
         return view('admin/stock-history', compact('foods', 'stock_histories'));
     }
     
@@ -629,8 +647,8 @@ class AdminController extends Controller
     }
     
     public function waiterSearchDate(Request $request){
-        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
-        $works = Work::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->get();
+        $orders = Order::whereDate('created_at','>=',$request -> from)->whereDate('created_at','<=',$request -> to)->get();
+        $works = Work::whereDate('created_at','>=',$request -> from)->whereDate('created_at','<=',$request -> to)->get();
         $waiters = User::where('role',2)->get();
         return view('admin/waiter-report', compact('waiters', 'orders', 'works'));
     }
@@ -648,7 +666,7 @@ class AdminController extends Controller
 
         if($validator -> fails()){
             Toastr::error('Invalid input please try again.', 'Validate Fail', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
-            return redirect->back()->withInput()->withErrors($validator);
+            return redirect()->back()->withInput()->withErrors($validator);
         }
         
         $addWaiter = User::create([
@@ -713,7 +731,7 @@ class AdminController extends Controller
     
     public function searchDate(Request $request){
         $waiter = User::where('name',$request -> name)->first();
-        $orders = Order::where('created_at','>=',$request -> from)->where('created_at','<=',$request -> to)->where('waiter',$request->name)->get();
+        $orders = Order::whereDate('created_at','>=',$request -> from)->whereDate('created_at','<=',$request -> to)->where('waiter',$request->name)->get();
         
         return view('admin.viewOrder',['name' => $request -> name],compact('waiter','orders'));
     }

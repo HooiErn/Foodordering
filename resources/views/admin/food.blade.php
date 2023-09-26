@@ -189,7 +189,7 @@
                         <div id="select-options-container-{{$category->id}}">
                             <label for="food_select_option">Food Select Option 食物选项</label>
                         </div>
-                        <a type="button" class="btn btn-success btn-sm mb-1 text-white add-select-option" id="add-select-option-{{$category->id}}"><i class="fa fa-plus text-white"></i> Add New Option</a>
+                        <a type="button" class="btn btn-success btn-sm mb-1 text-white add-select-option" id="add-select-option-{{$category->id}}" onclick="selectFirstOption()"><i class="fa fa-plus text-white"></i> Add New Option</a>
 
                         <div class="form-group">
                             <label for="categoryID">Food Category 食物种类</label>
@@ -298,7 +298,7 @@
                                     <input type="text" name="option_value_name[{optionValueIndex}][]" class="form-control form-control-inline option-value" placeholder="Option Value" required>
                                 </div>
                                 <div class="col-md-5">
-                                    <input type="number" name="option_value_price[{optionValueIndex}][]" class="form-control form-control-inline option-price" placeholder="Option Price (RM)" required step="0.01">
+                                    <input type="number" name="option_value_price[{optionValueIndex}][]" class="form-control form-control-inline option-price" placeholder="Option Price (RM)" value="0.00" required step="0.01">
                                 </div>
                                 <div class="col-md-2">
                                     <button type="button" class="btn btn-danger delete-option-value"><i class="fa fa-trash"></i></button>
@@ -318,7 +318,7 @@
                             <input type="text" name="option_value_name[{optionValueIndex}][]" class="form-control form-control-inline option-value" placeholder="Option Value" required>
                         </div>
                         <div class="col-md-5">
-                            <input type="number" name="option_value_price[{optionValueIndex}][]" class="form-control form-control-inline option-price" placeholder="Option Price (RM)" required step="0.01">
+                            <input type="number" name="option_value_price[{optionValueIndex}][]" class="form-control form-control-inline option-price" placeholder="Option Price (RM)" value="0.00" required step="0.01">
                         </div>
                         <div class="col-md-2">
                             <button type="button" class="btn btn-danger delete-option-value"><i class="fa fa-trash"></i></button>
@@ -440,6 +440,16 @@
             },
         });
     });
+    
+    
+function selectFirstOption() {
+  // Get the select element
+  var selectElement = document.getElementById("mySelect");
+  
+  // Set the selected index to 0 (which corresponds to the first option)
+  selectElement.selectedIndex = 0;
+}
+
 </script>
 
 @endsection

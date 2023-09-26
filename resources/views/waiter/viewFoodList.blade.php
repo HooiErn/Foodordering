@@ -3,9 +3,17 @@
 
 <title>View Cart</title>
 
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="#" onclick="window.history.back();">{{ Auth::user()->name }}</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ $order->orderID }}</li>
+        </ol>
+    </nav>
+</div>
+
 <div class="row">
     <div class="table-responsive">
-        
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr class="thead-dark">
