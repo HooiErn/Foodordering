@@ -125,7 +125,7 @@
                                                             @if(!Auth::check() || Auth::user()->isKitchen() || Auth::user()->isAdmin())
                                                             <td><a href="{{ url('method',['id' => $order -> table_id]) }}" class="btn btn-primary btn-sm">Back To Main Page <br> 返回首页</a></td>
                                                             @elseif(Auth::user()->isWaiter())
-                                                            <td><a href="{{url('waiter/placeOrder')}}" class="btn btn-primary btn-sm">Back <br> 返回</a></td>
+                                                            <td><a href="{{url('waiter/work')}}" class="btn btn-primary btn-sm">Back <br> 返回</a></td>
                                                             @endif
                                                         </tr>
                                                     </tbody>
