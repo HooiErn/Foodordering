@@ -20,6 +20,12 @@ class FoodController extends Controller
         return view('admin/food/addForm')->with('categories',$categories);
     }
 
+   public function index()
+    {
+    $foods = Food::orderBy('name', 'asc')->get();
+    return view('admin.food', compact('foods'));
+    }
+
     //Add Food
     public function add(Request $request){
 

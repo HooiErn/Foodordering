@@ -62,7 +62,7 @@
             <table class="table table-hover table-bordered">
                 <thead>
                     <tr class="thead-dark" style="position: sticky; top: 0;">
-                        <th colspan="5">
+                        <th colspan="7">
                             <div class="inline">{{$waiter->name}} </div>
                             <div class="inline2">Total共计 : <span id="total"></span></div>
                         </th>
@@ -73,6 +73,8 @@
                         <th>Cash 现金</th>
                         <th>Touch 'n Go 线上付款</th>
                         <th>Created Date 添加时间</th>
+                        <th>Order Time</th>
+                        <th>Order Completed</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -88,12 +90,16 @@
                             <td><span id="amount" name="touchAmount">{{number_format($order -> amount,2)}}</span></td>
                         @endif
                         <td>{{$order -> created_at -> format('d/m/Y')}}</td>
+                        <td>{{$order -> created_at -> format('H:i:s')}}</td>
+                        <td>{{ \Carbon\Carbon::parse($order->serve_time)->format('H:i:s') }}</td> 
                     </tr>
                 @endforeach 
                 <tr>
                     <td colspan="2"></td>
                     <td><b>Total共计 : <span id="cashTotal"></span></b></td>
                     <td><b>Total共计 : <span id="touchTotal"></span></b></td>
+                    <td></td>
+                    <td></td>
                     <td></td>
                 </tr>
                 </tbody>

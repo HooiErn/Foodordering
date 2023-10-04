@@ -1,24 +1,4 @@
-                        @if(!empty($cart->addon))
-                            @php
-                                $addons = json_decode($cart->addon, true);
-                                $addonTotal = 0.00;
-                            @endphp
-                        
-                            {{-- Calculate total addon price --}}
-                            @foreach($addons as $title => $addon)
-                                @if (is_array($addon) && isset($addon['name']) && isset($addon['price']))
-                                    @php
-                                        $addonTotal += ($addon['price'] * $cart->quantity);
-                                    @endphp
-                                @endif
-                            @endforeach
-                        
-                            {{-- Display total price (original price + addon price) --}}
-                            RM {{ number_format(($cart->fPrice * $cart->quantity) + $addonTotal, 2) }}
-                        @else
-                            {{-- No addons, display original price --}}
-                            RM {{ number_format(($cart->fPrice * $cart->quantity), 2) }}
-                        @endif@extends('layouts.waiter')
+@extends('layouts.waiter')
 @section('content')
 
 <style>
@@ -513,7 +493,7 @@
                                <center> <strong>{{ $foodSelect->name }}</strong> </center>
                                 @foreach($foodSelect->foodOption as $foodOption)
                                     <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}" data-price="{{$foodOption->price}}" required>
+                                         <input class="form-check-input" type="radio" name="option[{{$foodSelect->id}}]" value="{{$foodOption->name}}" data-price="{{$foodOption->price}}" @if($loop->first) checked @endif required>
                                         <label class="form-check-label">
                                             {{ $foodOption->name }} +RM {{number_format($foodOption->price, 2)}}
                                         </label>
@@ -654,5 +634,33 @@
     });
     
 </script>
+
+
+
+<script>
+$(document).ready(function() {
+    // Function to sort the table
+    function sortTable(tableSelector, columnIndex) {
+        var table = $(tableSelector);
+        var rows = table.find("tbody tr").get();
+
+        rows.sort(function(a, b) {
+            var A = $(a).children("td").eq(columnIndex).text().toUpperCase();
+            var B = $(b).children("td").eq(columnIndex).text().toUpperCase();
+
+            return A.localeCompare(B);
+        });
+
+        $.each(rows, function(index, row) {
+            table.children("tbody").append(row);
+        });
+    }
+
+    // Sort the table by name when the page loads
+    sortTable("table.table", 2); // Sort by the 3rd column (0-based index)
+});
+</script>
+
+
 
 @endsection

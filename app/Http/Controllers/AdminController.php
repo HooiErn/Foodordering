@@ -529,7 +529,7 @@ class AdminController extends Controller
         $deleteFood->delete();
         
         if($deleteFood){
-           Session::flash('success',"Food delete successfully!");
+          Toastr::success('You Successfully deleted Food.', 'Food Updated', ["progressBar" => true, "debug" => true, "newestOnTop" => true, "positionClass" => "toast-top-right"]);
             return redirect('admin/food'); 
         }
     }
@@ -628,7 +628,7 @@ class AdminController extends Controller
     }
     
     public function waiter_list($id){
-        $waiters = User::where('role',2)->get();
+        $waiters = User::where('role',2)->orderBy('name')->get();
         $detail = User::find($id);
         return view('admin/waiter-list',compact('waiters', 'detail'));
     }
@@ -639,10 +639,11 @@ class AdminController extends Controller
             $waiter -> name = $request -> name;
         }
         if($request -> has('password') && $request -> password !== null){
-            $waiter -> password = $request -> password;
+            $waiter -> password = bcrypt($request -> password);
         }
         $waiter -> save();
         
+        Toastr::success('You successfully edit a new waiter account','Edit a waiter password',["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
         return redirect()->back();
     }
     
@@ -650,7 +651,9 @@ class AdminController extends Controller
         $orders = Order::whereDate('created_at','>=',$request -> from)->whereDate('created_at','<=',$request -> to)->get();
         $works = Work::whereDate('created_at','>=',$request -> from)->whereDate('created_at','<=',$request -> to)->get();
         $waiters = User::where('role',2)->get();
-        return view('admin/waiter-report', compact('waiters', 'orders', 'works'));
+
+        return view('admin/waiter-report', compact('waiters', 'orders', 'works'))
+        ->with(['fromDate' => $request->from, 'toDate' => $request->to]); // Pass dates as query parameters; 
     }
 
     public function registerWaiter(Request $request){
@@ -717,23 +720,34 @@ class AdminController extends Controller
     // }
 
     
-    public function viewTakenOrder($name)
+    public function viewTakenOrder($name, Request $request)
     {
         $waiter = User::where('name',$name)->first();
-        $orders = Order::where('waiter',$name)->where('status',"1")->whereDate('created_at', now()->toDateString())->get();
+
+       // Retrieve date values from the query parameters or use today's date as default
+        $fromDate = $request->query('fromDate', now()->toDateString());
+        $toDate = $request->query('toDate', now()->toDateString());
+
+        $orders = Order::where('waiter', $name)
+            ->where('status', "1")
+            ->whereDate('created_at', '>=', $fromDate)
+            ->whereDate('created_at', '<=', $toDate)
+            ->get();
 
         if(!($waiter && $orders)){
             return view('404');
         }
 
-        return view('admin.viewOrder',compact('waiter','orders'));
+        return view('admin.viewOrder',compact('waiter','orders','fromDate','toDate'));
     }
     
     public function searchDate(Request $request){
         $waiter = User::where('name',$request -> name)->first();
-        $orders = Order::whereDate('created_at','>=',$request -> from)->whereDate('created_at','<=',$request -> to)->where('waiter',$request->name)->get();
-        
-        return view('admin.viewOrder',['name' => $request -> name],compact('waiter','orders'));
+        $orders = Order::whereDate('created_at','>=',$request -> from)
+        ->whereDate('created_at','<=',$request -> to)->where('waiter',$request->name)->get();
+
+        return view('admin.viewOrder',['name' => $request -> name],compact('waiter','orders'))
+        ->with(['fromDate' => $request->from, 'toDate' => $request->to]);
     }
 
     public function viewFoodlist($orderID)

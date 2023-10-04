@@ -195,6 +195,10 @@ Route::get('unload/logout',[HomeController::class, 'unloadLogout'])->name('unloa
 
 Route::get('test', [HomeController::class, 'print']);
 
+//Sorting by alphabet
+Route::get('/foods', [FoodController::class, 'index']);
+Route::post('/foods/sort', [FoodController::class, 'sort']);
+
 // 404 Error
 Route::fallback(function () {
     return view('404');

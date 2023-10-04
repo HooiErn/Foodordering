@@ -183,7 +183,7 @@
                         <div class="card shadow">
                             <div class="row no-gutters align-items-center">
                                 <div class="col-auto">
-                                   <a href="{{ asset('images/')}}/{{$food -> image}}"> <img src="{{ asset('images/')}}/{{$food -> image}}" width="120px" height="150px"></a>
+                                    <img src="{{ asset('images/')}}/{{$food -> image}}" width="100px" height="120px">
                                 </div>
                                 <div class="col ml-2">
                                     <div class="h6 text-xs font-weight-bold text-primary text-uppercase mb-1">{{$food -> name}}</div>
@@ -226,7 +226,7 @@
                                         
                                         @if(count($food -> foodSelect))
                                             <div class="row text-center pt-3 pl-3">
-                                                @foreach($food->foodSelect as $foodSelect)
+                                               @foreach($food->foodSelect as $foodSelect)
     <input type="hidden" value="{{ $foodSelect->name }}" name="select[{{$foodSelect->id}}]">
     <div class="col-md-11">
         <center><strong>{{ $foodSelect->name }}</strong></center>

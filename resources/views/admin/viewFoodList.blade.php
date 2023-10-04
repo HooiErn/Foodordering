@@ -8,13 +8,14 @@
         <table class="table table-hover table-bordered">
             <thead>
                 <tr class="thead-dark">
-                    <th colspan="5">{{$order->orderID}}</th>
+                    <th colspan="6">{{$order->orderID}}</th>
                 </tr>
                 <tr>
                     <th>#</th>
                     <th>Food Name</th>
                     <th>Quantity</th>
                     <th>Price(RM per unit)</th>
+                    <th>Addon</th>
                     <th>Subtotal(RM)</th>
                 </tr>
             </thead>
@@ -25,7 +26,22 @@
                     <td>{{$cart -> name}}</td>
                     <td>{{$cart -> quantity}}</th>
                     <td>{{number_format($cart -> price,2)}}</td>
-                    <td><span id="amount" name="amount">{{number_format(($cart -> quantity * $cart -> price),2)}}</span></td>
+                    <td>@php
+                                $originalPrice = $cart->price * $cart->quantity;
+                                $addonPrice = 0;
+                                if (!empty($cart->addon)) {
+                                    $addons = json_decode($cart->addon, true);
+                                    foreach ($addons as $title => $addon) {
+                                        if (is_array($addon) && isset($addon['name']) && isset($addon['price']) && $addon['price'] > 0) {
+                                            $addonPrice += $addon['price'] * $cart->quantity;
+                                        }
+                                    }
+                                }
+                                $totalPrice = $originalPrice + $addonPrice;
+                            @endphp
+                            {{number_format($addonPrice, 2)}}
+                    </td>
+                    <td><span id="amount" name="amount">{{number_format($totalPrice, 2)}}</span></td>
                 </tr>
             @endforeach
             <tr>

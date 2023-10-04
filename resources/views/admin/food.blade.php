@@ -16,7 +16,9 @@
 
 <div class="d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0 text-gray-800">Food 食物</h1>
-    <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#categoryModal">Create Category添加种类</a>
+    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#categoryModal">Create Category添加种类</a>
+    <button id="sortButton" class="btn btn-primary">Sort Alphabetically按字母顺序排序</button>
+    
 </div>
 
 <div class="row">
@@ -24,10 +26,11 @@
         @foreach($categories as $category)
             <div class="card">
                 <div class="table-responsive shadow">
-                    <table class="table table-hover">
+                    <table id="foodTable-{{ $category->id }}" class="table table-hover" style="display: none;">
                         <thead>
                             <tr>
                                 <th colspan="4" class="category-header">Category 种类 : {{ $category -> name }}</th>
+                                <button class="btn btn-success toggle-table-button" data-category="{{ $category->id }}">{{ $category->name }}</button>
                                 <th class="text-end table-button">
                                     <div>
                                     <a type="button" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm" data-toggle="modal" data-target="#addFood{{$category -> id}}"><i class="fas fa-plus text-white"></i></a>
@@ -177,14 +180,14 @@
                         </div>
                         <div class="form-group">
                             <label for="stock">Stock Type 库存种类</label>
-                            <select name="stock" id="stock" class="form-control form-control-inline">
+                            <select name="stock" class="form-control form-control-inline stock-select">
                                 <option value="1">Unlimited 无限量</option>
                                 <option value="2">Number 数目</option>
                             </select>
                         </div>
-                        <div id="numberInputContainer" class="form-group" style="display: none;">
+                        <div class="form-group number-input-container" style="display: none;">
                             <label for="numberInput">Enter Number 输入数目</label>
-                            <input type="number" name="numberInput" id="numberInput" class="form-control" min="1">
+                            <input type="number" name="numberInput" class="form-control" min="1">
                         </div>
                         <div id="select-options-container-{{$category->id}}">
                             <label for="food_select_option">Food Select Option 食物选项</label>
@@ -450,6 +453,89 @@ function selectFirstOption() {
   selectElement.selectedIndex = 0;
 }
 
+//Sorting 
+
+ if (window.jQuery) {
+        console.log('jQuery is loaded!');
+    } else {
+        console.log('jQuery is NOT loaded!');
+    }
+    
+    $(document).ready(function () {
+    var originalOrder = {}; // Store the original order of each category table
+
+    // Store the original order of each category table
+    $('.card').each(function () {
+        var categoryTable = $(this).find('table');
+        var tbody = categoryTable.find('tbody');
+        originalOrder[categoryTable.attr('id')] = tbody.find('tr').get();
+    });
+
+    // Sort Alphabetically function
+    function sortTableAlphabetically() {
+        // Iterate through each category
+        $('.card').each(function () {
+            var categoryTable = $(this).find('table');
+            var tbody = categoryTable.find('tbody');
+
+            // Get all rows inside the tbody for this category
+            var rows = tbody.find('tr').get();
+
+            // Sort the rows by the food name
+            rows.sort(function (a, b) {
+                var nameA = $(a).find('td:eq(2)').text().toUpperCase(); // 3rd column for food name
+                var nameB = $(b).find('td:eq(2)').text().toUpperCase();
+                return nameA.localeCompare(nameB);
+            });
+
+            // Append the sorted rows back to the table
+            $.each(rows, function (index, row) {
+                tbody.append(row);
+            });
+        });
+    }
+
+    
+
+    // Sort Alphabetically button click event
+    $('#sortButton').on('click', function () {
+        sortTableAlphabetically();
+    });
+
+    
+   
+});
+
+</script>
+
+<script>
+$(document).ready(function() {
+    // Add a click event handler to the toggle buttons
+    $('.toggle-table-button').on('click', function() {
+        var categoryId = $(this).data('category');
+        var table = $('#foodTable-' + categoryId);
+
+        // Toggle the visibility of the table
+        table.toggle();
+    });
+});
+</script>
+
+<script>
+$(document).ready(function() {
+    // Add an event listener to all stock select inputs with class 'stock-select'
+    $('.stock-select').change(function() {
+        var selectedOption = $(this).val();
+        var numberInputContainer = $(this).closest('.modal-body').find('.number-input-container');
+
+        if (selectedOption === '2') { // If 'Number' is selected
+            numberInputContainer.show();
+        } else {
+            numberInputContainer.hide();
+        }
+    });
+});
 </script>
 
 @endsection
+

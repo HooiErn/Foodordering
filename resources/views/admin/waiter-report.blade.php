@@ -114,10 +114,13 @@
 </script>
 
 <script scr="text/javascript">
-    function view(name){
-        console.log(name);
-        window.location.href = "/viewOrder/" + name;
-    }
+    function view(name) {
+    var fromDate = document.getElementById('from').value;
+    var toDate = document.getElementById('to').value;
+    var url = `/viewOrder/${name}?fromDate=${fromDate}&toDate=${toDate}`;
+    window.location.href = url;
+}
+
 </script>
 <script>
     $(document).ready(function() {
