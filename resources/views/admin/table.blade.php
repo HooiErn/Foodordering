@@ -71,7 +71,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-body text-center">
-                    {{QrCode::size(250)->generate('https://nobita.ctosweb.com/home/'.$table->table_id);}}
+                    {{QrCode::size(250)->generate('https://foodorderapp.ctosweb.com/home/'.$table->table_id);}}
                 </div>
                 <div class="modal-footer justify-content-center">
                     <button type="button" class="btn btn-primary btn-sm btn-rounded">Print</button>
