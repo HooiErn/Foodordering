@@ -29,7 +29,11 @@
     }
     tr:nth-child(even){
         background-color: #f2f2f2
-        }
+    }
+    .table-responsive {
+        max-height: 720px; /* Adjust the maximum height as needed */
+        overflow-y: auto; /* Add a vertical scrollbar if needed */
+    }
      
 
 </style>
@@ -57,7 +61,7 @@
 <br>
 
 <div class="row">
-    <div class="table-responsive" style="width:80%;height:720px;">
+    <div class="table-responsive" style="width:80%;">
         
             <table class="table table-hover table-bordered">
                 <thead>

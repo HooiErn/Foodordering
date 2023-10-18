@@ -46,7 +46,7 @@
             @endforeach
             <tr>
                 <td colspan="4" class="text-right">Total :</td>
-                <td><span id="total"></span></td>
+                <td><b><span id="total"></span></b></td>
             </tr>
             </tbody>
         </table>

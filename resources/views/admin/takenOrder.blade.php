@@ -16,6 +16,8 @@
             <div class="card border border-dark">
                 <div class="card-header d-flex justify-content-between p-1 m-1">
                     <h5 class="card-title">Table {{$order->table_id}}</h5>
+                    
+                    <a href="https://foodorderapp.ctosweb.com/viewReceipt/{{$order -> orderID}}"  type="button" class="btn btn-primary">View Receipt</a>
                 </div>
                 <ul class="list-group list-group-flush">
                     @foreach($carts->where('orderID', $order->orderID) as $cart)
@@ -60,6 +62,7 @@
                             <button class="btn btn-danger btn-sm" type="button" data-toggle="tooltip" data-placement="top" title="No waiter assigned"><i class="fas fa-exclamation-circle"></i></button>
                         @endif
                     </p>
+                 <a href="https://foodorderapp.ctosweb.com/viewReceipt/{{$order -> orderID}}"  type="button" class="btn btn-primary">View Receipt</a>
                 </div>
                 <ul class="list-group list-group-flush">
                     @foreach($carts->where('orderID', $order->orderID) as $cart)

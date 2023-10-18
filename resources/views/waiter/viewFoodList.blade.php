@@ -33,9 +33,9 @@
                     <tr>
                         <td>{{$loop->iteration}}</td>
                         <td>{{$cart -> fName}}</td>
-                        <td>{{$cart -> quantity}}</td>
+                        <td>{{$cart -> quantity}}</th>
                         <td>{{number_format($cart -> fPrice,2)}}</td>
-                        <td>  @php
+                        <td>@php
                                 $originalPrice = $cart->fPrice * $cart->quantity;
                                 $addonPrice = 0;
                                 if (!empty($cart->addon)) {
@@ -49,8 +49,8 @@
                                 $totalPrice = $originalPrice + $addonPrice;
                             @endphp
                             {{number_format($addonPrice, 2)}}
-                        </td>
-                        <td><span id="amount" name="amount">{{number_format($totalPrice, 2)}}</span></td>
+                    </td>
+                    <td><span id="amount" name="amount">{{number_format($totalPrice, 2)}}</span></td>
                     </tr>
                 @endforeach
                 <tr>
