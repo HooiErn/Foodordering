@@ -15,6 +15,7 @@ class User extends Authenticatable
     const ADMIN = 1;
     const WAITER = 2;
     const KITCHEN = 3;
+    const MEMBER = 4;
 
     const TABLE = 'users';
 
@@ -30,6 +31,11 @@ class User extends Authenticatable
         'role',
         'password',
         'session_id',
+        'stripe_id',
+        'pm_type',
+        'pm_last_four',
+        'trial_ends_at',
+        'valid_date',
     ];
 
     /**
@@ -60,5 +66,9 @@ class User extends Authenticatable
     public function isKitchen(): bool
     {
         return $this->role() === self::KITCHEN;
+    }
+    public function isMember(): bool
+    {
+        return $this->role() === self::MEMBER;
     }
 }

@@ -115,6 +115,17 @@
         <span>Current Order List 当前订单列表</span>
     </a>
     
+    <!-- Members Dropdown -->
+    <div class="w3-dropdown-hover">
+        <button class="w3-button"><i class="fas fa-users mr-1"></i><span>Members 会员</span></button>
+        <div class="w3-dropdown-content w3-bar-block w3-border">
+            <a class="w3-bar-item w3-button" href="{{ url('admin/member-list', ['id' => Auth::user()->id]) }}">
+                <i class="fas fa-fw fa-list"></i>
+                <span>List 列表</span>
+            </a>
+        </div>
+    </div>
+    
     <!-- Waiter Dropdown -->
     <div class="w3-dropdown-hover">
         <button class="w3-button"><i class="fas fa-users mr-1"></i><span>Waiters 服务员</span></button>

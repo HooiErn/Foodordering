@@ -21,6 +21,11 @@ class CreateUsersTable extends Migration
             $table->integer('deletion')->default(1);
             $table->string('session_id')->nullable();
             $table->rememberToken();
+            $table->string('stripe_id')->nullable();
+            $table->string('pm_type')->nullable();
+            $table->string('pm_last_four', 4)->nullable();
+            $table->timestamp('trial_ends_at')->nullable();
+            $table->timestamp('valid_date')->nullable(); 
             $table->timestamps();
         });
     }

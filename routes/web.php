@@ -103,6 +103,13 @@ Route::post('admin/registerWaiter',[AdminController::class, 'registerWaiter']);
 Route::get('admin/deleteWaiter/{id}',[AdminController::class, 'deleteWaiter']);
 Route::get('admin/undoDeletedWaiter/{id}',[AdminController::class, 'undoDeletedWaiter']);
 
+//Member
+Route::get('admin/member-list/{id}', [AdminController::class, 'member_list']);
+Route::post('admin/edit-member', [AdminController::class, 'edit_member']);
+Route::post('admin/registerMember',[AdminController::class, 'registerMember']);
+Route::get('admin/deleteMember/{id}',[AdminController::class, 'deleteMember']);
+Route::get('admin/undoDeletedMember/{id}',[AdminController::class, 'undoDeletedMember']);
+
 //Table 
 Route::get('admin/table',[AdminController::class, 'table']);
 Route::post('admin/addTable',[AdminController::class, 'addTable']);

@@ -826,4 +826,83 @@ class AdminController extends Controller
         return back();
     }
 
+
+    //Member
+    
+     public function member_list($id){
+        $members = User::where('role',4)->orderBy('name')->get();
+        $detail = User::find($id);
+        return view('admin/member-list',compact('members', 'detail'));
+    }
+    
+    public function edit_member(Request $request){
+        $member = User::where('id', $request -> id)->first();
+        if($request -> has('name')){
+            $member -> name = $request -> name;
+        }
+        if($request -> has('password') && $request -> password !== null){
+            $member -> password = bcrypt($request -> password);
+        }
+        $member -> save();
+        
+        Toastr::success('You successfully edit a new member account','Edit a member password',["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+        return redirect()->back();
+    }
+    
+    public function registerMember(Request $request){
+        $validator = Validator::make($request->all(), [
+            'm_name' => [
+                Rule::unique('users', 'name')->where(function ($query) {
+                    return $query->where('role', 4);
+                }),
+            ],
+            'm_password' => 'max:12',
+            'm_confirm_password' => 'same:m_password',
+        ]);
+
+        if($validator -> fails()){
+            Toastr::error('Invalid input please try again.', 'Validate Fail', ["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+            return redirect()->back()->withInput()->withErrors($validator);
+        }
+        
+        $addMember = User::create([
+            'name' => $request -> m_name,
+            'role' => 4,
+            'password' => Hash::make($request -> m_password),
+        ]);
+        
+        Action::action(Auth::user()->name, "Add member - " . $request -> m_name);
+
+        Toastr::success('You successfully register a new member account','Register a member',["progressBar" => true, "debug" => true, "newestOnTop" =>true, "positionClass" =>"toast-top-right"]);
+        return redirect()->back();
+    }
+    
+     //Delete Member
+    public function deleteMember($id){
+        $member = User::where('id',$id)->first();
+        $member -> deleted = 4;
+        $member -> save();
+
+        if($member){
+            
+            return redirect()->back();
+        }
+        else{
+            return view('404');
+        }
+    }
+    
+    public function undoDeletedMember($id){
+        $member = User::where('id',$id)->first();
+        $member -> deleted = 4;
+        $member -> save();
+
+        if($member){
+            
+            return redirect()->back();
+        }
+        else{
+            return view('404');
+        }
+}
 }
